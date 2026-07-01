@@ -1,1 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora Comercial</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Calculadora comercial</p>
+        <h1>Calcula tarifas de eJornada y efirmaGO</h1>
+        <p class="subtitle">Selecciona la aplicación, indica el volumen y obtén el precio recomendado automáticamente.</p>
+      </div>
+    </section>
 
+    <section class="calculator-card">
+      <div class="grid two">
+        <label class="field">
+          <span>Aplicación</span>
+          <select id="appSelect"></select>
+        </label>
+
+        <label class="field" id="planField">
+          <span>Plan</span>
+          <select id="planSelect"></select>
+        </label>
+      </div>
+
+      <div class="grid two">
+        <label class="field">
+          <span id="quantityLabel">Cantidad</span>
+          <input id="quantityInput" type="number" min="1" step="1" value="50" />
+        </label>
+
+        <label class="field" id="billingField">
+          <span>Facturación</span>
+          <select id="billingSelect">
+            <option value="monthly">Mensual</option>
+            <option value="annual">Anual</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="notice" id="noticeBox"></div>
+
+      <section class="result-card">
+        <div>
+          <p class="result-label">Resultado estimado</p>
+          <h2 id="mainResult">0,00 €</h2>
+          <p id="resultSubtitle">Selecciona una tarifa para calcular.</p>
+        </div>
+        <button id="copyButton" type="button">Copiar resumen</button>
+      </section>
+
+      <section class="breakdown">
+        <div class="row"><span>App</span><strong id="summaryApp">-</strong></div>
+        <div class="row"><span>Plan / tarifa</span><strong id="summaryPlan">-</strong></div>
+        <div class="row"><span id="summaryQuantityLabel">Cantidad</span><strong id="summaryQuantity">-</strong></div>
+        <div class="row"><span>Precio mensual</span><strong id="summaryMonthly">-</strong></div>
+        <div class="row"><span>Precio anual</span><strong id="summaryAnnual">-</strong></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
