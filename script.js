@@ -420,6 +420,38 @@ const els = {
   copyButton: document.getElementById("copyButton")
 };
 
+
+const crtFcl = document.getElementById("crtFcl");
+const addCertifacil = document.getElementById("addCF");
+const usersCFExtra = document.getElementById("usersCertiFExtra");
+const usersExtra = document.getElementById("userExtra");
+const uExtra = document.getElementById("usersCFExtra");
+
+if (els.appSelect.value="msnotifica") {
+  crtFcl.classList.remove("hidden");
+  addCertifacil.addEventListener("change", () => {
+
+    if (addCertifacil.checked) {
+          usersCFExtra.classList.remove("hidden");
+          usersCFExtra.classList.add("doble");
+      } else {
+          usersCFExtra.classList.add("hidden");
+          usersCFExtra.classList.remove("doble");
+      }
+  });
+
+  usersExtra.addEventListener("change", () => {
+
+    if (usersExtra.checked) {
+          uExtra.classList.remove("hidden");
+      } else {
+          uExtra.classList.add("hidden");
+      }
+  });
+} else {
+    crtFcl.classList.add("hidden");
+}
+
 const infoButton = document.getElementById("infoButton");
 const infoModal = document.getElementById("infoModal");
 const closeInfoModal = document.getElementById("closeInfoModal");
