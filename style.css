@@ -88,6 +88,28 @@ h1 {
   color: #374151;
 }
 
+.field2 span {
+  display: flex;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 750;
+  color: #374151;
+}
+
+.doble {
+  display: flex;
+  justify-content: space-between;
+}
+
+.peque {
+  max-width: 50%;
+  max-height: 50%;
+}
+
+.doble input {
+  max-width: 60%;
+}
+
 select, input {
   width: 100%;
   border: 1px solid var(--line);
@@ -103,6 +125,10 @@ select, input {
 select:focus, input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px rgba(17,24,39,0.08);
+}
+
+.hidden {
+  display: none;
 }
 
 .notice {

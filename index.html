@@ -53,13 +53,14 @@
           <input id="usersInput" type="number" min="0" step="1" value="0" />
         </label>
 
-        <label class="field">
-          <span id="certiF">Certifácil</span>
-          <div clas="grid two">
-            <label class="field"><input id="certiFacil" type="checkbox"/></label>
-            <label class="field"><input id="usersCertiFExtra" type="number" min="0" step="1" value="0" /></label>
-          </div>
+        <label id="crtFcl" class="field2 hidden">
+          <span id="certiF">Certifácil<input id="addCF" type="checkbox"/></span>
+            <div class="hidden" id="usersCertiFExtra">
+              <div class="doble">Usuarios Extra:<input type="checkbox" class="peque" id="userExtra"/></div>
+              <input class="hidden" id="usersCFExtra" type="number" min="1" step="1" value="1" />
+            </div>
         </label>        
+        
       </div>
       <div class="notice" id="noticeBox"></div>
 
