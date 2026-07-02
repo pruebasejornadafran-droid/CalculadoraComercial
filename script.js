@@ -420,6 +420,41 @@ const els = {
   copyButton: document.getElementById("copyButton")
 };
 
+const infoButton = document.getElementById("infoButton");
+const infoModal = document.getElementById("infoModal");
+const closeInfoModal = document.getElementById("closeInfoModal");
+const infoAppButtons = document.querySelectorAll(".info-app-btn");
+const infoContents = document.querySelectorAll(".info-content");
+
+infoButton.addEventListener("click", () => {
+  infoModal.classList.remove("hidden");
+});
+
+closeInfoModal.addEventListener("click", () => {
+  infoModal.classList.add("hidden");
+});
+
+infoModal.addEventListener("click", (event) => {
+  if (event.target === infoModal) {
+    infoModal.classList.add("hidden");
+  }
+});
+
+infoAppButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    const selectedInfo = button.dataset.info;
+
+    infoAppButtons.forEach(btn => btn.classList.remove("active"));
+    button.classList.add("active");
+
+    infoContents.forEach(content => {
+      content.classList.remove("active");
+    });
+
+    document.getElementById(`info-${selectedInfo}`).classList.add("active");
+  });
+});
+
 function euros(value) {
   return new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(value || 0);
 }
