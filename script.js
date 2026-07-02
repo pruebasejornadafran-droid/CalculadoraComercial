@@ -427,29 +427,46 @@ const usersCFExtra = document.getElementById("usersCertiFExtra");
 const usersExtra = document.getElementById("userExtra");
 const uExtra = document.getElementById("usersCFExtra");
 
-if (els.appSelect.value="msnotifica") {
-  crtFcl.classList.remove("hidden");
-  addCertifacil.addEventListener("change", () => {
+addCertifacil.addEventListener("change", () => {
 
-    if (addCertifacil.checked) {
-          usersCFExtra.classList.remove("hidden");
-          usersCFExtra.classList.add("doble");
-      } else {
-          usersCFExtra.classList.add("hidden");
-          usersCFExtra.classList.remove("doble");
-      }
-  });
+      if (addCertifacil.checked) {
+            usersCFExtra.classList.remove("hidden");
+            usersCFExtra.classList.add("doble");
+        } else {
+            usersCFExtra.classList.add("hidden");
+            usersCFExtra.classList.remove("doble");
+        }
+    });
 
-  usersExtra.addEventListener("change", () => {
+    usersExtra.addEventListener("change", () => {
 
-    if (usersExtra.checked) {
-          uExtra.classList.remove("hidden");
-      } else {
-          uExtra.classList.add("hidden");
-      }
-  });
-} else {
+      if (usersExtra.checked) {
+            uExtra.classList.remove("hidden");
+        } else {
+            uExtra.classList.add("hidden");
+        }
+    });
+
+function updateExtraFields() {
+
     crtFcl.classList.add("hidden");
+    //otroCampo.classList.add("hidden");
+    //otroMas.classList.add("hidden");
+
+    switch (els.appSelect.value) {
+
+        case "msnotifica":
+            crtFcl.classList.remove("hidden");
+            break;
+
+        /*case "msnomina":
+            otroCampo.classList.remove("hidden");
+            break;*/
+
+        /*case "efirma":
+            otroMas.classList.remove("hidden");
+            break;*/
+    }
 }
 
 const infoButton = document.getElementById("infoButton");
@@ -521,6 +538,7 @@ function init() {
 
   els.appSelect.addEventListener("change", () => {
     refreshPlans();
+    updateExtraFields();
     calculate();
   });
   els.planSelect.addEventListener("change", calculate);
