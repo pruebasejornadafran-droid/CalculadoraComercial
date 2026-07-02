@@ -82,6 +82,53 @@
     </section>
   </main>
 
+  <div id="infoModal" class="info-modal hidden">
+  <div class="info-modal-card">
+    <button id="closeInfoModal" class="info-close">×</button>
+
+    <h2>Particularidades por app</h2>
+
+    <div class="info-app-buttons">
+      <button class="info-app-btn active" data-info="ejornada">eJornada</button>
+      <button class="info-app-btn" data-info="efirma">eFirma</button>
+      <button class="info-app-btn" data-info="nomina">Nómina</button>
+      <button class="info-app-btn" data-info="portal">Portal</button>
+    </div>
+
+    <div class="info-content active" id="info-ejornada">
+      <h3>eJornada</h3>
+      <ul>
+        <li>Tarificación por número de trabajadores.</li>
+        <li>Usa tramos de precio según volumen.</li>
+        <li>Revisar condiciones especiales para grandes cuentas.</li>
+      </ul>
+    </div>
+
+    <div class="info-content" id="info-efirma">
+      <h3>eFirma</h3>
+      <ul>
+        <li>Tarificación por documentos anuales.</li>
+        <li>Algunos planes incluyen usuarios y SMS.</li>
+        <li>Para volúmenes altos revisar tarifa concertada.</li>
+      </ul>
+    </div>
+
+    <div class="info-content" id="info-nomina">
+      <h3>Nómina</h3>
+      <ul>
+        <li>Introduce aquí las particularidades de Nómina.</li>
+      </ul>
+    </div>
+
+    <div class="info-content" id="info-portal">
+      <h3>Portal</h3>
+      <ul>
+        <li>Introduce aquí las particularidades de Portal.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+  
   <script src="script.js"></script>
 </body>
 </html>
