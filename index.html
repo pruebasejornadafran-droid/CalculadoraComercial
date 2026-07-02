@@ -89,46 +89,138 @@
     <h2>Particularidades por app</h2>
 
     <div class="info-app-buttons">
-      <button class="info-app-btn active" data-info="ejornada">eJornada</button>
-      <button class="info-app-btn" data-info="efirma">eFirma</button>
-      <button class="info-app-btn" data-info="nomina">Nómina</button>
-      <button class="info-app-btn" data-info="portal">Portal</button>
+      <button class="info-app-btn active" data-info="ejornada">ejornada</button>
+      <button class="info-app-btn" data-info="efirma">efirma</button>
+      <button class="info-app-btn" data-info="efirma">MsNotifica</button>
+      <button class="info-app-btn" data-info="efirma">MsGest</button>
+      <button class="info-app-btn" data-info="nomina">MsNómina</button>
+      <button class="info-app-btn" data-info="portal">MsConta</button>
+      <button class="info-app-btn" data-info="efirma">MsContrata</button>
+      <button class="info-app-btn" data-info="efirma">Paquete Fiscal</button>
+      <button class="info-app-btn" data-info="efirma">MsScan</button>
+      <button class="info-app-btn" data-info="efirma">MsBabelia</button>
+      <button class="info-app-btn" data-info="efirma">Despacho Completo</button>
+      <button class="info-app-btn" data-info="efirma">MsExpress</button>
     </div>
 
     <div class="info-content active" id="info-ejornada">
-      <h3>eJornada</h3>
+      <h3>ejornada</h3>
       <ul>
-        <li>Tarificación por número de trabajadores.</li>
-        <li>Usa tramos de precio según volumen.</li>
-        <li>Revisar condiciones especiales para grandes cuentas.</li>
+        <li>Bloque mínimo 5 trabajadores.</li>
+        <li>El número de trabajadores se corresponde con el número de trabajadores activos y como máximo 3 veces el número de trabajadores contratados.</li>
+        <li>Para las empresas con una alta fluctuación de trabajadores activos y con contratos temporales, existe una opción que solo se puede puede contratar
+          a partir de 50 trabajadores, y permite el triple de trabajadores (No continuos, sino se procederá a hacer una regularización en base a la media de trabajadores activos).
+          Esta modalidad debe ser autorizada La contratación de trabajadores extra se realiza al precio del bloque anterior</li>
       </ul>
     </div>
 
     <div class="info-content" id="info-efirma">
-      <h3>eFirma</h3>
+      <h3>efirmaGO</h3>
       <ul>
         <li>Tarificación por documentos anuales.</li>
-        <li>Algunos planes incluyen usuarios y SMS.</li>
+        <li>En las tarifas de pago mensual, la caducidad de los documentos no consumidos es mensual, en la anual 1 año.</li>
+        <li>El coste de los usuarios extras es a 9€/Mes ó 108€/año Coste sms: 0,09 €.</li>
+        <li>La API tiene un coste de mantenimiento de 800€ anuales, de momento tiene una bonificación del 100%. (Es gratis)</li>
+        <li>Esta tarifa NO incluye personalización de correos, ni almacenamiento web.</li>
         <li>Para volúmenes altos revisar tarifa concertada.</li>
+        <li>Consultar condiciones específicas para documentos generados con API (según desarrollador) Los desarradores que desen compartir sus documentos con sus clientes deberan adquirir una tarifa concertada y nunca una tarifa web.</li>
+        <li>efirmaGO + MsNómina - Los pagos se consideran a cuenta de una liquidación anual.Mínimo de 65€ para empresas de menos de 9 trabajadores. Por cada empresa gestionada hay un coste de 14€ año.</li>
       </ul>
     </div>
 
+    <div class="info-content" id="info-notifica">
+      <h3>MsNotifica y Certifácil</h3>
+      <ul>
+        <li>Licencia MsNotifica, buzón extra se factura a 0.25/mes mod. SaaS Es un pago por servicio</li>
+        <li>El precio de la licencia de Certifácil se corresponde a los gastos de activación. Es un pago por servicio. El mantenimiento incluye 3 usuarios.</li>
+      </ul>
+    </div>
+
+    <div class="info-content" id="info-gest">
+      <h3>MsGest</h3>
+      <ul>
+        <li>La licencia extra de MsGest a partir de 10, consultar precio.</li> 
+        <li>El precio de mantenimiento de los módulos activables de MsGest se cobra por el número de licencias de la aplicación principal, salvo el mantenimiento del TPV que se cobra por el número de equipos con TPV.</li>
+        <li>Las aplicaciones MsGest Soluziona con contrato de Mantenimiento vigentes generan movimientos contables via MsBabelia (sin coste).</li>
+        <li>Consultar las limitaciones de MsGest Soluziona. El módulo de Liquidaciones Fiscales para MsGest No incluye Impuesto de Sociedades ni Depósito de Cuentas.</li>
+      </ul>
+    </div>
+    
     <div class="info-content" id="info-nomina">
-      <h3>Nómina</h3>
+      <h3>MsNómina</h3>
       <ul>
-        <li>Introduce aquí las particularidades de Nómina.</li>
+        <li>(1) -MsNomina PYME: Modelo SAAS. Hasta 2 empresas y 50 trabajadores(600 nóminas/año).</li>
+        <li>-MsNomina PYME + : Modelo SAAS. Hasta 3 empresas y 80 trabajadores(960 nóminas/año). </li>
+        <li>* Empresas de más de 250 trabajadores o facturación de 6 millones de €. </li>
       </ul>
     </div>
 
-    <div class="info-content" id="info-portal">
-      <h3>Portal</h3>
+    <div class="info-content" id="info-conta">
+      <h3>MsConta</h3>
       <ul>
-        <li>Introduce aquí las particularidades de Portal.</li>
+        <li>Descuento del 25% en el mantenimiento de MsScan I para las empresas (No Asesores) que tienen contratado MsConta + MsPCI.</li>
+        <li>Modulo Incluido en los paquetes Fiscal 30, 60 e ilimitado.</li>
+        <li>El precio para los clientes que tienen contratado Tarifa Variable Fiscal es de 99€.</li>
+        <li>Aplicación por Servicio, solo activo mientras se tiene contratado. Una vez tramitada la baja se desactiva.</li>
+        <li>Clientes que tengan MsConta, MsConta + PCI y Modelos, el precio es de 327€ de mantenimiento, no tiene venta. Modulo SII incluye MsEos sin Cartera.</li>
       </ul>
     </div>
+
+    <div class="info-content" id="info-contrata">
+      <h3>MsContrata</h3>
+      <ul>
+        <li>Nómina + REA y Empresas Se aplica mismo precio para la tarifa PYME / PYME + y Pago por uso para asesores.</li>
+      </ul>
+    </div>
+
+    <div class="info-content" id="info-pqfiscal">
+      <h3>Paquete Fiscal</h3>
+      <ul>
+        <li>Todos los paquetes Fiscales incluyen MsMeos+MsConta+MsPCI+MsModelos y DC+IS en el limite establecido.</li>
+        <li>Paquete Fiscal Solo para empresas, para un grupo máximo de 5 empresas (Incluyendo Personas físicas).</li>
+        <li>Descuento del 50% en el servicio de MsScan en los Paquetes Fiscal Empresa.</li>
+        <li>Se fija una cuota mínima mensual de 36€ por cada paquete de programas. Instalación y Formación 300€ Por Paquete. En Laboral el coste es por contrato que tenga cada trabajador. </li>
+      </ul>
+    </div>
+
+    <div class="info-content" id="info-scan">
+      <h3>MsScan</h3>
+      <ul>
+        <li>El coste mínimo es de 332,00 Los documentos se adquieren en modalidad suscripción. Los documentos no consumidos en un año caducan </li>
+        <li>El producto MsScan en adquisición solo puede ser adquirido si se tiene algún paquete fiscal en modalidad SaaS.</li>
+      </ul>
+    </div>
+
+    <div class="info-content" id="info-babelia">
+      <h3>MsBabelia</h3>
+      <ul>
+        <li>MsBabelia no se cobra cuando el programa de origen de los datos este al corriente en el pago del Mantenimiento con Microdata.</li>
+        <li>MsBabelia no tendra coste para la importación en MsConta Empresa si el plugin ya existe.</li>
+        <li>** Hasta 10.000 doc: 0,050€ 10.001-25.000 doc: 0,045€ 25.001-40.000 doc: 0,040€ 40.001-50.000 doc: 0,035€ Coste mínimo MsScan II 360 €.</li>
+        <li>Cuando una empresa cliente (individualmente) alcanza los 10.000 documentos se facturará a razón de 150€ por cada tramo de 10.000 documentos.</li>
+      </ul>
+    </div>
+
+    <div class="info-content" id="info-despacho">
+      <h3>Despacho Completo</h3>
+      <ul>
+        <li>Todos los precios son mensuales.</li>
+        <li>El producto despacho ilimitado incluye: MsNóminas + SEA, Paquete Fiscal Ilimitado, MsScan Ilimitado y Sistema Avanzado.Pasado 2 años el precio mensual será de 469€.</li>
+        <li>El producto despacho Avanzado incluye: MsNóminas 100, Paquete Fiscal 30, MsScan 25.000 y Sistema Avanzado. Pasado 2 años el precio mensual será de 319€.</li>
+        <li>El producto despacho Emergente incluye: MsNóminas 100, Paquete Fiscal 10, MsScan 10.000 y Sistema Avanzado. Pasado 2 años el precio mensual será de 246€.</li>
+        <li>El producto MsScan en adquisición solo puede ser adquirido si se tiene algún paquete fiscal en modalidad SaaS.</li>
+      </ul>
+    </div>
+
+    <div class="info-content" id="info-express">
+      <h3>MsExpress</h3>
+      <ul>
+        <li>El coste de cada SMS es de 0,068.</li>
+      </ul>
+    </div>
+    
   </div>
 </div>
-  
   <script src="script.js"></script>
 </body>
 </html>
