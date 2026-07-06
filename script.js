@@ -2,34 +2,33 @@ const apps = {
   ejornada: {
     name: "eJornada",
     quantityLabel: "Nº de trabajadores",
-    mode: "closestBand",
+    mode: "workersNumber",
     tierKey: "workers",
     tierLabel: "trabajadores",
     billingOptions: [
-      { value: "annual", label: "Precio anual", field: "annual", period: "annual" },
-      { value: "monthly", label: "Equivalente mensual", field: "annual", period: "annualToMonthly" }
+      { value: "annual", label: "Precio anual", field: "annual", period: "annual" }
     ],
-    plans: ["Módulo Fichajes", "Fichajes + Ausencias"],
+    plans: ["Módulo Fichajes", "Fichajes + Ausencias", "Módulo Fichajes Mensual", "Fichajes + Ausencias Mensual"],
     tiers: [
-      { workers: 5, "Módulo Fichajes": 195.00, "Fichajes + Ausencias": 255.00 },
-      { workers: 10, "Módulo Fichajes": 240.00, "Fichajes + Ausencias": 315.00 },
-      { workers: 15, "Módulo Fichajes": 288.00, "Fichajes + Ausencias": 378.00 },
-      { workers: 20, "Módulo Fichajes": 336.00, "Fichajes + Ausencias": 441.00 },
-      { workers: 25, "Módulo Fichajes": 384.00, "Fichajes + Ausencias": 504.00 },
-      { workers: 30, "Módulo Fichajes": 408.00, "Fichajes + Ausencias": 535.50 },
-      { workers: 35, "Módulo Fichajes": 432.00, "Fichajes + Ausencias": 567.00 },
-      { workers: 40, "Módulo Fichajes": 456.00, "Fichajes + Ausencias": 598.50 },
-      { workers: 45, "Módulo Fichajes": 480.00, "Fichajes + Ausencias": 630.00 },
-      { workers: 50, "Módulo Fichajes": 504.00, "Fichajes + Ausencias": 660.00 },
-      { workers: 60, "Módulo Fichajes": 604.80, "Fichajes + Ausencias": 792.00 },
-      { workers: 70, "Módulo Fichajes": 705.60, "Fichajes + Ausencias": 924.00 },
-      { workers: 80, "Módulo Fichajes": 806.40, "Fichajes + Ausencias": 1056.00 },
-      { workers: 90, "Módulo Fichajes": 810.00, "Fichajes + Ausencias": 1080.00 },
-      { workers: 100, "Módulo Fichajes": 900.00, "Fichajes + Ausencias": 1200.00 },
-      { workers: 200, "Módulo Fichajes": 1680.00, "Fichajes + Ausencias": 2160.00 },
-      { workers: 500, "Módulo Fichajes": 3900.00, "Fichajes + Ausencias": 5100.00 },
-      { workers: 700, "Módulo Fichajes": 5040.00, "Fichajes + Ausencias": 6720.00 },
-      { workers: 1000, "Módulo Fichajes": 6000.00, "Fichajes + Ausencias": 9000.00 }
+      { workers: 5, "Módulo Fichajes": 195.00, "Fichajes + Ausencias": 255.00, "Módulo Fichajes Mensual": 19.00, "Fichajes + Ausencias Mensual": 24.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 10, "Módulo Fichajes": 240.00, "Fichajes + Ausencias": 315.00, "Módulo Fichajes Mensual": 22.00, "Fichajes + Ausencias Mensual": 29.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 15, "Módulo Fichajes": 288.00, "Fichajes + Ausencias": 378.00, "Módulo Fichajes Mensual": 27.00, "Fichajes + Ausencias Mensual": 35.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 20, "Módulo Fichajes": 336.00, "Fichajes + Ausencias": 441.00, "Módulo Fichajes Mensual": 31.00, "Fichajes + Ausencias Mensual": 41.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 25, "Módulo Fichajes": 384.00, "Fichajes + Ausencias": 504.00, "Módulo Fichajes Mensual": 36.00, "Fichajes + Ausencias Mensual": 46.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 30, "Módulo Fichajes": 408.00, "Fichajes + Ausencias": 535.50, "Módulo Fichajes Mensual": 38.00, "Fichajes + Ausencias Mensual": 49.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 35, "Módulo Fichajes": 432.00, "Fichajes + Ausencias": 567.00, "Módulo Fichajes Mensual": 40.00, "Fichajes + Ausencias Mensual": 52.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 40, "Módulo Fichajes": 456.00, "Fichajes + Ausencias": 598.50, "Módulo Fichajes Mensual": 42.00, "Fichajes + Ausencias Mensual": 55.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 45, "Módulo Fichajes": 480.00, "Fichajes + Ausencias": 630.00, "Módulo Fichajes Mensual": 44.00, "Fichajes + Ausencias Mensual": 58.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 50, "Módulo Fichajes": 504.00, "Fichajes + Ausencias": 660.00, "Módulo Fichajes Mensual": 46.00, "Fichajes + Ausencias Mensual": 61.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 60, "Módulo Fichajes": 604.80, "Fichajes + Ausencias": 792.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 70, "Módulo Fichajes": 705.60, "Fichajes + Ausencias": 924.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 80, "Módulo Fichajes": 806.40, "Fichajes + Ausencias": 1056.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 90, "Módulo Fichajes": 810.00, "Fichajes + Ausencias": 1080.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
+      { workers: 100, "Módulo Fichajes": 900.00, "Fichajes + Ausencias": 1200.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 9.00, workerExtraFA: 12.00 },
+      { workers: 200, "Módulo Fichajes": 1680.00, "Fichajes + Ausencias": 2160.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 8.40, workerExtraFA: 10.80 },
+      { workers: 500, "Módulo Fichajes": 3900.00, "Fichajes + Ausencias": 5100.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 7.80, workerExtraFA: 10.20 },
+      { workers: 700, "Módulo Fichajes": 5040.00, "Fichajes + Ausencias": 6720.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 7.20, workerExtraFA: 9.60 },
+      { workers: 1000, "Módulo Fichajes": 6000.00, "Fichajes + Ausencias": 9000.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 6.00, workerExtraFA: 9.00 }
     ]
   },
 
@@ -46,10 +45,10 @@ const apps = {
     ],
     plans: ["Tarifa"],
     tiers: [
-      { mailboxes: 50, price: 518, maintenance: 441, userExtra: 66, saas: 40 },
-      { mailboxes: 100, price: 842, maintenance: 537, userExtra: 80, saas: 50 },
-      { mailboxes: 250, price: 842, maintenance: 1017, userExtra: 150, saas: 90 },
-      { mailboxes: 500, price: 842, maintenance: 1377, userExtra: 191, saas: 120 }
+      { mailboxes: 50, price: 518, maintenance: 441, userExtra: 66, saas: 40, mailboxExtra: 0.24 },
+      { mailboxes: 100, price: 842, maintenance: 537, userExtra: 80, saas: 50, mailboxExtra: 0.24 },
+      { mailboxes: 250, price: 842, maintenance: 1017, userExtra: 150, saas: 90, mailboxExtra: 0.24 },
+      { mailboxes: 500, price: 842, maintenance: 1377, userExtra: 191, saas: 120, mailboxExtra: 0.24 }
     ]
   },
 
@@ -418,13 +417,15 @@ const els = {
   summaryMonthly: document.getElementById("summaryMonthly"),
   summaryAnnual: document.getElementById("summaryAnnual"),
   copyButton: document.getElementById("copyButton"),
-  extraUsersInput: document.getElementById("extraUsersInput"),
-  cloudSelect: document.getElementById("cloudSelect"),
-  cloudField: document.getElementById("cloudField")
+  extraUsersInput: document.getElementById("usersInput"),
+  selectBuzones: document.getElementById("selectBuzones")
+  /*cloudSelect: document.getElementById("cloudSelect"),
+  cloudField: document.getElementById("cloudField")*/
 };
 
 
 const crtFcl = document.getElementById("crtFcl");
+const extraUsersLabel = document.getElementById("extraUsersLabel");
 const addCertifacil = document.getElementById("addCF");
 const usersCFExtra = document.getElementById("usersCertiFExtra");
 const usersExtra = document.getElementById("userExtra");
@@ -451,31 +452,29 @@ addCertifacil.addEventListener("change", () => {
     });
 
 function updateExtraFields() {
+  cargarSelectBuzones();
+  cambiarBuzonesMsNotifica();
+  switch (els.appSelect.value) {
+    case "ejornada":
+      extraUsersLabel.classList.contains("hidden") ? null : extraUsersLabel.classList.add("hidden");
+      break;  
+    case "msnotifica":
+      crtFcl.classList.remove("hidden");
+      extraUsersLabel.classList.remove("hidden");
+      // Si además se ha elegido Cloud...
+      /*if (els.billingSelect.value === "cloud") {
+          els.cloudField.classList.remove("hidden");
+      }*/
+      break;
 
-    crtFcl.classList.add("hidden");
-    els.cloudField.classList.add("hidden");
-    //otroCampo.classList.add("hidden");
-    //otroMas.classList.add("hidden");
+    /*case "msnomina":
+        otroCampo.classList.remove("hidden");
+        break;*/
 
-    switch (els.appSelect.value) {
-
-        case "msnotifica":
-            // Mostrar bloque de opciones MsNotifica
-            crtFcl.classList.remove("hidden");
-            // Si además se ha elegido Cloud...
-            if (els.billingSelect.value === "cloud") {
-                els.cloudField.classList.remove("hidden");
-            }
-            break;
-
-        /*case "msnomina":
-            otroCampo.classList.remove("hidden");
-            break;*/
-
-        /*case "efirma":
-            otroMas.classList.remove("hidden");
-            break;*/
-    }
+    case "efirma":
+      extraUsersLabel.classList.remove("hidden");
+      break;
+  }
 }
 
 const infoButton = document.getElementById("infoButton");
@@ -553,6 +552,8 @@ function init() {
   els.planSelect.addEventListener("change", calculate);
   els.quantityInput.addEventListener("input", calculate);
   els.billingSelect.addEventListener("change", calculate);
+  els.extraUsersInput.addEventListener("change", calculate);
+  els.selectBuzones.addEventListener("change", cambiarBuzonesMsNotifica);
   if (els.copyButton) els.copyButton.addEventListener("click", copySummary);
 
   refreshPlans();
@@ -577,10 +578,103 @@ function refreshPlans() {
     els.billingSelect.appendChild(option);
   });
 
+  updateExtraFields();
+
   els.quantityLabel.textContent = app.quantityLabel;
   els.summaryQuantityLabel.textContent = app.quantityLabel;
   els.billingField.style.display = (app.billingOptions || []).length > 1 ? "block" : "none";
   els.quantityInput.value = app.mode === "capacityPlan" ? 360 : 1;
+}
+
+function cargarSelectBuzones() {
+  crtFcl.classList.contains("hidden") ? null : crtFcl.classList.add("hidden");
+  if (els.selectBuzones.options.length > 0) return;
+  els.selectBuzones.innerHTML = "";
+
+  apps.msnotifica.tiers.forEach(tier => {
+    const option = document.createElement("option");
+    option.value = tier.mailboxes;
+    option.textContent = tier.mailboxes === 500 ? "500 o más" : tier.mailboxes;
+    els.selectBuzones.appendChild(option);
+  });
+
+  els.selectBuzones.style.display = "block";
+  els.quantityInput.style.display = "none";
+}
+
+function cambiarBuzonesMsNotifica() {
+  const app = apps[els.appSelect.value];
+  if (app.mode !== "msnotifica" || (app.mode === "msnotifica" && els.selectBuzones.style.display === "none") ) {
+    els.selectBuzones.style.display = "none";
+    els.quantityInput.style.display = "block";
+    return;
+  } ;
+  const valorSelect = Number(els.selectBuzones.value);
+  const valorInput = Number(els.quantityInput.value || 0);
+
+  if (valorSelect === 500 && els.selectBuzones.style.display !== "none") {
+    els.selectBuzones.style.display = "none";
+    els.quantityInput.style.display = "block";
+    els.quantityInput.step = 1;
+    els.quantityInput.value = 500;
+    calculate();
+    return;
+  }
+
+  if (els.quantityInput.style.display !== "none" && valorInput < 500) {
+    els.quantityInput.style.display = "none";
+    els.selectBuzones.style.display = "block";
+    els.selectBuzones.value = "250";
+    calculate();
+    return;
+  }
+
+  if (els.selectBuzones.style.display !== "none") {
+    els.quantityInput.value = valorSelect;
+  }
+}
+
+function calcLicenciasExtra(quantity, baseQuantity, unitPrice) {
+    if (quantity <= baseQuantity) return 0;
+
+    return (quantity - baseQuantity) * unitPrice;
+}
+
+function calcularTrabajadores(ejornada, quantity, plan) {
+  let precio = 0;
+
+    if ((plan === "Módulo Fichajes" || plan === "Fichajes + Ausencias") && quantity > 100) {
+      switch (true) {
+        case quantity > 100 && quantity < 200:
+          precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 100));
+          break;
+        case quantity > 200 && quantity < 500:
+          precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 200));
+          break;
+        case quantity > 500 && quantity < 700:
+          precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 500));
+          break;
+        case quantity > 700 && quantity < 1000:
+          precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 700));
+          break;
+        default:
+          precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 1000));
+          break;
+      }
+      
+    } else {
+      precio = ejornada[plan];
+    }
+    return precio;
+}
+
+function calcExtraUsers (extraUsers, annual, tier) {
+  if (extraUsers > 0) {
+      annual += (tier.userExtra * extraUsers);
+  }
+
+  return annual;
+
 }
 
 function calculate() {
@@ -588,12 +682,26 @@ function calculate() {
   const plan = els.planSelect.value;
   const quantity = Math.max(1, Number(els.quantityInput.value || 1));
   const billing = selectedBilling(app);
-  const mant = els.summaryMant;
+  const nBuzones = Number(els.selectBuzones.value || 0);
+  let mant = 0;
   let monthly = 0;
   let annual = 0;
   let main = 0;
   let subtitle = "";
   let notice = "";
+
+  if (app.mode === "workersNumber") {
+    const tierKey = app.tierKey;
+    const tier = app.tiers.find(t => quantity <= t[tierKey]) || app.tiers[app.tiers.length - 1];
+    main = calcularTrabajadores(tier, quantity, plan);
+    annual = plan === "Módulo Fichajes" || plan === "Fichajes + Ausencias" ? main : main * 12;
+    monthly = plan === "Módulo Fichajes Mensual" || plan === "Fichajes + Ausencias Mensual" ? main : main / 12;
+    const tierText = tier.label || formatNumber(tier[tierKey]);
+    subtitle = `${billing.label} · tramo hasta ${quantity>100 ? quantity : tierText} ${app.tierLabel}.`;
+    notice = quantity > tier[tierKey] && Number.isFinite(tier[tierKey])
+      ? `La tabla llega hasta ${formatNumber(tier[tierKey])} ${app.tierLabel}. Revisa manualmente importes superiores.`
+      : `Se ha usado el tramo de ${tierText} ${app.tierLabel}.`;
+  }
 
   if (app.mode === "closestBand") {
     const tierKey = app.tierKey;
@@ -662,49 +770,74 @@ function calculate() {
   if (app.mode === "msnotifica") {
     const tier = app.tiers.find(t => quantity <= t.mailboxes) || app.tiers[app.tiers.length - 1];
     const billingMode = els.billingSelect.value;
+    mant = tier.maintenance || 0;
 
+    const mailBox = app.tiers.find(t => quantity <= t.mailboxes) || app.tiers[app.tiers.length - 1];
+
+    const mailboxTier = calcLicenciasExtra(
+        quantity,
+        tier.mailboxes,
+        tier.mailboxExtra
+    );
+    
     const extraUsers = Number(els.extraUsersInput?.value || 0);
     const extraUsersAnnual = extraUsers * (tier.userExtra || 0);
     const extraUsersMonthly = extraUsersAnnual / 12;
 
-    const cloudPrice = Number(els.cloudSelect?.value || 0);
-    const cloudSetup = 300;
+    /*const cloudPrice = Number(els.cloudSelect?.value || 0);
+    const cloudSetup = 300;*/
+
+    let uExtra = 0;
+
+    if (extraUsers !== 0){
+        uExtra = calcExtraUsers (extraUsers, annual, tier);
+        annual = uExtra;
+    }
 
     if (billingMode === "compra") {
-      annual = tier.price + tier.maintenance + extraUsersAnnual;
+      mant = tier.maintenance || 0;
+
+      annual += tier.price + mant + mailboxTier;
       monthly = annual / 12;
       main = annual;
-      mant = tier.maintenance;
 
-      subtitle = `Compra · licencia ${euros(tier.price)} + mantenimiento ${euros(tier.maintenance)}.`;
+      if (uExtra == 0){
+        subtitle = `Compra · licencia ${euros(tier.price)} + mantenimiento ${euros(mant)} + buzones extra ${euros(mailboxTier)}.`;
+      } else {
+        subtitle = `Compra · licencia ${euros(tier.price)} + mantenimiento ${euros(mant)} + usuario extra ${euros(uExtra)} + buzones extra ${euros(mailboxTier)}.`;
+      }
     }
 
     if (billingMode === "saas") {
-      monthly = tier.saas + extraUsersMonthly;
+      monthly = tier.saas + extraUsersMonthly + mailboxTier;
       annual = monthly * 12;
       main = monthly;
 
       subtitle = `SaaS · cuota mensual ${euros(tier.saas)}.`;
     }
 
-    if (billingMode === "cloud") {
+    /*if (billingMode === "cloud") {
       monthly = tier.saas + cloudPrice + extraUsersMonthly;
       annual = monthly * 12 + cloudSetup;
       main = monthly;
 
       subtitle = `Cloud · SaaS ${euros(tier.saas)} + cloud ${euros(cloudPrice)} + puesta en funcionamiento ${euros(cloudSetup)}.`;
-    }
+    }*/
 
     notice = `Se ha usado el tramo de ${tier.mailboxes} buzones.`;
   }
-
   els.noticeBox.textContent = notice;
   els.noticeBox.classList.toggle("visible", Boolean(notice));
   els.mainResult.textContent = euros(main);
   els.resultSubtitle.textContent = subtitle;
   els.summaryApp.textContent = app.name;
   els.summaryPlan.textContent = plan;
-  els.summaryMant.textContent = mant;
+  if (mant > 0) {
+      els.summaryMant.textContent = euros(mant);
+      els.summaryMant.parentElement.classList.remove("hidden");
+  } else {
+      els.summaryMant.parentElement.classList.add("hidden");
+  }
   els.summaryQuantity.textContent = quantity.toLocaleString("es-ES");
   els.summaryMonthly.textContent = monthly ? euros(monthly) : "-";
   els.summaryAnnual.textContent = annual ? euros(annual) : "-";

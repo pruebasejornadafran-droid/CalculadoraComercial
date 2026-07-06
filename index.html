@@ -37,6 +37,7 @@
         <label class="field">
           <span id="quantityLabel">Cantidad</span>
           <input id="quantityInput" type="number" min="1" step="1" value="5" />
+          <select id="selectBuzones" style="display: none;"></select>
         </label>
 
         <label class="field" id="billingField">
@@ -48,7 +49,7 @@
         </label>
       </div>
       <div class="grid two">
-       <label class="field">
+       <label id="extraUsersLabel" class="field hidden">
           <span id="extraUsers">Usuarios extra</span>
           <input id="usersInput" type="number" min="0" step="1" value="0" />
         </label>
