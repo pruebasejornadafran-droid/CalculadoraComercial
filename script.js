@@ -36,21 +36,20 @@ const apps = {
   msnotifica: {
     name: "MsNotifica",
     quantityLabel: "Nº de buzones",
-    mode: "closestBand",
+    mode: "msnotifica",
     tierKey: "mailboxes",
     tierLabel: "buzones",
     billingOptions: [
-      { value: "price", label: "Precio licencia", field: "price", period: "annual" },
-      { value: "maintenance", label: "Mantenimiento", field: "maintenance", period: "annual" },
-      { value: "userExtra", label: "Usuario extra", field: "userExtra", period: "annual" },
-      { value: "saas", label: "SaaS 5 usuarios", field: "saas", period: "monthly" }
+      { value: "compra", label: "Compra" },
+      { value: "saas", label: "SaaS" },
+      { value: "cloud", label: "Cloud" }
     ],
     plans: ["Tarifa"],
     tiers: [
-      { mailboxes: 50, Tarifa: 518.00, price: 518.00, maintenance: 441.00, userExtra: 66.00, saas: 40.00 },
-      { mailboxes: 100, Tarifa: 842.00, price: 842.00, maintenance: 537.00, userExtra: 80.00, saas: 50.00 },
-      { mailboxes: 250, Tarifa: 842.00, price: 842.00, maintenance: 1017.00, userExtra: 150.00, saas: 90.00 },
-      { mailboxes: 500, Tarifa: 842.00, price: 842.00, maintenance: 1377.00, userExtra: 191.00, saas: 120.00 }
+      { mailboxes: 50, price: 518, maintenance: 441, userExtra: 66, saas: 40 },
+      { mailboxes: 100, price: 842, maintenance: 537, userExtra: 80, saas: 50 },
+      { mailboxes: 250, price: 842, maintenance: 1017, userExtra: 150, saas: 90 },
+      { mailboxes: 500, price: 842, maintenance: 1377, userExtra: 191, saas: 120 }
     ]
   },
 
@@ -413,11 +412,15 @@ const els = {
   resultSubtitle: document.getElementById("resultSubtitle"),
   summaryApp: document.getElementById("summaryApp"),
   summaryPlan: document.getElementById("summaryPlan"),
+  summaryMant: document.getElementById("summaryMant"),
   summaryQuantityLabel: document.getElementById("summaryQuantityLabel"),
   summaryQuantity: document.getElementById("summaryQuantity"),
   summaryMonthly: document.getElementById("summaryMonthly"),
   summaryAnnual: document.getElementById("summaryAnnual"),
-  copyButton: document.getElementById("copyButton")
+  copyButton: document.getElementById("copyButton"),
+  extraUsersInput: document.getElementById("extraUsersInput"),
+  cloudSelect: document.getElementById("cloudSelect"),
+  cloudField: document.getElementById("cloudField")
 };
 
 
@@ -450,13 +453,19 @@ addCertifacil.addEventListener("change", () => {
 function updateExtraFields() {
 
     crtFcl.classList.add("hidden");
+    els.cloudField.classList.add("hidden");
     //otroCampo.classList.add("hidden");
     //otroMas.classList.add("hidden");
 
     switch (els.appSelect.value) {
 
         case "msnotifica":
+            // Mostrar bloque de opciones MsNotifica
             crtFcl.classList.remove("hidden");
+            // Si además se ha elegido Cloud...
+            if (els.billingSelect.value === "cloud") {
+                els.cloudField.classList.remove("hidden");
+            }
             break;
 
         /*case "msnomina":
@@ -579,6 +588,7 @@ function calculate() {
   const plan = els.planSelect.value;
   const quantity = Math.max(1, Number(els.quantityInput.value || 1));
   const billing = selectedBilling(app);
+  const mant = els.summaryMant;
   let monthly = 0;
   let annual = 0;
   let main = 0;
@@ -649,12 +659,52 @@ function calculate() {
     }
   }
 
+  if (app.mode === "msnotifica") {
+    const tier = app.tiers.find(t => quantity <= t.mailboxes) || app.tiers[app.tiers.length - 1];
+    const billingMode = els.billingSelect.value;
+
+    const extraUsers = Number(els.extraUsersInput?.value || 0);
+    const extraUsersAnnual = extraUsers * (tier.userExtra || 0);
+    const extraUsersMonthly = extraUsersAnnual / 12;
+
+    const cloudPrice = Number(els.cloudSelect?.value || 0);
+    const cloudSetup = 300;
+
+    if (billingMode === "compra") {
+      annual = tier.price + tier.maintenance + extraUsersAnnual;
+      monthly = annual / 12;
+      main = annual;
+      mant = tier.maintenance;
+
+      subtitle = `Compra · licencia ${euros(tier.price)} + mantenimiento ${euros(tier.maintenance)}.`;
+    }
+
+    if (billingMode === "saas") {
+      monthly = tier.saas + extraUsersMonthly;
+      annual = monthly * 12;
+      main = monthly;
+
+      subtitle = `SaaS · cuota mensual ${euros(tier.saas)}.`;
+    }
+
+    if (billingMode === "cloud") {
+      monthly = tier.saas + cloudPrice + extraUsersMonthly;
+      annual = monthly * 12 + cloudSetup;
+      main = monthly;
+
+      subtitle = `Cloud · SaaS ${euros(tier.saas)} + cloud ${euros(cloudPrice)} + puesta en funcionamiento ${euros(cloudSetup)}.`;
+    }
+
+    notice = `Se ha usado el tramo de ${tier.mailboxes} buzones.`;
+  }
+
   els.noticeBox.textContent = notice;
   els.noticeBox.classList.toggle("visible", Boolean(notice));
   els.mainResult.textContent = euros(main);
   els.resultSubtitle.textContent = subtitle;
   els.summaryApp.textContent = app.name;
   els.summaryPlan.textContent = plan;
+  els.summaryMant.textContent = mant;
   els.summaryQuantity.textContent = quantity.toLocaleString("es-ES");
   els.summaryMonthly.textContent = monthly ? euros(monthly) : "-";
   els.summaryAnnual.textContent = annual ? euros(annual) : "-";
