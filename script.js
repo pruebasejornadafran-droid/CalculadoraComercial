@@ -57,20 +57,20 @@ const apps = {
     quantityLabel: "Nº de documentos al año",
     mode: "capacityPlan",
     billingOptions: [
-      { value: "monthly", label: "Mensual", field: "monthly", period: "monthly" },
-      { value: "annual", label: "Anual", field: "annual", period: "annual" }
+      { value: "annual", label: "Anual", field: "annual", period: "annual" },
+      { value: "monthly", label: "Mensual", field: "monthly", period: "monthly" }
     ],
     plans: ["Personal", "Professional", "Business", "Business Plus", "Concertada"],
     tiers: [
-      { plan: "Personal", docsYear: 60, users: 1, smsYear: 24, monthly: 10.80, annual: 108.00 },
-      { plan: "Professional", docsYear: 360, users: 3, smsYear: 36, monthly: 22.80, annual: 228.00 },
-      { plan: "Business", docsYear: 1200, users: 5, smsYear: 120, monthly: 34.80, annual: 348.00 },
-      { plan: "Business Plus", docsYear: 3000, users: 8, smsYear: 300, monthly: 68.40, annual: 684.00 },
-      { plan: "Concertada", docsYear: 5000, users: 10, smsYear: 500, monthly: 91.20, annual: 912.00 },
-      { plan: "Concertada", docsYear: 12500, users: 10, smsYear: 1250, monthly: 218.40, annual: 2184.00 },
-      { plan: "Concertada", docsYear: 25000, users: 10, smsYear: 2500, monthly: 414.00, annual: 4140.00 },
-      { plan: "Concertada", docsYear: 50000, users: 30, smsYear: 5000, monthly: 792.00, annual: 7920.00 },
-      { plan: "Concertada", docsYear: 100000, users: 30, smsYear: 10000, monthly: 1500.00, annual: 15000.00 }
+      { plan: "Personal", docsYear: 60, users: 1, smsYear: 24, monthly: 10.80, annual: 108.00, extraDocs: 0.0, userExtra: 108.00 },
+      { plan: "Professional", docsYear: 360, users: 3, smsYear: 36, monthly: 22.80, annual: 228.00, extraDocs: 0.0, userExtra: 108.00 },
+      { plan: "Business", docsYear: 1200, users: 5, smsYear: 120, monthly: 34.80, annual: 348.00, extraDocs: 0.0, userExtra: 108.00 },
+      { plan: "Business Plus", docsYear: 3000, users: 8, smsYear: 300, monthly: 68.40, annual: 684.00, extraDocs: 0.0, userExtra: 108.00 },
+      { plan: "Concertada", docsYear: 5000, users: 10, smsYear: 500, monthly: 91.20, annual: 912.00, extraDocs: 0.1824, userExtra: 108.00 },
+      { plan: "Concertada", docsYear: 12500, users: 10, smsYear: 1250, monthly: 218.40, annual: 2184.00, extraDocs: 0.1747, userExtra: 108.00 },
+      { plan: "Concertada", docsYear: 25000, users: 10, smsYear: 2500, monthly: 414.00, annual: 4140.00, extraDocs: 0.1656, userExtra: 108.00 },
+      { plan: "Concertada", docsYear: 50000, users: 30, smsYear: 5000, monthly: 792.00, annual: 7920.00, extraDocs: 0.1584, userExtra: 108.00 },
+      { plan: "Concertada", docsYear: 100000, users: 30, smsYear: 10000, monthly: 1500.00, annual: 15000.00, extraDocs: 0.15, userExtra: 108.00}
     ]
   },
 
@@ -99,11 +99,10 @@ const apps = {
     name: "Certifácil",
     quantityLabel: "Cantidad",
     mode: "catalog",
-    plans: ["Activación licencia", "Usuario extra"],
-    billingOptions: [{ value: "price", label: "Precio", field: "price", period: "annual" }],
+    plans: ["Activación licencia"],
+    billingOptions: [{ value: "price", label: "Compra", field: "price", period: "annual" }],
     items: [
-      { plan: "Activación licencia", price: 50.00 },
-      { plan: "Usuario extra", price: 5.00 }
+      { plan: "Activación licencia", price: 50.00 }
     ]
   },
 
@@ -113,9 +112,7 @@ const apps = {
     mode: "catalog",
     plans: ["MsNomina PYME", "MsNomina PYME +", "MsNomina hasta 100 trab", "MsNomina", "MsNomina + S.E.A.", "MsNomina solo S.E.A.", "MsNomina gran empresa", "Informes Avanzados de MsNómina"],
     billingOptions: [
-      { value: "price", label: "Precio", field: "price", period: "annual" },
-      { value: "maintenance", label: "Mant. 4 usuarios", field: "maintenance", period: "annual" },
-      { value: "userExtra", label: "Usuario extra", field: "userExtra", period: "annual" },
+      { value: "price", label: "Compra", field: "price", period: "annual" },
       { value: "saas", label: "SaaS 4 usuarios", field: "saas", period: "monthly" }
     ],
     items: [
@@ -146,13 +143,12 @@ const apps = {
   msgest: {
     name: "MsGest",
     quantityLabel: "Nº de licencias",
-    mode: "closestBand",
+    mode: "msgest",
     tierKey: "licenses",
     tierLabel: "licencias",
     billingOptions: [
-      { value: "price", label: "Precio", field: "price", period: "annual" },
-      { value: "maintenance", label: "Mantenimiento", field: "maintenance", period: "annual" },
-      { value: "maintenanceMsConta", label: "Mant. con MsConta", field: "maintenanceMsConta", period: "annual" },
+      { value: "price", label: "MsGest", field: "price", period: "annual" },
+      { value: "maintenanceMsConta", label: "MsGest + MsConta", field: "maintenanceMsConta", period: "annual" },
       { value: "saas", label: "SaaS", field: "saas", period: "monthly" },
       { value: "saasMsConta", label: "SaaS con MsConta", field: "saasMsConta", period: "monthly" }
     ],
@@ -177,8 +173,7 @@ const apps = {
     mode: "catalog",
     plans: ["MsGest Soluziona Básico", "MsGest Sect. + Tesorería", "MsGest Sect. + MsConta", "Módulo Liquidaciones Fiscales"],
     billingOptions: [
-      { value: "price", label: "Precio", field: "price", period: "annual" },
-      { value: "maintenance", label: "Mant. 1 puesto", field: "maintenance", period: "annual" },
+      { value: "price", label: "Anual", field: "price", period: "annual" },
       { value: "saas", label: "SaaS 1 usuario", field: "saas", period: "monthly" }
     ],
     items: [
@@ -192,14 +187,14 @@ const apps = {
   msgest_modulos: {
     name: "Módulos Activables MsGest",
     quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["Obras", "Trazabilidad", "Fabricación", "Tallas y Colores", "Medidas", "Series", "Envases Avanzado", "TPV", "Conector Prestashop", "SINLI", "Partes de Trabajo (Talleres)", "Fitosanitarios"],
+    mode: "modules",
+    tierKey: "plan",
+    plans: ["Obras", "Trazabilidad", "Fabricación", "Tallas y Colores", "Medidas", "Series", "Envases Avanzado", "TPV", "Partes de Trabajo"],
     billingOptions: [
-      { value: "price", label: "Precio", field: "price", period: "annual" },
-      { value: "maintenance", label: "Mant. usuario", field: "maintenance", period: "annual" },
+      { value: "price", label: "Anual", field: "price", period: "annual" },
       { value: "saas", label: "SaaS", field: "saas", period: "monthly" }
     ],
-    items: [
+    tiers: [
       { plan: "Obras", price: 450.00, maintenance: 55.00, saas: 7.00 },
       { plan: "Trazabilidad", price: 450.00, maintenance: 55.00, saas: 7.00 },
       { plan: "Fabricación", price: 450.00, maintenance: 55.00, saas: 7.00 },
@@ -208,10 +203,7 @@ const apps = {
       { plan: "Series", price: 250.00, maintenance: 31.00, saas: 4.00 },
       { plan: "Envases Avanzado", price: 250.00, maintenance: 31.00, saas: 4.00 },
       { plan: "TPV", price: 350.00, maintenance: 42.00, saas: 6.00 },
-      { plan: "Conector Prestashop", price: 250.00, maintenance: 31.00, saas: 4.00 },
-      { plan: "SINLI", price: 400.00, maintenance: 47.00, saas: 6.00 },
-      { plan: "Partes de Trabajo (Talleres)", price: 300.00, maintenance: 37.00, saas: 5.00 },
-      { plan: "Fitosanitarios", price: 300.00, maintenance: 37.00, saas: 5.00 }
+      { plan: "Partes de Trabajo", price: 300.00, maintenance: 37.00, saas: 5.00 }
     ]
   },
 
@@ -221,9 +213,8 @@ const apps = {
     mode: "catalog",
     plans: ["MSregistro (Mseos)", "MSconta", "MSconta + Mspci", "Msconta + Mseos + Mspci Asesor", "Módulo Análisis de Balances", "MsSII"],
     billingOptions: [
-      { value: "price", label: "Precio", field: "price", period: "annual" },
+      { value: "price", label: "Compra", field: "price", period: "annual" },
       { value: "maintenance", label: "Mant. 5 usuarios", field: "maintenance", period: "annual" },
-      { value: "userExtra", label: "Usuario extra", field: "userExtra", period: "annual" },
       { value: "saas", label: "SaaS 5 usuarios", field: "saas", period: "monthly" }
     ],
     items: [
@@ -242,9 +233,8 @@ const apps = {
     mode: "catalog",
     plans: ["MsModelos", "MsModelos + Imp Soc. + Ctas Anuales", "Impuesto Soc. + Ctas. Anuales"],
     billingOptions: [
-      { value: "price", label: "Precio", field: "price", period: "annual" },
+      { value: "price", label: "Compra", field: "price", period: "annual" },
       { value: "maintenance", label: "Mant. 5 usuarios", field: "maintenance", period: "annual" },
-      { value: "userExtra", label: "Usuario extra", field: "userExtra", period: "annual" },
       { value: "saas", label: "SaaS 5 usuarios", field: "saas", period: "monthly" }
     ],
     items: [
@@ -260,9 +250,8 @@ const apps = {
     mode: "catalog",
     plans: ["Mseos + Msmod + Mspci", "Paquete Fiscal Empresa Sin Sociedades", "Paquete Fiscal Empresa", "Paquete Fiscal 10 Sociedades", "Paquete Fiscal 30 Sociedades", "Paquete Fiscal 60 Sociedades", "Paquete Fiscal Ilimitado"],
     billingOptions: [
-      { value: "price", label: "Precio", field: "price", period: "annual" },
+      { value: "price", label: "Compra", field: "price", period: "annual" },
       { value: "maintenance", label: "Mant. 5 usuarios", field: "maintenance", period: "annual" },
-      { value: "userExtra", label: "Usuario extra", field: "userExtra", period: "annual" },
       { value: "saas", label: "SaaS 5 usuarios", field: "saas", period: "monthly" }
     ],
     items: [
@@ -282,22 +271,10 @@ const apps = {
     mode: "catalog",
     plans: ["MsRenta Multi"],
     billingOptions: [
-      { value: "price", label: "Precio", field: "price", period: "annual" },
+      { value: "price", label: "Compra", field: "price", period: "annual" },
       { value: "maintenance", label: "Mantenimiento", field: "maintenance", period: "annual" }
     ],
     items: [{ plan: "MsRenta Multi", price: 740.00, maintenance: 584.00 }]
-  },
-
-  msscan: {
-    name: "MsScan",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["Archivo Documental + MsScan Empresa", "Archivo Documental + MsScan ASESOR"],
-    billingOptions: [{ value: "maintenance", label: "Mantenimiento", field: "maintenance", period: "annual" }],
-    items: [
-      { plan: "Archivo Documental + MsScan Empresa", maintenance: 253.00 },
-      { plan: "Archivo Documental + MsScan ASESOR", maintenance: 333.00 }
-    ]
   },
 
   msscan_ocr: {
@@ -376,7 +353,6 @@ const apps = {
     plans: ["Con MsNotifica", "Con MsNomina"],
     billingOptions: [
       { value: "maintenance", label: "Mant. 3 usuarios", field: "maintenance", period: "annual" },
-      { value: "userExtra", label: "Usuario extra", field: "userExtra", period: "annual" },
       { value: "saas", label: "SaaS 5 usuarios", field: "saas", period: "monthly" }
     ],
     items: [
@@ -418,61 +394,93 @@ const els = {
   summaryAnnual: document.getElementById("summaryAnnual"),
   copyButton: document.getElementById("copyButton"),
   extraUsersInput: document.getElementById("usersInput"),
-  selectBuzones: document.getElementById("selectBuzones")
+  selectBuzones: document.getElementById("selectBuzones"),
+  selectMdlGest: document.getElementById("gestModules")
   /*cloudSelect: document.getElementById("cloudSelect"),
   cloudField: document.getElementById("cloudField")*/
 };
 
 
-const crtFcl = document.getElementById("crtFcl");
+const extra = document.getElementById("extraMdl");
 const extraUsersLabel = document.getElementById("extraUsersLabel");
-const addCertifacil = document.getElementById("addCF");
+const addModl = document.getElementById("addModl");
+const module = document.getElementById("modulo");
+const extraModule = document.getElementById("extraModule");
 const usersCFExtra = document.getElementById("usersCertiFExtra");
+const moduleGestExtra = document.getElementById("moduleGestExtra");
 const usersExtra = document.getElementById("userExtra");
 const uExtra = document.getElementById("usersCFExtra");
 
-addCertifacil.addEventListener("change", () => {
+addModl.addEventListener("change", () => {
+  addModulesExtraApp();
+  calculate();
+});
 
-      if (addCertifacil.checked) {
-            usersCFExtra.classList.remove("hidden");
-            usersCFExtra.classList.add("doble");
-        } else {
-            usersCFExtra.classList.add("hidden");
-            usersCFExtra.classList.remove("doble");
-        }
-    });
+els.selectMdlGest.addEventListener ("change", () => {
+  calculate();
+});
 
-    usersExtra.addEventListener("change", () => {
+usersExtra.addEventListener("change", () => {
+  if (usersExtra.checked) {
+        uExtra.classList.remove("hidden");
+    } else {
+        uExtra.classList.add("hidden");
+    }
+});
 
-      if (usersExtra.checked) {
-            uExtra.classList.remove("hidden");
-        } else {
-            uExtra.classList.add("hidden");
-        }
-    });
+function addModulesExtraApp() {
+  switch (els.appSelect.value) {
+    case "msgest":
+      if (addModl.checked) {
+        moduleGestExtra.classList.remove("hidden");
+        cargarSelectModulos();
+      } else {
+        moduleGestExtra.classList.add("hidden");
+      }
+      break;
+    case "msnotifica":
+      if (addModl.checked) {
+        usersCFExtra.classList.remove("hidden");
+        usersCFExtra.classList.add("doble");
+      } else {
+          usersCFExtra.classList.add("hidden");
+          usersCFExtra.classList.remove("doble");
+      }
+      break;
+    default:
+      extraModule.classList.add("hidden");
+      extra.classList.add("hidden");
+      break;
+  }
+}
 
 function updateExtraFields() {
   cargarSelectBuzones();
   cambiarBuzonesMsNotifica();
   switch (els.appSelect.value) {
-    case "ejornada":
-      extraUsersLabel.classList.contains("hidden") ? null : extraUsersLabel.classList.add("hidden");
-      break;  
     case "msnotifica":
-      crtFcl.classList.remove("hidden");
+      module.innerHTML = "Certifácil";
+      addModl.checked = false;
+      moduleGestExtra.classList.add("hidden");
+      extra.classList.remove("hidden");
       extraUsersLabel.classList.remove("hidden");
-      // Si además se ha elegido Cloud...
-      /*if (els.billingSelect.value === "cloud") {
-          els.cloudField.classList.remove("hidden");
-      }*/
       break;
 
-    /*case "msnomina":
-        otroCampo.classList.remove("hidden");
-        break;*/
+    case "msgest":
+      module.innerHTML = "Módulos";
+      extraUsersLabel.classList.add("hidden");
+      extra.classList.remove("hidden");
+      break;
 
     case "efirma":
       extraUsersLabel.classList.remove("hidden");
+      break;
+    default:
+      extraUsersLabel.classList.add("hidden");
+      extra.classList.add("hidden");
+      addModl.checked = false;
+      moduleGestExtra.classList.add("hidden");
+      usersCFExtra.classList.add("hidden");
       break;
   }
 }
@@ -524,13 +532,12 @@ function selectedBilling(app) {
   return (app.billingOptions || [])[els.billingSelect.selectedIndex] || (app.billingOptions || [])[0];
 }
 
-function valueToMonthlyAnnual(value, period, quantity = 1) {
+function valueToMonthlyAnnual(value, period, quantity = 1, mantenimiento) {
   const qty = Math.max(1, quantity || 1);
   const multiplied = value * qty;
 
-  if (period === "monthly") return { monthly: multiplied, annual: multiplied * 12, main: multiplied };
-  if (period === "annual") return { monthly: multiplied / 12, annual: multiplied, main: multiplied };
-  if (period === "annualToMonthly") return { monthly: value / 12, annual: value, main: value / 12 };
+  if (period === "monthly") return { monthly: multiplied, annual: multiplied * 12, main: multiplied, maintenance: mantenimiento / 12 };
+  if (period === "annual") return { monthly: multiplied / 12, annual: multiplied, main: multiplied, maintenance: mantenimiento };
   if (period === "unitMonthly") return { monthly: value * qty, annual: value * qty * 12, main: value };
   if (period === "unit") return { monthly: 0, annual: value * qty, main: value };
   return { monthly: 0, annual: multiplied, main: multiplied };
@@ -539,9 +546,11 @@ function valueToMonthlyAnnual(value, period, quantity = 1) {
 function init() {
   Object.entries(apps).forEach(([key, app]) => {
     const option = document.createElement("option");
-    option.value = key;
-    option.textContent = app.name;
-    els.appSelect.appendChild(option);
+    if (key !== "msgest_modulos") {
+      option.value = key;
+      option.textContent = app.name;
+      els.appSelect.appendChild(option);
+    }
   });
 
   els.appSelect.addEventListener("change", () => {
@@ -587,7 +596,7 @@ function refreshPlans() {
 }
 
 function cargarSelectBuzones() {
-  crtFcl.classList.contains("hidden") ? null : crtFcl.classList.add("hidden");
+  extra.classList.contains("hidden") ? null : extra.classList.add("hidden");
   if (els.selectBuzones.options.length > 0) return;
   els.selectBuzones.innerHTML = "";
 
@@ -601,10 +610,24 @@ function cargarSelectBuzones() {
   els.selectBuzones.style.display = "block";
   els.quantityInput.style.display = "none";
 }
+// En caso de entrar en app MsGest, añade select con los módulos de MsGest si check marcado
+function cargarSelectModulos() {
+  if (els.selectMdlGest.options.length > 0) return;
+  els.selectMdlGest.innerHTML = "";
 
+  apps.msgest_modulos.tiers.forEach(tier => {
+    const option = document.createElement("option");
+    option.value = tier.plan;
+    els.selectMdlGest.appendChild(option);
+    option.textContent = tier.plan;
+  });
+
+  els.selectMdlGest.style.display = "block";
+}
+// Cambia el input de los buzones por un select en < 500 y vuelve al input en > 500
 function cambiarBuzonesMsNotifica() {
   const app = apps[els.appSelect.value];
-  if (app.mode !== "msnotifica" || (app.mode === "msnotifica" && els.selectBuzones.style.display === "none") ) {
+  if (app.mode !== "msnotifica") {
     els.selectBuzones.style.display = "none";
     els.quantityInput.style.display = "block";
     return;
@@ -624,7 +647,7 @@ function cambiarBuzonesMsNotifica() {
   if (els.quantityInput.style.display !== "none" && valorInput < 500) {
     els.quantityInput.style.display = "none";
     els.selectBuzones.style.display = "block";
-    els.selectBuzones.value = "250";
+    els.selectBuzones.value = "50";
     calculate();
     return;
   }
@@ -642,47 +665,208 @@ function calcLicenciasExtra(quantity, baseQuantity, unitPrice) {
 
 function calcularTrabajadores(ejornada, quantity, plan) {
   let precio = 0;
-
-    if ((plan === "Módulo Fichajes" || plan === "Fichajes + Ausencias") && quantity > 100) {
-      switch (true) {
-        case quantity > 100 && quantity < 200:
-          precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 100));
-          break;
-        case quantity > 200 && quantity < 500:
-          precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 200));
-          break;
-        case quantity > 500 && quantity < 700:
-          precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 500));
-          break;
-        case quantity > 700 && quantity < 1000:
-          precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 700));
-          break;
-        default:
-          precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 1000));
-          break;
-      }
-      
-    } else {
-      precio = ejornada[plan];
+  if ((plan === "Módulo Fichajes" || plan === "Fichajes + Ausencias") && quantity > 100) {
+    switch (true) {
+      case quantity > 100 && quantity < 200:
+        precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 100));
+        break;
+      case quantity > 200 && quantity < 500:
+        precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 200));
+        break;
+      case quantity > 500 && quantity < 700:
+        precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 500));
+        break;
+      case quantity > 700 && quantity < 1000:
+        precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 700));
+        break;
+      default:
+        precio = ejornada[plan] + ((plan === "Módulo Fichajes" ? ejornada.workerExtraF : ejornada.workerExtraFA || 0) * (quantity - 1000));
+        break;
     }
-    return precio;
+  } else {
+    precio = ejornada[plan];
+  }
+  return precio;
 }
 
-function calcExtraUsers (extraUsers, annual, tier) {
+function calcDocs(quantity, plan, period, precioTarifa, efirma, precioExtraUser, extraUser) {
+  let precioDocExtra = efirma.extraDocs;
+  let usersPlus = calcExtraUsers(extraUser, period === "annual" ? precioExtraUser : precioExtraUser / 12, efirma);
+  if (plan === "Concertada") {
+    switch (true) {
+      case (quantity >= 5000 && quantity < 12500) || (quantity >= 417 && quantity < 1042):
+        if (period === "monthly") return {  monthly: precioTarifa +  (precioDocExtra * (quantity - 417)) + usersPlus,
+                                            annual: (precioTarifa +  (precioDocExtra * (quantity - 417)) + usersPlus) * 12,
+                                            main: precioTarifa +  (precioDocExtra * (quantity - 417)) + usersPlus };
+        if (period === "annual") return {   monthly: (precioTarifa +  (precioDocExtra * (quantity - 5000)) + usersPlus) / 12,
+                                            annual: (precioTarifa +  (precioDocExtra * (quantity - 5000)) + usersPlus),
+                                            main: precioTarifa +  (precioDocExtra * (quantity - 5000)) + usersPlus };
+        break;
+      case (quantity >= 12500 && quantity < 50000) && (quantity >= 1042 && quantity < 2083):
+        if (period === "monthly") return {  monthly: precioTarifa +  (precioDocExtra * (quantity - 1042)) + usersPlus,
+                                            annual: (precioTarifa +  (precioDocExtra * (quantity - 1042)) + usersPlus) * 12,
+                                            main: precioTarifa +  (precioDocExtra * (quantity - 1042)) + usersPlus };
+        if (period === "annual") return {   monthly: (precioTarifa +  (precioDocExtra * (quantity - 12500)) + usersPlus) / 12,
+                                            annual: (precioTarifa +  (precioDocExtra * (quantity - 12500)) + usersPlus),
+                                            main: precioTarifa +  (precioDocExtra * (quantity - 12500)) + usersPlus };
+        break;
+      case (quantity >= 50000 && quantity < 70000) && (quantity >= 2083 && quantity < 4167):
+        if (period === "monthly") return {  monthly: precioTarifa +  (precioDocExtra * (quantity - 2083)) + usersPlus,
+                                            annual: (precioTarifa +  (precioDocExtra * (quantity - 2083)) + usersPlus) * 12,
+                                            main: precioTarifa +  (precioDocExtra * (quantity - 2083)) + usersPlus };
+        if (period === "annual") return {   monthly: (precioTarifa +  (precioDocExtra * (quantity - 50000)) + usersPlus) / 12,
+                                            annual: (precioTarifa +  (precioDocExtra * (quantity - 50000)) + usersPlus),
+                                            main: precioTarifa +  (precioDocExtra * (quantity - 50000)) + usersPlus };
+        break;
+      case (quantity >= 70000 && quantity < 100000) && (quantity >= 4167 && quantity < 8333):
+        if (period === "monthly") return {  monthly: precioTarifa +  (precioDocExtra * (quantity - 4167)) + usersPlus,
+                                            annual: (precioTarifa +  (precioDocExtra * (quantity - 4167)) + usersPlus) * 12,
+                                            main: precioTarifa +  (precioDocExtra * (quantity - 4167)) + usersPlus };
+        if (period === "annual") return {   monthly: (precioTarifa +  (precioDocExtra * (quantity - 70000)) + usersPlus) / 12,
+                                            annual: (precioTarifa +  (precioDocExtra * (quantity - 70000)) + usersPlus),
+                                            main: precioTarifa +  (precioDocExtra * (quantity - 70000)) + usersPlus };
+        break;
+      case quantity >= 100000  && quantity > 8333:
+        if (period === "monthly") return {  monthly: precioTarifa +  (precioDocExtra * (quantity - 8333)) + usersPlus,
+                                            annual: (precioTarifa +  (precioDocExtra * (quantity - 8333)) + usersPlus) * 12,
+                                            main: precioTarifa +  (precioDocExtra * (quantity - 8333)) + usersPlus };
+        if (period === "annual") return {   monthly: (precioTarifa +  (precioDocExtra * (quantity - 100000)) + usersPlus) / 12,
+                                            annual: (precioTarifa +  (precioDocExtra * (quantity - 100000)) + usersPlus),
+                                            main: precioTarifa +  (precioDocExtra * (quantity - 100000)) + usersPlus };
+        break;
+      default:
+        break;
+    }
+  } else {
+    if (period === "monthly") return { monthly: precioTarifa + usersPlus, annual: (precioTarifa * 12) + usersPlus, main: precioTarifa + usersPlus };
+    if (period === "annual") return { monthly: (precioTarifa / 12) + usersPlus, annual: precioTarifa + usersPlus, main: precioTarifa + usersPlus };
+  }
+  return { monthly: 0, annual: precioTarifa, main: precioTarifa };
+}
+
+function calcExtraUsers (extraUsers, tier) {
   if (extraUsers > 0) {
-      annual += (tier.userExtra * extraUsers);
+      return tier.userExtra * extraUsers;
   }
 
-  return annual;
+  return 0;
 
+}
+
+function addModulosGest(quantity) {
+  const mdlKey = "msgest_modulos";
+  const moduloSelect = els.selectMdlGest.value;
+  const app = apps[mdlKey];
+  const tierKey = app.tierKey;
+  const billing = selectedBilling(app);
+  const modulo = app.tiers.find(item => item.plan === moduloSelect) || app.items[0];
+  const value = modulo[billing.field] ?? modulo[tierKey];
+  return { monthly: (modulo.price) / 12, annual: modulo.price, main: modulo.price + (modulo.maintenance * quantity), mante: modulo.maintenance * quantity };
+}
+
+function cambiaPreciosPorTarifa(plan, app, period, quantity) {
+  switch (app) {
+    case "efirma":
+      switch (plan) {
+        case "Personal":
+          if (period === "monthly") {
+            quantityInput.max = 5;
+            quantityInput.min = 5;
+            quantityInput.value = 5;
+          } else {
+            quantityInput.max = 60;
+            quantityInput.min = 60;
+            quantityInput.value = 60;
+          }
+          break;
+        case "Professional":
+          if (period === "monthly") {
+            quantityInput.max = 30;
+            quantityInput.min = 30;
+            quantityInput.value = 30;
+          } else {
+            quantityInput.max = 360;
+            quantityInput.min = 360;
+            quantityInput.value = 360;
+          }
+          break;
+        case "Business":
+          if (period === "monthly") {
+            quantityInput.max = 100;
+            quantityInput.min = 100;
+            quantityInput.value = 100;
+          } else {
+            quantityInput.max = 1200;
+            quantityInput.min = 1200;
+            quantityInput.value = 1200;
+          }
+          break;
+        case "Business Plus":
+          if (period === "monthly") {
+            quantityInput.max = 250;
+            quantityInput.min = 250;
+            quantityInput.value = 250;
+          } else {
+            quantityInput.max = 3000;
+            quantityInput.min = 3000;
+            quantityInput.value = 3000;
+          }
+          break;
+        case "Concertada":
+          if (period === "monthly") {
+            quantityInput.min = 417;
+            quantityInput.value < 417 ? quantityInput.value = 417 : null;
+            quantityInput.removeAttribute("max");
+          } else {
+            quantityInput.min = 5000;
+            quantityInput.value < 5000 ? quantityInput.value = 5000 : null;
+            quantityInput.removeAttribute("max");
+          }
+          break;
+        default:
+          break;
+      } 
+      break;
+    case "msnomina":
+      break;
+    case "msgest_modulos":
+      break;
+    case "msconta":
+      break;
+    case "msmodelos":
+      break;
+    case "paquete_fiscal":
+      break;
+    case "msrenta":
+      break;
+    case "msscan":
+      break;
+    case "msscan_ocr":
+      break;
+    case "msbabelia":
+      break;
+    case "pago_uso_fiscal":
+      break;
+    case "pago_uso_laboral":
+      break;
+    case "msexpress_web":
+      break;
+    case "despachos_completos":
+      break;
+    default:
+      break;
+  }
 }
 
 function calculate() {
+  updateExtraFields();
   const app = apps[els.appSelect.value];
   const plan = els.planSelect.value;
-  const quantity = Math.max(1, Number(els.quantityInput.value || 1));
   const billing = selectedBilling(app);
+  cambiaPreciosPorTarifa(plan, els.appSelect.value, billing.period);
+  const quantity = Math.max(1, Number(els.quantityInput.value || 1));
   const nBuzones = Number(els.selectBuzones.value || 0);
+  const mdlGest = els.selectMdlGest.value;
   let mant = 0;
   let monthly = 0;
   let annual = 0;
@@ -707,10 +891,12 @@ function calculate() {
     const tierKey = app.tierKey;
     const tier = app.tiers.find(t => quantity <= t[tierKey]) || app.tiers[app.tiers.length - 1];
     const value = tier[billing.field] ?? tier[plan];
-    const result = valueToMonthlyAnnual(value, billing.period, billing.period === "unit" ? quantity : 1);
+    const mantenimiento = tier["maintenance"];
+    const result = valueToMonthlyAnnual(value, billing.period, billing.period === "unit" ? quantity : 1, mantenimiento);
     monthly = result.monthly;
     annual = result.annual;
     main = result.main;
+    mant = result.maintenance;
     const tierText = tier.label || formatNumber(tier[tierKey]);
     subtitle = `${billing.label} · tramo hasta ${tierText} ${app.tierLabel}.`;
     notice = quantity > tier[tierKey] && Number.isFinite(tier[tierKey])
@@ -719,10 +905,10 @@ function calculate() {
   }
 
   if (app.mode === "capacityPlan") {
-    const candidates = app.tiers.filter(t => t.plan === plan && quantity <= t.docsYear);
+    const candidates = app.tiers.filter(t => t.plan === plan && quantity > 5000  <= t.docsYear);
     const tier = candidates[0] || app.tiers.filter(t => t.plan === plan).slice(-1)[0];
     const value = tier[billing.field];
-    const result = valueToMonthlyAnnual(value, billing.period, 1);
+    const result = calcDocs(quantity, plan, billing.period, value, tier, tier.userExtra, Number(els.extraUsersInput?.value || 0));
     monthly = result.monthly;
     annual = result.annual;
     main = result.main;
@@ -735,10 +921,12 @@ function calculate() {
   if (app.mode === "rangeBand") {
     const tier = app.tiers.find(t => quantity >= t.min && quantity <= t.max) || app.tiers[app.tiers.length - 1];
     const value = tier[billing.field];
-    const result = valueToMonthlyAnnual(value, billing.period, quantity);
+    const mantenimiento = tier["maintenance"];
+    const result = valueToMonthlyAnnual(value, billing.period, quantity, mantenimiento);
     monthly = result.monthly;
     annual = result.annual;
     main = result.main;
+    mant = result.maintenance;
     subtitle = `${billing.label} · tramo ${formatNumber(tier.min)}-${formatNumber(tier.max)} trabajadores.`;
     notice = quantity > tier.max
       ? `La tabla llega hasta ${formatNumber(tier.max)} trabajadores. Revisa manualmente importes superiores.`
@@ -748,6 +936,7 @@ function calculate() {
   if (app.mode === "catalog") {
     const item = app.items.find(i => i.plan === plan) || app.items[0];
     const value = item[billing.field];
+    const mantenimiento = item["maintenance"];
 
     if (value === undefined) {
       monthly = 0;
@@ -756,10 +945,11 @@ function calculate() {
       subtitle = `${billing.label} no disponible para esta tarifa.`;
       notice = `Esta combinación no tiene importe en la tabla original.`;
     } else {
-      const result = valueToMonthlyAnnual(value, billing.period, quantity);
+      const result = valueToMonthlyAnnual(value, billing.period, quantity, mantenimiento);
       monthly = result.monthly;
       annual = result.annual;
       main = result.main;
+      mant = result.maintenance;
       subtitle = `${billing.label} · ${plan}.`;
       notice = billing.period === "monthly"
         ? `Se ha calculado multiplicando la cuota mensual por la cantidad indicada.`
@@ -771,43 +961,31 @@ function calculate() {
     const tier = app.tiers.find(t => quantity <= t.mailboxes) || app.tiers[app.tiers.length - 1];
     const billingMode = els.billingSelect.value;
     mant = tier.maintenance || 0;
-
-    const mailBox = app.tiers.find(t => quantity <= t.mailboxes) || app.tiers[app.tiers.length - 1];
-
     const mailboxTier = calcLicenciasExtra(
         quantity,
         tier.mailboxes,
         tier.mailboxExtra
     );
-    
     const extraUsers = Number(els.extraUsersInput?.value || 0);
     const extraUsersAnnual = extraUsers * (tier.userExtra || 0);
     const extraUsersMonthly = extraUsersAnnual / 12;
-
-    /*const cloudPrice = Number(els.cloudSelect?.value || 0);
-    const cloudSetup = 300;*/
-
     let uExtra = 0;
 
     if (extraUsers !== 0){
-        uExtra = calcExtraUsers (extraUsers, annual, tier);
-        annual = uExtra;
+        uExtra = calcExtraUsers (extraUsers, tier);
+        annual += uExtra;
     }
-
     if (billingMode === "compra") {
       mant = tier.maintenance || 0;
-
       annual += tier.price + mant + mailboxTier;
       monthly = annual / 12;
       main = annual;
-
       if (uExtra == 0){
         subtitle = `Compra · licencia ${euros(tier.price)} + mantenimiento ${euros(mant)} + buzones extra ${euros(mailboxTier)}.`;
       } else {
         subtitle = `Compra · licencia ${euros(tier.price)} + mantenimiento ${euros(mant)} + usuario extra ${euros(uExtra)} + buzones extra ${euros(mailboxTier)}.`;
       }
     }
-
     if (billingMode === "saas") {
       monthly = tier.saas + extraUsersMonthly + mailboxTier;
       annual = monthly * 12;
@@ -815,17 +993,43 @@ function calculate() {
 
       subtitle = `SaaS · cuota mensual ${euros(tier.saas)}.`;
     }
-
-    /*if (billingMode === "cloud") {
-      monthly = tier.saas + cloudPrice + extraUsersMonthly;
-      annual = monthly * 12 + cloudSetup;
-      main = monthly;
-
-      subtitle = `Cloud · SaaS ${euros(tier.saas)} + cloud ${euros(cloudPrice)} + puesta en funcionamiento ${euros(cloudSetup)}.`;
-    }*/
-
     notice = `Se ha usado el tramo de ${tier.mailboxes} buzones.`;
   }
+
+  if (app.mode === "msgest") {
+    const tierKey = app.tierKey;
+    const tier = app.tiers.find(t => quantity <= t[tierKey]) || app.tiers[app.tiers.length - 1];
+    const value = tier[billing.field] ?? tier[plan];
+    const mantenimiento = billing.field === "price" ? tier["maintenance"] : tier["maintenanceMsConta"];
+    const result = valueToMonthlyAnnual(value, billing.period, billing.period === "unit" ? quantity : 1, mantenimiento);
+    let modExtra = {
+      monthly: 0,
+      annual: 0,
+      main: 0,
+      mante: 0
+    };
+    if (addModl.checked) {
+      modExtra = addModulosGest(quantity);
+      monthly += modExtra.monthly;
+      annual += modExtra.annual;
+      main += modExtra.main;
+      mant += modExtra.mante || 0;
+    }
+    monthly += result.monthly;
+    annual += result.annual;
+    main += result.main + tier.maintenance;
+    mant += result.maintenance;
+    const tierText = tier.label || formatNumber(tier[tierKey]);
+    if (modExtra.main === 0) {
+      subtitle = `${billing.label} · ${tierText} ${app.tierLabel} seleccionadas.`;
+    } else {
+      subtitle = `${billing.label} · ${tierText} ${app.tierLabel} seleccionadas + ${els.selectMdlGest.value} · Precio: ${modExtra.annual} + Mantenimiento: ${modExtra.mante}.`;
+    }
+    notice = quantity > tier[tierKey] && Number.isFinite(tier[tierKey])
+      ? `La tabla llega hasta ${formatNumber(tier[tierKey])} ${app.tierLabel}. Revisa manualmente importes superiores.`
+      : `Se ha usado el tramo de ${tierText} ${app.tierLabel}.`;
+  }
+
   els.noticeBox.textContent = notice;
   els.noticeBox.classList.toggle("visible", Boolean(notice));
   els.mainResult.textContent = euros(main);

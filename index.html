@@ -43,8 +43,8 @@
         <label class="field" id="billingField">
           <span>Facturación</span>
           <select id="billingSelect">
+            <option value="annual" selected>Anual</option>
             <option value="monthly">Mensual</option>
-            <option value="annual">Anual</option>
           </select>
         </label>
       </div>
@@ -54,11 +54,14 @@
           <input id="usersInput" type="number" min="0" step="1" value="0" />
         </label>
 
-        <label id="crtFcl" class="field2 hidden">
-          <span id="certiF">Certifácil<input id="addCF" type="checkbox"/></span>
+        <label id="extraMdl" class="field2 hidden">
+          <span id="extraModule"><label id="modulo"></label><input id="addModl" type="checkbox"/></span>
             <div class="hidden" id="usersCertiFExtra">
               <div class="doble">Usuarios Extra:<input type="checkbox" class="peque" id="userExtra"/></div>
               <input class="hidden" id="usersCFExtra" type="number" min="1" step="1" value="1" />
+            </div>
+            <div class="hidden" id="moduleGestExtra">
+              <select id="gestModules"></select>
             </div>
         </label>        
         
