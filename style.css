@@ -26,7 +26,7 @@ body {
 }
 
 .app-shell {
-  width: min(940px, calc(100% - 28px));
+  width: min(1380px, calc(100% - 40px));
   margin: 0 auto;
   padding: 28px 0;
 }
@@ -114,6 +114,42 @@ h1 {
 
 .doble input {
   max-width: 60%;
+}
+
+.tabla {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(120px, 1fr);
+  gap: 14px 16px;
+  align-items: center;
+}
+
+.tabla .total-title,
+.tabla .total-value,
+.tabla .right-column {
+  grid-column: 1 / -1;
+  justify-self: center;
+  text-align: center;
+}
+
+.tabla .label {
+  border-bottom: 1px solid #003b6f;
+  padding: 12px 18px;
+}
+
+.tabla input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.total-title,
+.total-value {
+  justify-self: center;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 select, input {
@@ -298,4 +334,74 @@ button {
 
 .info-content.active {
   display: block;
+}
+
+.accordion-item {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.accordion-header {
+  width: 100%;
+  padding: 14px 16px;
+  background: #f7f7f7;
+  border: 0;
+  text-align: left;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.accordion-content {
+  display: none;
+  padding: 16px;
+  background: white;
+}
+
+.accordion-item.active .accordion-content {
+  display: block;
+}
+
+.calculator-layout {
+  display: grid;
+  grid-template-columns: minmax(620px, 940px) minmax(340px, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.variable-panel {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+.variable-panel .accordion {
+  width: 100%;
+}
+
+.variable-panel .accordion-item {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,.7);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+}
+
+.variable-panel .accordion-header {
+  padding: 18px 20px;
+}
+
+.variable-panel .accordion-content {
+  padding: 20px;
+}
+
+@media (max-width: 1100px) {
+  .calculator-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .variable-panel {
+    width: 100%;
+  }
 }

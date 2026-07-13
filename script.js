@@ -1,6 +1,6 @@
 const apps = {
   ejornada: {
-    name: "eJornada",
+    name: "ejornada",
     quantityLabel: "Nº de trabajadores",
     mode: "workersNumber",
     tierKey: "workers",
@@ -53,7 +53,7 @@ const apps = {
   },
 
   efirma: {
-    name: "eFirma GO",
+    name: "efirma GO",
     quantityLabel: "Nº de documentos al año",
     mode: "capacityPlan",
     billingOptions: [
@@ -75,7 +75,7 @@ const apps = {
   },
 
   efirma_msnomina: {
-    name: "eFirma GO para MsNómina",
+    name: "efirma GO para MsNómina",
     quantityLabel: "Nº de trabajadores",
     mode: "rangeBand",
     plans: ["Coste anual"],
@@ -270,10 +270,7 @@ const apps = {
     quantityLabel: "Cantidad",
     mode: "catalog",
     plans: ["MsRenta Multi"],
-    billingOptions: [
-      { value: "price", label: "Compra", field: "price", period: "annual" },
-      { value: "maintenance", label: "Mantenimiento", field: "maintenance", period: "annual" }
-    ],
+    billingOptions: [{ value: "price", label: "Compra", field: "price", period: "annual" } ],
     items: [{ plan: "MsRenta Multi", price: 740.00, maintenance: 584.00 }]
   },
 
@@ -284,7 +281,6 @@ const apps = {
     tierKey: "documents",
     tierLabel: "documentos",
     billingOptions: [
-      { value: "maintenance", label: "Mantenimiento", field: "maintenance", period: "annual" },
       { value: "perDoc", label: "Importe por documento", field: "perDoc", period: "unit" }
     ],
     plans: ["Tarifa"],
@@ -324,6 +320,7 @@ const apps = {
   pago_uso_fiscal: {
     name: "Tarifa pago por uso — Gestión Fiscal",
     quantityLabel: "Nº de empresas",
+    tierKey: "plan",
     mode: "catalog",
     plans: ["Emp. Módulos", "Emp. Direct. N. y Simpl", "Empresa Sociedades"],
     billingOptions: [{ value: "annual", label: "Precio anual", field: "annual", period: "annual" }],
@@ -337,6 +334,7 @@ const apps = {
   pago_uso_laboral: {
     name: "Tarifa pago por uso — Gestión Laboral",
     quantityLabel: "Cantidad",
+    tierKey: "plan",
     mode: "catalog",
     plans: ["Por Empresa", "Por Trabajador"],
     billingOptions: [{ value: "monthly", label: "Precio mes", field: "monthly", period: "monthly" }],
@@ -395,7 +393,17 @@ const els = {
   copyButton: document.getElementById("copyButton"),
   extraUsersInput: document.getElementById("usersInput"),
   selectBuzones: document.getElementById("selectBuzones"),
-  selectMdlGest: document.getElementById("gestModules")
+  selectMdlGest: document.getElementById("gestModules"),
+  trfVrb: document.getElementById("trfVrb"),
+  gestFiscal: document.getElementById("gestFiscal"),
+  gestLaboral: document.getElementById("gestLaboral"),
+  porEmp: document.getElementById("porEmp"),
+  porTbj: document.getElementById("porTbj"),
+  empMdl: document.getElementById("empMdl"),
+  empDrct: document.getElementById("empDrct"),
+  empScds: document.getElementById("empScds"),
+  totalFiscal: document.getElementById("ttlFiscal"),
+  totalLaboral: document.getElementById("ttlLaboral")
   /*cloudSelect: document.getElementById("cloudSelect"),
   cloudField: document.getElementById("cloudField")*/
 };
@@ -428,6 +436,23 @@ usersExtra.addEventListener("change", () => {
     }
 });
 
+els.gestLaboral.addEventListener("click", () => {
+  if (!els.gestLaboral.classList.contains ("active")) {
+    els.totalLaboral.textContent = euros(0);
+    els.porEmp.value = 0;
+    els.porTbj.value = 0;
+   } 
+});
+
+els.gestFiscal.addEventListener("click", () => {
+  if (!els.gestFiscal.classList.contains ("active")) {
+    els.totalFiscal.textContent = euros(0)
+    els.empMdl.value = 0;
+    els.empDrct.value = 0;
+    els.empScds.value = 0;
+   } 
+  });
+
 function addModulesExtraApp() {
   switch (els.appSelect.value) {
     case "msgest":
@@ -457,6 +482,9 @@ function addModulesExtraApp() {
 function updateExtraFields() {
   cargarSelectBuzones();
   cambiarBuzonesMsNotifica();
+  els.trfVrb.classList.contains("hidden") ? null : els.trfVrb.classList.add("hidden");
+  els.gestLaboral.classList.contains("hidden") ? null : els.gestLaboral.classList.add("hidden");
+  els.gestFiscal.classList.contains("hidden") ? null : els.gestFiscal.classList.add("hidden");
   switch (els.appSelect.value) {
     case "msnotifica":
       module.innerHTML = "Certifácil";
@@ -470,11 +498,18 @@ function updateExtraFields() {
       module.innerHTML = "Módulos";
       extraUsersLabel.classList.add("hidden");
       extra.classList.remove("hidden");
-      break;
-
+    break;
     case "efirma":
       extraUsersLabel.classList.remove("hidden");
       break;
+    case "msnomina":
+      els.trfVrb.classList.remove("hidden");
+      els.gestLaboral.classList.remove("hidden");
+    break;
+    case "paquete_fiscal":
+      els.trfVrb.classList.remove("hidden");
+      els.gestFiscal.classList.remove("hidden");
+    break;
     default:
       extraUsersLabel.classList.add("hidden");
       extra.classList.add("hidden");
@@ -539,14 +574,14 @@ function valueToMonthlyAnnual(value, period, quantity = 1, mantenimiento) {
   if (period === "monthly") return { monthly: multiplied, annual: multiplied * 12, main: multiplied, maintenance: mantenimiento / 12 };
   if (period === "annual") return { monthly: multiplied / 12, annual: multiplied, main: multiplied, maintenance: mantenimiento };
   if (period === "unitMonthly") return { monthly: value * qty, annual: value * qty * 12, main: value };
-  if (period === "unit") return { monthly: 0, annual: value * qty, main: value };
+  if (period === "unit") return { monthly: 0, annual: value * qty, main: value * qty };
   return { monthly: 0, annual: multiplied, main: multiplied };
 }
 
 function init() {
   Object.entries(apps).forEach(([key, app]) => {
     const option = document.createElement("option");
-    if (key !== "msgest_modulos") {
+    if (key !== "msgest_modulos" && key !== "pago_uso_fiscal" && key !== "pago_uso_laboral") {
       option.value = key;
       option.textContent = app.name;
       els.appSelect.appendChild(option);
@@ -563,6 +598,11 @@ function init() {
   els.billingSelect.addEventListener("change", calculate);
   els.extraUsersInput.addEventListener("change", calculate);
   els.selectBuzones.addEventListener("change", cambiarBuzonesMsNotifica);
+  els.porEmp.addEventListener("change", calcularTrfVariable);
+  els.porTbj.addEventListener("change", calcularTrfVariable);
+  els.empMdl.addEventListener("change", calcularTrfVariable);
+  els.empDrct.addEventListener("change", calcularTrfVariable);
+  els.empScds.addEventListener("change", calcularTrfVariable);
   if (els.copyButton) els.copyButton.addEventListener("click", copySummary);
 
   refreshPlans();
@@ -858,6 +898,54 @@ function cambiaPreciosPorTarifa(plan, app, period, quantity) {
   }
 }
 
+function eurosToNumber(value) {
+    return Number(
+        value
+            .replace("€", "")
+            .replace(/\./g, "")
+            .replace(",", ".")
+            .trim()
+    );
+}
+
+function calcularTrfVariable () {
+  let total = els.totalLaboral.innerText === "0,00 €" ? 0 : eurosToNumber(els.totalLaboral.innerText);
+  let totalFscl = els.totalFiscal.innerText === "0,00 €" ? 0 : eurosToNumber(els.totalFiscal.innerText);
+  if (!els.trfVrb.classList.contains("hidden")) {
+    const app = els.appSelect.value === "msnomina" ? apps["pago_uso_laboral"] : apps["pago_uso_fiscal"];
+    switch (els.appSelect.value) {
+      case "msnomina":
+        let porEmpleado = 0;
+        let porEmpresa = 0;
+        const listaPorEmpresa = app.items.filter(t => t.plan === "Por Empresa");
+        const listaPorTbj = app.items.filter(t => t.plan === "Por Trabajador");
+        let precioEmpresa = listaPorEmpresa[0].monthly;
+        let precioTrabajador = listaPorTbj[0].monthly;
+        els.porEmp.value > 0 ? porEmpresa = els.porEmp.value * precioEmpresa : 0;
+        els.porTbj.value > 0 ? porEmpleado = els.porTbj.value  * precioTrabajador : 0;
+        total = Number(porEmpleado) + Number(porEmpresa);
+        els.totalLaboral.textContent = euros(total);
+      break;
+      case "paquete_fiscal":
+        let empMdl = 0;
+        let empDrct = 0;
+        let scds = 0;
+        const listaEmpMdl = app.items.filter(t => t.plan === "Emp. Módulos");
+        const listaEmpDrct = app.items.filter(t => t.plan === "Emp. Direct. N. y Simpl");
+        const listaSociedades = app.items.filter(t => t.plan === "Empresa Sociedades");
+        let precioEmpMdl = listaEmpMdl[0].annual;
+        let precioEmpDrct = listaEmpDrct[0].annual;
+        let precioScds = listaSociedades[0].annual;
+        els.empMdl.value > 0 ? empMdl = els.empMdl.value * precioEmpMdl : 0;
+        els.empDrct.value > 0 ? empDrct = els.empDrct.value  * precioEmpDrct : 0;
+        els.empScds.value > 0 ? scds = els.empScds.value  * precioScds : 0;
+        totalFiscal = Number(empMdl) + Number(empDrct) + Number(scds);
+        els.totalFiscal.textContent = euros(totalFiscal);
+      break;
+    }
+  }
+}
+
 function calculate() {
   updateExtraFields();
   const app = apps[els.appSelect.value];
@@ -898,7 +986,7 @@ function calculate() {
     main = result.main;
     mant = result.maintenance;
     const tierText = tier.label || formatNumber(tier[tierKey]);
-    subtitle = `${billing.label} · tramo hasta ${tierText} ${app.tierLabel}.`;
+    subtitle = `${billing.label} ${value} · tramo hasta ${tierText} ${app.tierLabel}.`;
     notice = quantity > tier[tierKey] && Number.isFinite(tier[tierKey])
       ? `La tabla llega hasta ${formatNumber(tier[tierKey])} ${app.tierLabel}. Revisa manualmente importes superiores.`
       : `Se ha usado el tramo de ${tierText} ${app.tierLabel}.`;
@@ -1046,6 +1134,20 @@ function calculate() {
   els.summaryMonthly.textContent = monthly ? euros(monthly) : "-";
   els.summaryAnnual.textContent = annual ? euros(annual) : "-";
 }
+
+document.querySelectorAll(".accordion-header").forEach(button => {
+  button.addEventListener("click", () => {
+    const item = button.parentElement;
+
+    document.querySelectorAll(".accordion-item").forEach(otherItem => {
+      if (otherItem !== item) {
+        otherItem.classList.remove("active");
+      }
+    });
+
+    item.classList.toggle("active");
+  });
+});
 
 async function copySummary() {
   const text = [
