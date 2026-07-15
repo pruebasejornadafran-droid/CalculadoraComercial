@@ -168,30 +168,29 @@
                   </div>
 
                   <section class="erp-plan-summary">
-                    <div>
+                    <div class="erp-base-discount-box">
                       <span class="erp-summary-label">Precio base</span>
                       <strong id="erpBasePrice">0,00 €</strong>
-                    </div>
+                      <div class="erp-base-discount-controls">
+                        <select id="erpBaseDiscountType">
+                          <option value="none">Sin descuento</option>
+                          <option value="percentage">%</option>
+                          <option value="fixed">€</option>
+                        </select>
+                        <input id="erpBaseDiscountValue" type="number" min="0" step="0.01" value="0" disabled />
+                      </div>
 
-                    <div>
-                      <span class="erp-summary-label">Usuarios incluidos</span>
-                      <strong id="erpIncludedUsers">-</strong>
-                    </div>
-
-                    <div>
-                      <span class="erp-summary-label">Usuarios máximos</span>
-                      <strong id="erpMaxUsers">-</strong>
+                      <div class="erp-base-final">
+                        <span>Precio final</span>
+                        <strong id="erpBaseFinalPrice">0,00 €</strong>
+                      </div>
                     </div>
                   </section>
-                  <section class="erp-table-card">
-                    <div class="erp-table-title">
-                      <h3>Servicios adicionales</h3>
-                    </div>
 
-                    <div id="erpExtrasList" class="erp-extras-list">
-                      <!-- Se rellenará mediante JavaScript -->
-                    </div>
-                  </section>
+                  <label class="field">
+                    <span>Valor del descuento</span>
+                    <input id="erpDiscountValue" type="number" min="0" step="0.01" value="0"/>
+                  </label>
 
                   <section class="erp-result">
                     <div>
@@ -204,6 +203,11 @@
                       <strong id="erpSummaryExtras">0,00 €</strong>
                     </div>
 
+                    <div>
+                      <span>Descuento aplicado</span>
+                      <strong id="erpDiscountAmount">0,00 €</strong>
+                    </div>
+
                     <div class="erp-result-total">
                       <span>Total mensual estimado</span>
                       <strong id="erpTotal">0,00 €</strong>
@@ -211,7 +215,7 @@
 
                     <div class="erp-result-total-anual">
                       <span>Total anual estimado</span>
-                      <strong id="erpTotalAnual">0,00 €</strong>
+                      <strong id="erpAnnualTotal">0,00 €</strong>
                     </div>
                   </section>
                 </div>

@@ -407,7 +407,19 @@ const erpPlans = {
           "Gestor documental": "2 GB",
           "Accountancy Network": "optional",
           "Empresas conectadas": "50"
-        }
+        },
+        extras: [
+            "caseManagement",
+            "rent",
+            "profiture",
+            "employeePortal",
+            "scan",
+            "phoneSupport",
+            "prioritySupport",
+            "seminars",
+            "civilLiability",
+            "accountancyNetwork"
+        ]
       },
 
       estandar: {
@@ -440,7 +452,14 @@ const erpPlans = {
           "Gestor documental": "5 GB",
           "Accountancy Network": "optional",
           "Empresas conectadas": "300"
-        }
+        },
+        extras: [
+          "rent",
+          "profiture",
+          "prioritySupport",
+          "civilLiability",
+          "accountancyNetwork"
+        ]
       },
 
       premium: {
@@ -473,7 +492,11 @@ const erpPlans = {
           "Gestor documental": "10 GB",
           "Accountancy Network": "optional",
           "Empresas conectadas": "Ilimitado"
-        }
+        },
+        extras: [
+          "civilLiability",
+          "accountancyNetwork"
+        ]
       }
     }
   },
@@ -511,7 +534,19 @@ const erpPlans = {
           "Gestor documental": "2 GB",
           "Accountancy Network": "optional",
           "Empresas conectadas": "50"
-        }
+        },
+        extras: [
+          "caseManagement",
+          "rent",
+          "profiture",
+          "scan",
+          "phoneSupport",
+          "prioritySupport",
+          "seminars",
+          "legalContent",
+          "civilLiability",
+          "accountancyNetwork"
+        ]
       },
 
       estandar: {
@@ -544,7 +579,14 @@ const erpPlans = {
           "Gestor documental": "5 GB",
           "Accountancy Network": "optional",
           "Empresas conectadas": "Ilimitado"
-        }
+        },
+        extras: [
+          "rent",
+          "profiture",
+          "prioritySupport",
+          "civilLiability",
+          "accountancyNetwork"
+        ]
       }
     }
   },
@@ -582,12 +624,86 @@ const erpPlans = {
           "Gestor documental": "5 GB",
           "Accountancy Network": "optional",
           "Empresas conectadas": "Ilimitado"
-        }
+        },
+        extras: [
+          "rent",
+          "profiture",
+          "prioritySupport",
+          "civilLiability",
+          "accountancyNetwork"
+        ]
       }
     }
   }
 };
 
+const erpExtras = {
+    phoneSupport: {
+        name: "Soporte telefónico",
+        price: 29.95,
+        period: "monthly"
+    },
+
+    prioritySupport: {
+        name: "Soporte prioritario",
+        price: 59.95,
+        period: "monthly"
+    },
+
+    profiture: {
+        name: "Profiture",
+        price: 40,
+        period: "monthly"
+    },
+
+    caseManagement: {
+        name: "Gestión de expedientes",
+        price: 29.95,
+        period: "monthly"
+    },
+
+    rent: {
+        name: "Renta",
+        price: 540,
+        period: "annual"
+    },
+
+    employeePortal: {
+        name: "Portal del empleado",
+        price: 14,
+        period: "monthly"
+    },
+
+    scan: {
+        name: "Scan anual",
+        price: 99,
+        period: "annual"
+    },
+
+    seminars: {
+        name: "Seminarios",
+        price: 21.95,
+        period: "monthly"
+    },
+
+    legalContent: {
+        name: "Contenido legal",
+        price: 19.95,
+        period: "monthly"
+    },
+
+    civilLiability: {
+        name: "Seguro responsabilidad civil",
+        price: 49.95,
+        period: "monthly"
+    },
+
+    accountancyNetwork: {
+        name: "Red de Asesorías",
+        price: 26.95,
+        period: "monthly"
+    }
+};
 const els = {
   appSelect: document.getElementById("appSelect"),
   planSelect: document.getElementById("planSelect"),
@@ -628,7 +744,15 @@ const els = {
   erpSummaryBase: document.getElementById("erpSummaryBase"),
   erpSummaryExtras: document.getElementById("erpSummaryExtras"),
   erpTotal: document.getElementById("erpTotal"),
-  erpTotalAnual: document.getElementById("erpTotalAnual")
+  erpExtrasList: document.getElementById("erpExtrasList"),
+  erpAnnualTotal: document.getElementById("erpAnnualTotal"),
+  erpDiscountTarget: document.getElementById("erpDiscountTarget"),
+  erpDiscountType: document.getElementById("erpDiscountType"),
+  erpDiscountValue: document.getElementById("erpDiscountValue"),
+  erpDiscountAmount: document.getElementById("erpDiscountAmount"),
+  erpBaseDiscountType: document.getElementById("erpBaseDiscountType"),
+  erpBaseDiscountValue: document.getElementById("erpBaseDiscountValue"),
+  erpBaseFinalPrice: document.getElementById("erpBaseFinalPrice"),
 };
 
 
@@ -850,6 +974,9 @@ function initErp() {
 
   els.erpFamilySelect.addEventListener("change", refreshErpPlans);
   els.erpPlanSelect.addEventListener("change", renderErpPlan);
+  els.erpDiscountTarget.addEventListener("change", calculateErpTotal);
+  els.erpDiscountType.addEventListener("change", calculateErpTotal);
+  els.erpDiscountValue.addEventListener("input", calculateErpTotal);
 
   refreshErpPlans();
 }
@@ -872,16 +999,41 @@ function refreshErpPlans() {
   renderErpPlan();
 }
 
-function createErpFeatureValue(value) {
+function createErpFeatureValue(value, featureName) {
   const wrapper = document.createElement("div");
   wrapper.className = "erp-feature-value";
+
+  const feature =
+    typeof value === "object"
+      ? value
+      : { status: value };
+
+  if (feature.status === "optional" && feature.extraKey) {
+    const extra = erpExtras[feature.extraKey];
+
+    const label = document.createElement("label");
+    label.className = "erp-extra-toggle";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "erp-extra-checkbox";
+    checkbox.dataset.extraKey = feature.extraKey;
+
+    const text = document.createElement("span");
+    text.textContent = `${extra.name} · ${formatErpExtraPrice(extra)}`;
+
+    label.append(checkbox, text);
+    wrapper.appendChild(label);
+
+    return wrapper;
+  }
 
   const status = document.createElement("i");
   status.className = "status";
 
   const text = document.createElement("span");
 
-  switch (value) {
+  switch (feature.status) {
     case "included":
       status.classList.add("included");
       text.textContent = "Incluido";
@@ -898,7 +1050,7 @@ function createErpFeatureValue(value) {
       break;
 
     default:
-      text.textContent = value;
+      text.textContent = feature.status;
       wrapper.appendChild(text);
       return wrapper;
   }
@@ -906,6 +1058,14 @@ function createErpFeatureValue(value) {
   wrapper.append(status, text);
 
   return wrapper;
+}
+
+function formatErpExtraPrice(extra) {
+  if (extra.period === "annual") {
+    return `${euros(extra.price)}/año`;
+  }
+
+  return `${euros(extra.price)}/mes`;
 }
 
 function renderErpPlan() {
@@ -926,7 +1086,7 @@ function renderErpPlan() {
   els.erpSummaryBase.textContent = euros(plan.price);
   els.erpSummaryExtras.textContent = euros(0);
   els.erpTotal.textContent = euros(plan.price);
-  els.erpTotalAnual.textContent = euros(plan.price * 12);
+  els.erpAnnualTotal.textContent = euros(plan.price * 12);
 
   els.erpFeaturesTable.innerHTML = "";
 
@@ -938,11 +1098,252 @@ function renderErpPlan() {
     name.className = "erp-feature-name";
     name.textContent = featureName;
 
-    const value = createErpFeatureValue(featureValue);
+    const value = createErpFeatureValue(featureValue, featureName);
 
     row.append(name, value);
     els.erpFeaturesTable.appendChild(row);
   });
+
+  document
+  .querySelectorAll(".erp-extra-checkbox")
+  .forEach(checkbox => {
+    checkbox.addEventListener("change", calculateErpTotal);
+  });
+
+  renderErpExtras(plan);
+  calculateErpTotal();
+}
+
+function renderErpExtras(plan) {
+  els.erpExtrasList.innerHTML = "";
+
+  const extras = plan.extras || [];
+
+  extras.forEach(extraKey => {
+    const extra = erpExtras[extraKey];
+
+    if (!extra) return;
+
+    const row = document.createElement("div");
+    row.className = "erp-extra-row";
+    row.dataset.extraKey = extraKey;
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "erp-extra-checkbox";
+    checkbox.dataset.extraKey = extraKey;
+
+    const description = document.createElement("div");
+    description.className = "erp-extra-description";
+
+    const name = document.createElement("strong");
+    name.textContent = extra.name;
+
+    const period = document.createElement("small");
+    period.textContent =
+      extra.period === "annual"
+        ? "Facturación anual"
+        : "Facturación mensual";
+
+    description.append(name, period);
+
+    const originalPrice = document.createElement("span");
+    originalPrice.className = "erp-extra-original-price";
+    originalPrice.textContent =
+      extra.period === "annual"
+        ? `${euros(extra.price)}/año`
+        : `${euros(extra.price)}/mes`;
+
+    const discountType = document.createElement("select");
+    discountType.className = "erp-extra-discount-type";
+    discountType.dataset.extraKey = extraKey;
+    discountType.disabled = true;
+
+    discountType.innerHTML = `
+      <option value="none">Sin descuento</option>
+      <option value="percentage">%</option>
+      <option value="fixed">€</option>
+    `;
+
+    const discountValue = document.createElement("input");
+    discountValue.type = "number";
+    discountValue.min = "0";
+    discountValue.step = "0.01";
+    discountValue.value = "0";
+    discountValue.className = "erp-extra-discount-value";
+    discountValue.dataset.extraKey = extraKey;
+    discountValue.disabled = true;
+
+    const finalPrice = document.createElement("strong");
+    finalPrice.className = "erp-extra-final-price";
+    finalPrice.dataset.extraKey = extraKey;
+    finalPrice.textContent = originalPrice.textContent;
+
+    row.append(
+      checkbox,
+      description,
+      originalPrice,
+      discountType,
+      discountValue,
+      finalPrice
+    );
+
+    els.erpExtrasList.appendChild(row);
+  });
+
+  document.querySelectorAll(".erp-extra-checkbox").forEach(checkbox => {
+    checkbox.addEventListener("change", event => {
+      const row = event.target.closest(".erp-extra-row");
+
+      row.querySelector(".erp-extra-discount-type").disabled =
+        !event.target.checked;
+
+      row.querySelector(".erp-extra-discount-value").disabled =
+        !event.target.checked;
+
+      calculateErpTotal();
+    });
+  });
+
+  document
+    .querySelectorAll(".erp-extra-discount-type, .erp-extra-discount-value")
+    .forEach(field => {
+      field.addEventListener("input", calculateErpTotal);
+      field.addEventListener("change", calculateErpTotal);
+    });
+}
+
+function calculateErpTotal() {
+  const familyKey = els.erpFamilySelect.value;
+  const planKey = els.erpPlanSelect.value;
+
+  const plan = erpPlans[familyKey]?.plans[planKey];
+
+  if (!plan) return;
+
+  let extrasMonthly = 0;
+  let extrasAnnual = 0;
+
+  document
+    .querySelectorAll(".erp-extra-checkbox:checked")
+    .forEach(checkbox => {
+      const extra = erpExtras[checkbox.dataset.extraKey];
+
+      if (!extra) return;
+
+      if (extra.period === "monthly") {
+        extrasMonthly += extra.price;
+        extrasAnnual += extra.price * 12;
+      }
+
+      if (extra.period === "annual") {
+        extrasAnnual += extra.price;
+        extrasMonthly += extra.price / 12;
+      }
+    });
+
+  const baseDiscountType = els.erpBaseDiscountType.value;
+  const baseDiscountValue = Number(
+    els.erpBaseDiscountValue.value || 0
+  );
+
+  const baseMonthly = applyDiscount(
+    plan.price,
+    baseDiscountType,
+    baseDiscountValue
+  );
+
+  const baseAnnual = baseMonthly * 12;
+  const totalMonthly = baseMonthly + extrasMonthly;
+  const totalAnnual = baseAnnual + extrasAnnual;
+
+  const totalMonthly = baseMonthly + extrasMonthly;
+  const totalAnnual = baseAnnual + extrasAnnual;
+
+  els.erpSummaryBase.textContent = euros(baseMonthly);
+  els.erpSummaryExtras.textContent = euros(extrasMonthly);
+  els.erpTotal.textContent = euros(totalMonthly);
+
+  els.erpAnnualTotal.textContent = euros(totalAnnual);
+}
+
+function applyDiscount(price, type, value) {
+  const safePrice = Math.max(0, Number(price) || 0);
+  const safeValue = Math.max(0, Number(value) || 0);
+
+  if (type === "percentage") {
+    const percentage = Math.min(safeValue, 100);
+    return safePrice - safePrice * (percentage / 100);
+  }
+
+  if (type === "fixed") {
+    return Math.max(0, safePrice - safeValue);
+  }
+
+  return safePrice;
+}
+
+function calculateErpTotal() {
+  const familyKey = els.erpFamilySelect.value;
+  const planKey = els.erpPlanSelect.value;
+  const plan = erpPlans[familyKey]?.plans[planKey];
+
+  if (!plan) return;
+
+  let extrasMonthly = 0;
+  let extrasAnnual = 0;
+
+  document.querySelectorAll(".erp-extra-row").forEach(row => {
+    const checkbox = row.querySelector(".erp-extra-checkbox");
+
+    if (!checkbox.checked) return;
+
+    const extraKey = row.dataset.extraKey;
+    const extra = erpExtras[extraKey];
+
+    if (!extra) return;
+
+    const discountType =
+      row.querySelector(".erp-extra-discount-type").value;
+
+    const discountValue = Number(
+      row.querySelector(".erp-extra-discount-value").value || 0
+    );
+
+    const discountedPrice = applyDiscount(
+      extra.price,
+      discountType,
+      discountValue
+    );
+
+    const finalPriceElement = row.querySelector(".erp-extra-final-price");
+
+    finalPriceElement.textContent =
+      extra.period === "annual"
+        ? `${euros(discountedPrice)}/año`
+        : `${euros(discountedPrice)}/mes`;
+
+    if (extra.period === "monthly") {
+      extrasMonthly += discountedPrice;
+      extrasAnnual += discountedPrice * 12;
+    }
+
+    if (extra.period === "annual") {
+      extrasAnnual += discountedPrice;
+      extrasMonthly += discountedPrice / 12;
+    }
+  });
+
+  const baseMonthly = plan.price;
+  const baseAnnual = plan.price * 12;
+
+  const totalMonthly = baseMonthly + extrasMonthly;
+  const totalAnnual = baseAnnual + extrasAnnual;
+
+  els.erpSummaryBase.textContent = euros(baseMonthly);
+  els.erpSummaryExtras.textContent = euros(extrasMonthly);
+  els.erpTotal.textContent = euros(totalMonthly);
+  els.erpAnnualTotal.textContent = euros(totalAnnual);
 }
 
 function refreshPlans() {
