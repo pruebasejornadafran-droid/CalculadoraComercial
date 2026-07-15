@@ -102,7 +102,7 @@ const apps = {
     plans: ["Activación licencia"],
     billingOptions: [{ value: "price", label: "Compra", field: "price", period: "annual" }],
     items: [
-      { plan: "Activación licencia", price: 50.00 }
+      { plan: "Activación licencia", price: 50.00, userExtra: 5.00 }
     ]
   },
 
@@ -430,15 +430,23 @@ els.selectMdlGest.addEventListener ("change", () => {
 
 usersExtra.addEventListener("change", () => {
   if (usersExtra.checked) {
-        uExtra.classList.remove("hidden");
-    } else {
-        uExtra.classList.add("hidden");
-    }
+    uExtra.classList.remove("hidden");
+    uExtra.value = 0;
+    calculate();
+  } else {
+    uExtra.classList.add("hidden");
+    uExtra.value = 0;
+    calculate();
+  }
+});
+
+uExtra.addEventListener("change", () => {
+  calculate();
 });
 
 els.gestLaboral.addEventListener("click", () => {
   if (!els.gestLaboral.classList.contains ("active")) {
-    els.totalLaboral.textContent = euros(0);
+    els.totalLaboral.textContent = euros(35);
     els.porEmp.value = 0;
     els.porTbj.value = 0;
    } 
@@ -488,7 +496,6 @@ function updateExtraFields() {
   switch (els.appSelect.value) {
     case "msnotifica":
       module.innerHTML = "Certifácil";
-      addModl.checked = false;
       moduleGestExtra.classList.add("hidden");
       extra.classList.remove("hidden");
       extraUsersLabel.classList.remove("hidden");
@@ -924,7 +931,7 @@ function calcularTrfVariable () {
         els.porEmp.value > 0 ? porEmpresa = els.porEmp.value * precioEmpresa : 0;
         els.porTbj.value > 0 ? porEmpleado = els.porTbj.value  * precioTrabajador : 0;
         total = Number(porEmpleado) + Number(porEmpresa);
-        els.totalLaboral.textContent = euros(total);
+        total >= 35 ? els.totalLaboral.textContent = euros(total) : els.totalLaboral.textContent = euros(35);
       break;
       case "paquete_fiscal":
         let empMdl = 0;
@@ -940,7 +947,7 @@ function calcularTrfVariable () {
         els.empDrct.value > 0 ? empDrct = els.empDrct.value  * precioEmpDrct : 0;
         els.empScds.value > 0 ? scds = els.empScds.value  * precioScds : 0;
         totalFiscal = Number(empMdl) + Number(empDrct) + Number(scds);
-        els.totalFiscal.textContent = euros(totalFiscal);
+        els.totalFiscal.textContent = euros(totalFiscal) + " + " + euros(300) + " por implantación = " + euros(totalFiscal+300);
       break;
     }
   }
@@ -1036,7 +1043,7 @@ function calculate() {
       const result = valueToMonthlyAnnual(value, billing.period, quantity, mantenimiento);
       monthly = result.monthly;
       annual = result.annual;
-      main = result.main;
+      main = result.main + result.maintenance;
       mant = result.maintenance;
       subtitle = `${billing.label} · ${plan}.`;
       notice = billing.period === "monthly"
@@ -1047,6 +1054,7 @@ function calculate() {
 
   if (app.mode === "msnotifica") {
     const tier = app.tiers.find(t => quantity <= t.mailboxes) || app.tiers[app.tiers.length - 1];
+    const certFacil = apps["certifacil"].items[0];
     const billingMode = els.billingSelect.value;
     mant = tier.maintenance || 0;
     const mailboxTier = calcLicenciasExtra(
@@ -1057,21 +1065,38 @@ function calculate() {
     const extraUsers = Number(els.extraUsersInput?.value || 0);
     const extraUsersAnnual = extraUsers * (tier.userExtra || 0);
     const extraUsersMonthly = extraUsersAnnual / 12;
-    let uExtra = 0;
+    const extraCertUser = Number(uExtra.value);
+    let usExtra = 0;
+    let usCrtExtra = 0;
 
     if (extraUsers !== 0){
-        uExtra = calcExtraUsers (extraUsers, tier);
-        annual += uExtra;
+      usExtra = calcExtraUsers (extraUsers, tier);
+      annual += usExtra;
+    }
+    if (addModl.checked){
+      annual += certFacil.price;
+    }
+    if (extraCertUser !== 0) {
+      usCrtExtra = calcExtraUsers(extraCertUser, certFacil);
+      annual += usCrtExtra;
     }
     if (billingMode === "compra") {
       mant = tier.maintenance || 0;
       annual += tier.price + mant + mailboxTier;
       monthly = annual / 12;
       main = annual;
-      if (uExtra == 0){
-        subtitle = `Compra · licencia ${euros(tier.price)} + mantenimiento ${euros(mant)} + buzones extra ${euros(mailboxTier)}.`;
-      } else {
-        subtitle = `Compra · licencia ${euros(tier.price)} + mantenimiento ${euros(mant)} + usuario extra ${euros(uExtra)} + buzones extra ${euros(mailboxTier)}.`;
+      subtitle = `Compra · licencia ${euros(tier.price)} + mantenimiento ${euros(mant)}.`;
+      if (extraUsers !== 0) {
+        subtitle += ` + usuario extra ${euros(usExtra)}`;
+      }
+      if (mailboxTier !== 0) {
+        subtitle += `  + buzones extra ${euros(mailboxTier)}`;
+      }
+      if (addModl.checked){
+        subtitle += ` + certifácil ${euros(certFacil.price)}`;
+      }
+      if (extraCertUser !== 0) {
+        subtitle += ` + usuarios extra certifácil ${euros(usCrtExtra)}`;
       }
     }
     if (billingMode === "saas") {
