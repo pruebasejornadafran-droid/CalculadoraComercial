@@ -373,6 +373,221 @@ const apps = {
   }
 };
 
+const erpPlans = {
+  despacho: {
+    name: "ERP Despacho",
+    plans: {
+      esencial: {
+        name: "Esencial",
+        price: 159.95,
+        users: 1,
+        maxUsers: 2,
+        features: {
+          "Laboral": "included",
+          "Contabilidad": "included",
+          "Gestión del despacho": "included",
+          "Facturación": "included",
+          "Portal Asesor": "included",
+          "Gestión de expedientes": "optional",
+          "Renta": "optional",
+          "Profiture": "optional",
+          "DiezBank": "1",
+          "Portal del empleado": "optional",
+          "Convenios": "1",
+          "Scan anual": "optional",
+          "Contasimple": "1",
+          "Soporte online": "included",
+          "Soporte telefónico": "optional",
+          "Soporte prioritario": "unavailable",
+          "Copia de seguridad online": "included",
+          "Socio de Adecla": "included",
+          "Seminarios": "optional",
+          "Contenido legal": "included",
+          "Seguro de responsabilidad civil": "optional",
+          "Gestor documental": "2 GB",
+          "Accountancy Network": "optional",
+          "Empresas conectadas": "50"
+        }
+      },
+
+      estandar: {
+        name: "Estándar",
+        price: 299.95,
+        users: 3,
+        maxUsers: "Ilimitado",
+        features: {
+          "Laboral": "included",
+          "Contabilidad": "included",
+          "Gestión del despacho": "included",
+          "Facturación": "included",
+          "Portal Asesor": "included",
+          "Gestión de expedientes": "included",
+          "Renta": "optional",
+          "Profiture": "optional",
+          "DiezBank": "5",
+          "Portal del empleado": "5",
+          "Convenios": "5",
+          "Scan anual": "500",
+          "Contasimple": "3",
+          "Soporte online": "included",
+          "Soporte telefónico": "included",
+          "Soporte prioritario": "unavailable",
+          "Copia de seguridad online": "included",
+          "Socio de Adecla": "included",
+          "Seminarios": "included",
+          "Contenido legal": "included",
+          "Seguro de responsabilidad civil": "optional",
+          "Gestor documental": "5 GB",
+          "Accountancy Network": "optional",
+          "Empresas conectadas": "300"
+        }
+      },
+
+      premium: {
+        name: "Premium",
+        price: 369.95,
+        users: 3,
+        maxUsers: "Ilimitado",
+        features: {
+          "Laboral": "included",
+          "Contabilidad": "included",
+          "Gestión del despacho": "included",
+          "Facturación": "included",
+          "Portal Asesor": "included",
+          "Gestión de expedientes": "included",
+          "Renta": "Ilimitado",
+          "Profiture": "included",
+          "DiezBank": "10",
+          "Portal del empleado": "10",
+          "Convenios": "10",
+          "Scan anual": "1.000",
+          "Contasimple": "5",
+          "Soporte online": "included",
+          "Soporte telefónico": "included",
+          "Soporte prioritario": "included",
+          "Copia de seguridad online": "included",
+          "Socio de Adecla": "included",
+          "Seminarios": "included",
+          "Contenido legal": "included",
+          "Seguro de responsabilidad civil": "optional",
+          "Gestor documental": "10 GB",
+          "Accountancy Network": "optional",
+          "Empresas conectadas": "Ilimitado"
+        }
+      }
+    }
+  },
+
+  fiscal: {
+    name: "Fiscal",
+    plans: {
+      esencial: {
+        name: "Esencial",
+        price: 129.95,
+        users: 1,
+        maxUsers: 2,
+        features: {
+          "Laboral": "unavailable",
+          "Contabilidad": "included",
+          "Gestión del despacho": "included",
+          "Facturación": "included",
+          "Portal Asesor": "included",
+          "Gestión de expedientes": "optional",
+          "Renta": "optional",
+          "Profiture": "optional",
+          "DiezBank": "1",
+          "Portal del empleado": "unavailable",
+          "Convenios": "unavailable",
+          "Scan anual": "optional",
+          "Contasimple": "1",
+          "Soporte online": "included",
+          "Soporte telefónico": "optional",
+          "Soporte prioritario": "unavailable",
+          "Copia de seguridad online": "included",
+          "Socio de Adecla": "included",
+          "Seminarios": "optional",
+          "Contenido legal": "optional",
+          "Seguro de responsabilidad civil": "optional",
+          "Gestor documental": "2 GB",
+          "Accountancy Network": "optional",
+          "Empresas conectadas": "50"
+        }
+      },
+
+      estandar: {
+        name: "Estándar",
+        price: 209.95,
+        users: 3,
+        maxUsers: "Ilimitado",
+        features: {
+          "Laboral": "unavailable",
+          "Contabilidad": "included",
+          "Gestión del despacho": "included",
+          "Facturación": "included",
+          "Portal Asesor": "included",
+          "Gestión de expedientes": "included",
+          "Renta": "optional",
+          "Profiture": "optional",
+          "DiezBank": "5",
+          "Portal del empleado": "unavailable",
+          "Convenios": "unavailable",
+          "Scan anual": "500",
+          "Contasimple": "3",
+          "Soporte online": "included",
+          "Soporte telefónico": "included",
+          "Soporte prioritario": "unavailable",
+          "Copia de seguridad online": "included",
+          "Socio de Adecla": "included",
+          "Seminarios": "included",
+          "Contenido legal": "included",
+          "Seguro de responsabilidad civil": "optional",
+          "Gestor documental": "5 GB",
+          "Accountancy Network": "optional",
+          "Empresas conectadas": "Ilimitado"
+        }
+      }
+    }
+  },
+
+  laboral: {
+    name: "Laboral",
+    plans: {
+      estandar: {
+        name: "Estándar",
+        price: 209.95,
+        users: 3,
+        maxUsers: "Ilimitado",
+        features: {
+          "Laboral": "included",
+          "Contabilidad": "unavailable",
+          "Gestión del despacho": "included",
+          "Facturación": "included",
+          "Portal Asesor": "included",
+          "Gestión de expedientes": "included",
+          "Renta": "optional",
+          "Profiture": "optional",
+          "DiezBank": "unavailable",
+          "Portal del empleado": "5",
+          "Convenios": "5",
+          "Scan anual": "unavailable",
+          "Contasimple": "unavailable",
+          "Soporte online": "included",
+          "Soporte telefónico": "included",
+          "Soporte prioritario": "unavailable",
+          "Copia de seguridad online": "included",
+          "Socio de Adecla": "included",
+          "Seminarios": "included",
+          "Contenido legal": "included",
+          "Seguro de responsabilidad civil": "optional",
+          "Gestor documental": "5 GB",
+          "Accountancy Network": "optional",
+          "Empresas conectadas": "Ilimitado"
+        }
+      }
+    }
+  }
+};
+
 const els = {
   appSelect: document.getElementById("appSelect"),
   planSelect: document.getElementById("planSelect"),
@@ -403,9 +618,17 @@ const els = {
   empDrct: document.getElementById("empDrct"),
   empScds: document.getElementById("empScds"),
   totalFiscal: document.getElementById("ttlFiscal"),
-  totalLaboral: document.getElementById("ttlLaboral")
-  /*cloudSelect: document.getElementById("cloudSelect"),
-  cloudField: document.getElementById("cloudField")*/
+  totalLaboral: document.getElementById("ttlLaboral"),
+  erpFamilySelect: document.getElementById("erpFamilySelect"),
+  erpPlanSelect: document.getElementById("erpPlanSelect"),
+  erpBasePrice: document.getElementById("erpBasePrice"),
+  erpIncludedUsers: document.getElementById("erpIncludedUsers"),
+  erpMaxUsers: document.getElementById("erpMaxUsers"),
+  erpFeaturesTable: document.getElementById("erpFeaturesTable"),
+  erpSummaryBase: document.getElementById("erpSummaryBase"),
+  erpSummaryExtras: document.getElementById("erpSummaryExtras"),
+  erpTotal: document.getElementById("erpTotal"),
+  erpTotalAnual: document.getElementById("erpTotalAnual")
 };
 
 
@@ -616,6 +839,112 @@ function init() {
   calculate();
 }
 
+function initErp() {
+  if (
+    !els.erpFamilySelect ||
+    !els.erpPlanSelect ||
+    !els.erpFeaturesTable
+  ) {
+    return;
+  }
+
+  els.erpFamilySelect.addEventListener("change", refreshErpPlans);
+  els.erpPlanSelect.addEventListener("change", renderErpPlan);
+
+  refreshErpPlans();
+}
+
+function refreshErpPlans() {
+  const familyKey = els.erpFamilySelect.value;
+  const family = erpPlans[familyKey];
+
+  els.erpPlanSelect.innerHTML = "";
+
+  Object.entries(family.plans).forEach(([planKey, plan]) => {
+    const option = document.createElement("option");
+
+    option.value = planKey;
+    option.textContent = plan.name;
+
+    els.erpPlanSelect.appendChild(option);
+  });
+
+  renderErpPlan();
+}
+
+function createErpFeatureValue(value) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "erp-feature-value";
+
+  const status = document.createElement("i");
+  status.className = "status";
+
+  const text = document.createElement("span");
+
+  switch (value) {
+    case "included":
+      status.classList.add("included");
+      text.textContent = "Incluido";
+      break;
+
+    case "optional":
+      status.classList.add("optional");
+      text.textContent = "Opcional";
+      break;
+
+    case "unavailable":
+      status.classList.add("unavailable");
+      text.textContent = "No disponible";
+      break;
+
+    default:
+      text.textContent = value;
+      wrapper.appendChild(text);
+      return wrapper;
+  }
+
+  wrapper.append(status, text);
+
+  return wrapper;
+}
+
+function renderErpPlan() {
+  const familyKey = els.erpFamilySelect.value;
+  const planKey = els.erpPlanSelect.value;
+
+  const family = erpPlans[familyKey];
+  const plan = family?.plans[planKey];
+
+  if (!plan) {
+    return;
+  }
+
+  els.erpBasePrice.textContent = euros(plan.price);
+  els.erpIncludedUsers.textContent = plan.users;
+  els.erpMaxUsers.textContent = plan.maxUsers;
+
+  els.erpSummaryBase.textContent = euros(plan.price);
+  els.erpSummaryExtras.textContent = euros(0);
+  els.erpTotal.textContent = euros(plan.price);
+  els.erpTotalAnual.textContent = euros(plan.price * 12);
+
+  els.erpFeaturesTable.innerHTML = "";
+
+  Object.entries(plan.features).forEach(([featureName, featureValue]) => {
+    const row = document.createElement("div");
+    row.className = "erp-feature-row";
+
+    const name = document.createElement("div");
+    name.className = "erp-feature-name";
+    name.textContent = featureName;
+
+    const value = createErpFeatureValue(featureValue);
+
+    row.append(name, value);
+    els.erpFeaturesTable.appendChild(row);
+  });
+}
+
 function refreshPlans() {
   const app = apps[els.appSelect.value];
   els.planSelect.innerHTML = "";
@@ -738,7 +1067,7 @@ function calcularTrabajadores(ejornada, quantity, plan) {
 
 function calcDocs(quantity, plan, period, precioTarifa, efirma, precioExtraUser, extraUser) {
   let precioDocExtra = efirma.extraDocs;
-  let usersPlus = calcExtraUsers(extraUser, period === "annual" ? precioExtraUser : precioExtraUser / 12, efirma);
+  let usersPlus = calcExtraUsers(extraUser, efirma);
   if (plan === "Concertada") {
     switch (true) {
       case (quantity >= 5000 && quantity < 12500) || (quantity >= 417 && quantity < 1042):
@@ -785,7 +1114,7 @@ function calcDocs(quantity, plan, period, precioTarifa, efirma, precioExtraUser,
         break;
     }
   } else {
-    if (period === "monthly") return { monthly: precioTarifa + usersPlus, annual: (precioTarifa * 12) + usersPlus, main: precioTarifa + usersPlus };
+    if (period === "monthly") return { monthly: precioTarifa + (usersPlus / 12), annual: (precioTarifa * 12) + usersPlus, main: precioTarifa + (usersPlus / 12) };
     if (period === "annual") return { monthly: (precioTarifa / 12) + usersPlus, annual: precioTarifa + usersPlus, main: precioTarifa + usersPlus };
   }
   return { monthly: 0, annual: precioTarifa, main: precioTarifa };
@@ -1193,4 +1522,22 @@ async function copySummary() {
   }
 }
 
+const tabButtons = document.querySelectorAll(".tab-button");
+const tabs = document.querySelectorAll(".tab");
+
+tabButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    const selectedTabId = button.dataset.tab;
+
+    tabButtons.forEach(btn => {
+      btn.classList.toggle("active", btn === button);
+    });
+
+    tabs.forEach(tab => {
+      tab.classList.toggle("active", tab.id === selectedTabId);
+    });
+  });
+});
+
 init();
+initErp();

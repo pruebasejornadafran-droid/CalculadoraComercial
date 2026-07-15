@@ -15,115 +15,230 @@
         <p class="subtitle">Selecciona la aplicación, indica el volumen y obtén el precio recomendado automáticamente.</p>
       </div>
     </section>
-    <div class="calculator-layout">
-      <section class="calculator-card">
-        <div class="derecha">
-            <button id="infoButton" class="info-button">Particularidades</button>
-        </div>
-        
-        <div class="grid two">
-          <label class="field">
-            <span>Aplicación</span>
-            <select id="appSelect"></select>
-          </label>
+    <div class="tabs">
+      <div class="tabs-header">
+        <button type="button" class="tab-button active" data-tab="tab1">
+          Microdata
+        </button>
 
-          <label class="field" id="planField">
-            <span>Plan</span>
-            <select id="planSelect"></select>
-          </label>
-        </div>
+        <button type="button" class="tab-button" data-tab="tab2">
+          ERP
+        </button>
+      </div>
+      <div class="tab-container">
+        <div class="tab active" id="tab1">
+          <div class="tab-content">
+            <div class="calculator-layout">
+              <section class="calculator-card">
+                <div class="derecha">
+                    <button id="infoButton" class="info-button">Particularidades</button>
+                </div>
+                <div class="grid two">
+                  <label class="field">
+                    <span>Aplicación</span>
+                    <select id="appSelect"></select>
+                  </label>
 
-        <div class="grid two">
-          <label class="field">
-            <span id="quantityLabel">Cantidad</span>
-            <input id="quantityInput" type="number" min="1" step="1" value="5" />
-            <select id="selectBuzones" style="display: none;"></select>
-          </label>
+                  <label class="field" id="planField">
+                    <span>Plan</span>
+                    <select id="planSelect"></select>
+                  </label>
+                </div>
 
-          <label class="field" id="billingField">
-            <span>Facturación</span>
-            <select id="billingSelect">
-              <option value="annual" selected>Anual</option>
-              <option value="monthly">Mensual</option>
-            </select>
-          </label>
-        </div>
-        <div class="grid two">
-        <label id="extraUsersLabel" class="field hidden">
-            <span id="extraUsers">Usuarios extra</span>
-            <input id="usersInput" type="number" min="0" step="1" value="0" />
-          </label>
+                <div class="grid two">
+                  <label class="field">
+                    <span id="quantityLabel">Cantidad</span>
+                    <input id="quantityInput" type="number" min="1" step="1" value="5" />
+                    <select id="selectBuzones" style="display: none;"></select>
+                  </label>
 
-          <label id="extraMdl" class="field2 hidden">
-            <span id="extraModule"><label class="field" id="modulo"></label><input id="addModl" type="checkbox"/></span>
-              <div class="hidden" id="usersCertiFExtra">
-                <div class="doble">Usuarios Extra:<input type="checkbox" class="peque" id="userExtra"/></div>
-                <input class="hidden" id="usersCFExtra" type="number" min="" step="1" value="0" />
-              </div>
-              <div class="hidden" id="moduleGestExtra">
-                <select id="gestModules"></select>
-              </div>
-          </label>        
-          
-        </div>
-        <div class="notice" id="noticeBox"></div>
+                  <label class="field" id="billingField">
+                    <span>Facturación</span>
+                    <select id="billingSelect">
+                      <option value="annual" selected>Anual</option>
+                      <option value="monthly">Mensual</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="grid two">
+                <label id="extraUsersLabel" class="field hidden">
+                    <span id="extraUsers">Usuarios extra</span>
+                    <input id="usersInput" type="number" min="0" step="1" value="0" />
+                  </label>
 
-        <section class="result-card">
-          <div>
-            <p class="result-label">Resultado estimado</p>
-            <h2 id="mainResult">0,00 €</h2>
-            <p id="resultSubtitle">Selecciona una tarifa para calcular.</p>
-          </div>
-        </section>
-          
-        <section class="breakdown">
-          <div class="row"><span>App</span><strong id="summaryApp">-</strong></div>
-          <div class="row"><span>Plan / tarifa</span><strong id="summaryPlan">-</strong></div>
-          <div class="row"><span>Mantenimiento</span><strong id="summaryMant">-</strong></div>
-          <div class="row"><span id="summaryQuantityLabel">Cantidad</span><strong id="summaryQuantity">-</strong></div>
-          <div class="row"><span>Precio mensual</span><strong id="summaryMonthly">-</strong></div>
-          <div class="row"><span>Precio anual</span><strong id="summaryAnnual">-</strong></div>
-        </section>
-      </section>
-      <aside class="variable-panel">
-        <div class="accordion hidden" id="trfVrb">
-          <div class="accordion-item hidden" id="gestFiscal">
-            <button class="accordion-header">Calcula y compara tarifa variable</button>
-            <div class="accordion-content" >
-              <section class="tabla">
-                <div class="row"><span>Empresas en Módulos</span></div>
-                <div class="row"><input id="empMdl" type="number" min="0" step="1" value="0"/></div>
+                  <label id="extraMdl" class="field2 hidden">
+                    <span id="extraModule"><label class="field" id="modulo"></label><input id="addModl" type="checkbox"/></span>
+                      <div class="hidden" id="usersCertiFExtra">
+                        <div class="doble">Usuarios Extra:<input type="checkbox" class="peque" id="userExtra"/></div>
+                        <input class="hidden" id="usersCFExtra" type="number" min="" step="1" value="0" />
+                      </div>
+                      <div class="hidden" id="moduleGestExtra">
+                        <select id="gestModules"></select>
+                      </div>
+                  </label>        
+                  
+                </div>
+                <div class="notice" id="noticeBox"></div>
 
-                <div class="row"><span>Empresas Directa y Simplificada</span></div>
-                <div class="row"><input id="empDrct" type="number" min="0" step="1" value="0"/></div>
-
-                <div class="row"><span>Empresas Sociedades</span></div>
-                <div class="row"><input id="empScds" type="number" min="0" step="1" value="0"/></div>
-
-                <div class="total-title">Total</div>
-                <div id="ttlFiscal" class="total-value">0,00 €</div>
+                <section class="result-card">
+                  <div>
+                    <p class="result-label">Resultado estimado</p>
+                    <h2 id="mainResult">0,00 €</h2>
+                    <p id="resultSubtitle">Selecciona una tarifa para calcular.</p>
+                  </div>
+                </section>
+                  
+                <section class="breakdown">
+                  <div class="row"><span>App</span><strong id="summaryApp">-</strong></div>
+                  <div class="row"><span>Plan / tarifa</span><strong id="summaryPlan">-</strong></div>
+                  <div class="row"><span>Mantenimiento</span><strong id="summaryMant">-</strong></div>
+                  <div class="row"><span id="summaryQuantityLabel">Cantidad</span><strong id="summaryQuantity">-</strong></div>
+                  <div class="row"><span>Precio mensual</span><strong id="summaryMonthly">-</strong></div>
+                  <div class="row"><span>Precio anual</span><strong id="summaryAnnual">-</strong></div>
+                </section>
               </section>
+              <aside class="variable-panel">
+                <div class="accordion hidden" id="trfVrb">
+                  <div class="accordion-item hidden" id="gestFiscal">
+                    <button class="accordion-header">Calcula y compara tarifa variable</button>
+                    <div class="accordion-content" >
+                      <section class="tabla">
+                        <div class="row"><span>Empresas en Módulos</span></div>
+                        <div class="row"><input id="empMdl" type="number" min="0" step="1" value="0"/></div>
+
+                        <div class="row"><span>Empresas Directa y Simplificada</span></div>
+                        <div class="row"><input id="empDrct" type="number" min="0" step="1" value="0"/></div>
+
+                        <div class="row"><span>Empresas Sociedades</span></div>
+                        <div class="row"><input id="empScds" type="number" min="0" step="1" value="0"/></div>
+
+                        <div class="total-title">Total</div>
+                        <div id="ttlFiscal" class="total-value">0,00 €</div>
+                      </section>
+                    </div>
+                  </div>
+                  <div class="accordion-item hidden" id="gestLaboral">
+                    <button class="accordion-header">Calcula y compara tarifa variable</button>
+                    <div class="accordion-content">
+                      <section class="tabla">
+                        <div class="label">Por empresa</div>
+                        <input id="porEmp" type="number" min="0" step="1" value="0">
+
+                        <div class="label">Por trabajador</div>
+                        <input id="porTbj" type="number" min="0" step="1" value="0">
+
+                        <div class="total-title">Total</div>
+                        <div id="ttlLaboral" class="total-value">35,00 €</div>
+                      </section>
+                    </div>
+                  </div>
+                </div>
+              </aside>
             </div>
           </div>
-          <div class="accordion-item hidden" id="gestLaboral">
-            <button class="accordion-header">Calcula y compara tarifa variable</button>
-            <div class="accordion-content">
-              <section class="tabla">
-                <div class="label">Por empresa</div>
-                <input id="porEmp" type="number" min="0" step="1" value="0">
+        </div>
+        <div class="tab" id="tab2">
+          <div class="tab-content">
+            <section class="erp-calculator">
+              <div class="erp-header">
+                <div>
+                  <p class="eyebrow">Cegid Diez</p>
+                  <h2 class="erp-title">ERP Despacho</h2>
+                  <p class="erp-subtitle">
+                    Selecciona una solución y añade los servicios opcionales.
+                  </p>
+                </div>
+              </div>
+              <div class="erp-layout">
+                <div class="erp-main">
+                  <div class="grid two">
+                    <label class="field">
+                      <span>Solución</span>
+                      <select id="erpFamilySelect">
+                        <option value="despacho">ERP Despacho</option>
+                        <option value="fiscal">Fiscal</option>
+                        <option value="laboral">Laboral</option>
+                      </select>
+                    </label>
 
-                <div class="label">Por trabajador</div>
-                <input id="porTbj" type="number" min="0" step="1" value="0">
+                    <label class="field">
+                      <span>Plan</span>
+                      <select id="erpPlanSelect"></select>
+                    </label>
+                  </div>
 
-                <div class="total-title">Total</div>
-                <div id="ttlLaboral" class="total-value">35,00 €</div>
-              </section>
-            </div>
+                  <section class="erp-plan-summary">
+                    <div>
+                      <span class="erp-summary-label">Precio base</span>
+                      <strong id="erpBasePrice">0,00 €</strong>
+                    </div>
+
+                    <div>
+                      <span class="erp-summary-label">Usuarios incluidos</span>
+                      <strong id="erpIncludedUsers">-</strong>
+                    </div>
+
+                    <div>
+                      <span class="erp-summary-label">Usuarios máximos</span>
+                      <strong id="erpMaxUsers">-</strong>
+                    </div>
+                  </section>
+                  <section class="erp-table-card">
+                    <div class="erp-table-title">
+                      <h3>Servicios adicionales</h3>
+                    </div>
+
+                    <div id="erpExtrasList" class="erp-extras-list">
+                      <!-- Se rellenará mediante JavaScript -->
+                    </div>
+                  </section>
+
+                  <section class="erp-result">
+                    <div>
+                      <span>Precio base</span>
+                      <strong id="erpSummaryBase">0,00 €</strong>
+                    </div>
+
+                    <div>
+                      <span>Servicios adicionales</span>
+                      <strong id="erpSummaryExtras">0,00 €</strong>
+                    </div>
+
+                    <div class="erp-result-total">
+                      <span>Total mensual estimado</span>
+                      <strong id="erpTotal">0,00 €</strong>
+                    </div>
+
+                    <div class="erp-result-total-anual">
+                      <span>Total anual estimado</span>
+                      <strong id="erpTotalAnual">0,00 €</strong>
+                    </div>
+                  </section>
+                </div>
+                <aside class="erp-side-panel">
+                  <section class="erp-table-card">
+                    <div class="erp-table-title">
+                      <h3>Funcionalidades del plan</h3>
+
+                      <div class="erp-legend">
+                        <span><i class="status included"></i> Incluido</span>
+                        <span><i class="status optional"></i> Opcional</span>
+                        <span><i class="status unavailable"></i> No disponible</span>
+                      </div>
+                    </div>
+
+                    <div id="erpFeaturesTable" class="erp-features-table">
+                      <!-- Se rellenará mediante JavaScript -->
+                    </div>
+                  </section>
+                </aside>
+              </div>
+            </section>
           </div>
         </div>
-      </aside>
+      </div>
     </div>
-  </main>
+    </main>
 
   <div id="infoModal" class="info-modal hidden">
   <div class="info-modal-card">
