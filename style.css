@@ -595,6 +595,7 @@ button {
 .erp-extra-row input[type="checkbox"] {
   width: 18px;
   height: 18px;
+  margin: 0;
 }
 
 .erp-extra-description {
@@ -774,8 +775,9 @@ button {
   padding: 14px 22px;
   border: 0;
   border-radius: 0;
-  background: var(--soft);
-  color: var(--accent);
+  background: transparent;
+  color: var(--bg);
+  font-size: 20px;
   font-weight: 700;
   cursor: pointer;
   border-bottom: 3px solid transparent;
@@ -803,7 +805,7 @@ button {
   display: flex;
   gap: 8px;
   padding: 0 20px;
-  background: var(--soft);
+  background: var(--accent);
   border-radius: var(--radius) var(--radius) 0 0;
   border: 1px solid rgba(255, 255, 255, 0.7);
   border-bottom: 0;
@@ -831,12 +833,12 @@ button {
 .erp-extra-row {
   display: grid;
   grid-template-columns:
-    auto
+    28px
     minmax(150px, 1fr)
-    auto
+    minmax(150px, 0.9fr)
+    minmax(130px, 0.8fr)
     90px
-    90px
-    auto;
+    minmax(110px, 0.7fr);
   gap: 12px;
   align-items: center;
   padding: 14px 18px;
@@ -846,6 +848,14 @@ button {
 .erp-extra-original-price {
   color: #64748b;
   font-size: 13px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.erp-extra-final-price {
+  text-align: right;
+  color: var(--text);
+  font-size: 16px;
   white-space: nowrap;
 }
 
@@ -854,12 +864,6 @@ button {
   padding: 9px 10px;
   border-radius: 10px;
   font-size: 13px;
-}
-
-.erp-extra-final-price {
-  min-width: 100px;
-  text-align: right;
-  white-space: nowrap;
 }
 
 @media (max-width: 900px) {
@@ -1058,4 +1062,14 @@ button {
 .erp-users-block strong {
   color: var(--text);
   font-size: 20px;
+}
+
+.erp-extra-tier-select,
+.erp-extra-discount-type,
+.erp-extra-discount-value {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 10px;
+  border-radius: 10px;
+  font-size: 13px;
 }

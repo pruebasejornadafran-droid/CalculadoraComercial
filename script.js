@@ -411,9 +411,10 @@ const erpPlans = {
         extras: [
             "caseManagement",
             "rent",
+            "diezScan",
+            "diezBank",
             "profiture",
             "employeePortal",
-            "scan",
             "phoneSupport",
             "prioritySupport",
             "seminars",
@@ -455,6 +456,8 @@ const erpPlans = {
         },
         extras: [
           "rent",
+          "diezScan",
+          "diezBank",
           "profiture",
           "prioritySupport",
           "civilLiability",
@@ -495,6 +498,8 @@ const erpPlans = {
         },
         extras: [
           "civilLiability",
+          "diezScan",
+          "diezBank",
           "accountancyNetwork"
         ]
       }
@@ -538,8 +543,9 @@ const erpPlans = {
         extras: [
           "caseManagement",
           "rent",
+          "diezScan",
+          "diezBank",
           "profiture",
-          "scan",
           "phoneSupport",
           "prioritySupport",
           "seminars",
@@ -582,6 +588,8 @@ const erpPlans = {
         },
         extras: [
           "rent",
+          "diezScan",
+          "diezBank",
           "profiture",
           "prioritySupport",
           "civilLiability",
@@ -627,6 +635,8 @@ const erpPlans = {
         },
         extras: [
           "rent",
+          "diezScan",
+          "diezBank",
           "profiture",
           "prioritySupport",
           "civilLiability",
@@ -682,43 +692,43 @@ const erpExtras = {
       tiers: [
         {
           value: 3000,
-          label: "3.000 documentos/año",
+          label: "3.000",
           monthly: 50,
           unitPrice: 0.20
         },
         {
           value: 6500,
-          label: "6.500 documentos/año",
+          label: "6.500",
           monthly: 100,
           unitPrice: 0.18
         },
         {
           value: 10000,
-          label: "10.000 documentos/año",
+          label: "10.000",
           monthly: 150,
           unitPrice: 0.18
         },
         {
           value: 14000,
-          label: "14.000 documentos/año",
+          label: "14.000",
           monthly: 200,
           unitPrice: 0.17
         },
         {
           value: 18000,
-          label: "18.000 documentos/año",
+          label: "18.000",
           monthly: 250,
           unitPrice: 0.17
         },
         {
           value: 24000,
-          label: "24.000 documentos/año",
+          label: "24.000",
           monthly: 300,
           unitPrice: 0.15
         },
         {
           value: 30000,
-          label: "30.000 documentos/año",
+          label: "30.000",
           monthly: 350,
           unitPrice: 0.14
         }
@@ -751,17 +761,17 @@ const erpExtras = {
       tiers: [
         {
           value: 10,
-          label: "10 conexiones",
+          label: "10",
           monthly: 25
         },
         {
           value: 25,
-          label: "25 conexiones",
+          label: "25",
           monthly: 50
         },
         {
           value: 50,
-          label: "50 conexiones",
+          label: "50",
           monthly: 75
         }
       ]
@@ -1193,7 +1203,10 @@ function renderErpExtras(plan) {
   extras.forEach(extraKey => {
     const extra = erpExtras[extraKey];
 
-    if (!extra) return;
+    if (!extra) {
+      console.error(`No existe el extra "${extraKey}"`);
+      return;
+    }
 
     const row = document.createElement("div");
     row.className = "erp-extra-row";
@@ -1202,7 +1215,6 @@ function renderErpExtras(plan) {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.className = "erp-extra-checkbox";
-    checkbox.dataset.extraKey = extraKey;
 
     const description = document.createElement("div");
     description.className = "erp-extra-description";
@@ -1218,16 +1230,33 @@ function renderErpExtras(plan) {
 
     description.append(name, period);
 
-    const originalPrice = document.createElement("span");
-    originalPrice.className = "erp-extra-original-price";
-    originalPrice.textContent =
-      extra.period === "annual"
-        ? `${euros(extra.price)}/año`
-        : `${euros(extra.price)}/mes`;
+    let originalControl;
+
+    if (extra.type === "tier") {
+      originalControl = document.createElement("select");
+      originalControl.className = "erp-extra-tier-select";
+      originalControl.disabled = true;
+
+      extra.tiers.forEach(tier => {
+        const option = document.createElement("option");
+
+        option.value = tier.value;
+        option.textContent = tier.label;
+
+        originalControl.appendChild(option);
+      });
+    } else {
+      originalControl = document.createElement("span");
+      originalControl.className = "erp-extra-original-price";
+
+      originalControl.textContent =
+        extra.period === "annual"
+          ? `${euros(extra.price)}/año`
+          : `${euros(extra.price)}/mes`;
+    }
 
     const discountType = document.createElement("select");
     discountType.className = "erp-extra-discount-type";
-    discountType.dataset.extraKey = extraKey;
     discountType.disabled = true;
 
     discountType.innerHTML = `
@@ -1242,46 +1271,50 @@ function renderErpExtras(plan) {
     discountValue.step = "0.01";
     discountValue.value = "0";
     discountValue.className = "erp-extra-discount-value";
-    discountValue.dataset.extraKey = extraKey;
     discountValue.disabled = true;
 
     const finalPrice = document.createElement("strong");
     finalPrice.className = "erp-extra-final-price";
-    finalPrice.dataset.extraKey = extraKey;
-    finalPrice.textContent = originalPrice.textContent;
+
+    const initialPrice =
+      extra.type === "tier"
+        ? extra.tiers[0].monthly
+        : extra.price;
+
+    finalPrice.textContent =
+      extra.period === "annual"
+        ? `${euros(initialPrice)}/año`
+        : `${euros(initialPrice)}/mes`;
 
     row.append(
       checkbox,
       description,
-      originalPrice,
+      originalControl,
       discountType,
       discountValue,
       finalPrice
     );
 
-    els.erpExtrasList.appendChild(row);
-  });
+    checkbox.addEventListener("change", () => {
+      discountType.disabled = !checkbox.checked;
+      discountValue.disabled = !checkbox.checked;
 
-  document.querySelectorAll(".erp-extra-checkbox").forEach(checkbox => {
-    checkbox.addEventListener("change", event => {
-      const row = event.target.closest(".erp-extra-row");
-
-      row.querySelector(".erp-extra-discount-type").disabled =
-        !event.target.checked;
-
-      row.querySelector(".erp-extra-discount-value").disabled =
-        !event.target.checked;
+      if (extra.type === "tier") {
+        originalControl.disabled = !checkbox.checked;
+      }
 
       calculateErpTotal();
     });
-  });
 
-  document
-    .querySelectorAll(".erp-extra-discount-type, .erp-extra-discount-value")
-    .forEach(field => {
-      field.addEventListener("input", calculateErpTotal);
-      field.addEventListener("change", calculateErpTotal);
-    });
+    discountType.addEventListener("change", calculateErpTotal);
+    discountValue.addEventListener("input", calculateErpTotal);
+
+    if (extra.type === "tier") {
+      originalControl.addEventListener("change", calculateErpTotal);
+    }
+
+    els.erpExtrasList.appendChild(row);
+  });
 }
 
 function calculateErpTotal() {
@@ -1315,19 +1348,33 @@ function calculateErpTotal() {
 
     if (!checkbox?.checked) return;
 
-    const extra = erpExtras[row.dataset.extraKey];
+    const extraKey = row.dataset.extraKey;
+    const extra = erpExtras[extraKey];
 
     if (!extra) return;
 
+    let originalPrice = extra.price;
+
+    if (extra.type === "tier") {
+      const tierSelect = row.querySelector(".erp-extra-tier-select");
+      const selectedValue = Number(tierSelect.value);
+
+      const selectedTier =
+        extra.tiers.find(tier => tier.value === selectedValue) ||
+        extra.tiers[0];
+
+      originalPrice = selectedTier.monthly;
+    }
+
     const discountType =
-      row.querySelector(".erp-extra-discount-type")?.value || "none";
+      row.querySelector(".erp-extra-discount-type").value;
 
     const discountValue = Number(
-      row.querySelector(".erp-extra-discount-value")?.value || 0
+      row.querySelector(".erp-extra-discount-value").value || 0
     );
 
     const finalExtraPrice = applyDiscount(
-      extra.price,
+      originalPrice,
       discountType,
       discountValue
     );
@@ -1335,12 +1382,10 @@ function calculateErpTotal() {
     const finalPriceElement =
       row.querySelector(".erp-extra-final-price");
 
-    if (finalPriceElement) {
-      finalPriceElement.textContent =
-        extra.period === "annual"
-          ? `${euros(finalExtraPrice)}/año`
-          : `${euros(finalExtraPrice)}/mes`;
-    }
+    finalPriceElement.textContent =
+      extra.period === "annual"
+        ? `${euros(finalExtraPrice)}/año`
+        : `${euros(finalExtraPrice)}/mes`;
 
     if (extra.period === "monthly") {
       extrasMonthly += finalExtraPrice;
