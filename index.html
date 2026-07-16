@@ -17,16 +17,16 @@
     </section>
     <div class="tabs">
       <div class="tabs-header">
-        <button type="button" class="tab-button active" data-tab="tab1">
+        <button type="button" class="tab-button " data-tab="tab1">
           Microdata
         </button>
 
-        <button type="button" class="tab-button" data-tab="tab2">
+        <button type="button" class="tab-button active" data-tab="tab2">
           ERP
         </button>
       </div>
       <div class="tab-container">
-        <div class="tab active" id="tab1">
+        <div class="tab " id="tab1">
           <div class="tab-content">
             <div class="calculator-layout">
               <section class="calculator-card">
@@ -137,7 +137,7 @@
             </div>
           </div>
         </div>
-        <div class="tab" id="tab2">
+        <div class="tab active" id="tab2">
           <div class="tab-content">
             <section class="erp-calculator">
               <div class="erp-header">
@@ -168,29 +168,50 @@
                   </div>
 
                   <section class="erp-plan-summary">
-                    <div class="erp-base-discount-box">
-                      <span class="erp-summary-label">Precio base</span>
-                      <strong id="erpBasePrice">0,00 €</strong>
-                      <div class="erp-base-discount-controls">
-                        <select id="erpBaseDiscountType">
-                          <option value="none">Sin descuento</option>
-                          <option value="percentage">%</option>
-                          <option value="fixed">€</option>
-                        </select>
-                        <input id="erpBaseDiscountValue" type="number" min="0" step="0.01" value="0" disabled />
+                      <div class="erp-pricing-block">
+                        <div class="erp-pricing-head">
+                          <span>Precio base</span>
+                          <span>Descuento</span>
+                          <span>Valor</span>
+                          <span>Precio con descuento</span>
+                        </div>
+
+                        <div class="erp-base-row">
+                          <strong id="erpBasePrice">0,00 €</strong>
+
+                          <select id="erpBaseDiscountType">
+                            <option value="none">Sin descuento</option>
+                            <option value="percentage">%</option>
+                            <option value="fixed">€</option>
+                          </select>
+
+                          <input id="erpBaseDiscountValue" type="number" min="0" step="0.01" value="0" disabled >
+
+                          <strong id="erpBaseFinalPrice">0,00 €</strong>
+                        </div>
                       </div>
 
-                      <div class="erp-base-final">
-                        <span>Precio final</span>
-                        <strong id="erpBaseFinalPrice">0,00 €</strong>
+                      <div class="erp-users-block">
+                        <div>
+                          <span class="erp-summary-label">Usuarios incluidos</span>
+                          <strong id="erpIncludedUsers">-</strong>
+                        </div>
+
+                        <div>
+                          <span class="erp-summary-label">Usuarios máximos</span>
+                          <strong id="erpMaxUsers">-</strong>
+                        </div>
                       </div>
+
+                    </section>
+
+                  <section class="erp-table-card">
+                    <div class="erp-table-title">
+                      <h3>Servicios adicionales</h3>
                     </div>
-                  </section>
 
-                  <label class="field">
-                    <span>Valor del descuento</span>
-                    <input id="erpDiscountValue" type="number" min="0" step="0.01" value="0"/>
-                  </label>
+                    <div id="erpExtrasList" class="erp-extras-list"></div>
+                  </section>
 
                   <section class="erp-result">
                     <div>
@@ -201,11 +222,6 @@
                     <div>
                       <span>Servicios adicionales</span>
                       <strong id="erpSummaryExtras">0,00 €</strong>
-                    </div>
-
-                    <div>
-                      <span>Descuento aplicado</span>
-                      <strong id="erpDiscountAmount">0,00 €</strong>
                     </div>
 
                     <div class="erp-result-total">

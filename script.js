@@ -394,7 +394,7 @@ const erpPlans = {
           "DiezBank": "1",
           "Portal del empleado": "optional",
           "Convenios": "1",
-          "Scan anual": "optional",
+          "Scan (año)": "optional",
           "Contasimple": "1",
           "Soporte online": "included",
           "Soporte telefónico": "optional",
@@ -439,7 +439,7 @@ const erpPlans = {
           "DiezBank": "5",
           "Portal del empleado": "5",
           "Convenios": "5",
-          "Scan anual": "500",
+          "Scan (año)": "500 documentos",
           "Contasimple": "3",
           "Soporte online": "included",
           "Soporte telefónico": "included",
@@ -479,7 +479,7 @@ const erpPlans = {
           "DiezBank": "10",
           "Portal del empleado": "10",
           "Convenios": "10",
-          "Scan anual": "1.000",
+          "Scan (año)": "1.000 documentos",
           "Contasimple": "5",
           "Soporte online": "included",
           "Soporte telefónico": "included",
@@ -521,7 +521,7 @@ const erpPlans = {
           "DiezBank": "1",
           "Portal del empleado": "unavailable",
           "Convenios": "unavailable",
-          "Scan anual": "optional",
+          "Scan (año)": "optional",
           "Contasimple": "1",
           "Soporte online": "included",
           "Soporte telefónico": "optional",
@@ -566,7 +566,7 @@ const erpPlans = {
           "DiezBank": "5",
           "Portal del empleado": "unavailable",
           "Convenios": "unavailable",
-          "Scan anual": "500",
+          "Scan (año)": "500",
           "Contasimple": "3",
           "Soporte online": "included",
           "Soporte telefónico": "included",
@@ -611,7 +611,7 @@ const erpPlans = {
           "DiezBank": "unavailable",
           "Portal del empleado": "5",
           "Convenios": "5",
-          "Scan anual": "unavailable",
+          "Scan (año)": "unavailable",
           "Contasimple": "unavailable",
           "Soporte online": "included",
           "Soporte telefónico": "included",
@@ -674,10 +674,55 @@ const erpExtras = {
         period: "monthly"
     },
 
-    scan: {
-        name: "Scan anual",
-        price: 99,
-        period: "annual"
+    diezScan: {
+      name: "DiezScan",
+      type: "tier",
+      period: "monthly",
+      tierLabel: "documentos/año",
+      tiers: [
+        {
+          value: 3000,
+          label: "3.000 documentos/año",
+          monthly: 50,
+          unitPrice: 0.20
+        },
+        {
+          value: 6500,
+          label: "6.500 documentos/año",
+          monthly: 100,
+          unitPrice: 0.18
+        },
+        {
+          value: 10000,
+          label: "10.000 documentos/año",
+          monthly: 150,
+          unitPrice: 0.18
+        },
+        {
+          value: 14000,
+          label: "14.000 documentos/año",
+          monthly: 200,
+          unitPrice: 0.17
+        },
+        {
+          value: 18000,
+          label: "18.000 documentos/año",
+          monthly: 250,
+          unitPrice: 0.17
+        },
+        {
+          value: 24000,
+          label: "24.000 documentos/año",
+          monthly: 300,
+          unitPrice: 0.15
+        },
+        {
+          value: 30000,
+          label: "30.000 documentos/año",
+          monthly: 350,
+          unitPrice: 0.14
+        }
+      ]
     },
 
     seminars: {
@@ -696,6 +741,30 @@ const erpExtras = {
         name: "Seguro responsabilidad civil",
         price: 49.95,
         period: "monthly"
+    },
+
+    diezBank: {
+      name: "DiezBank",
+      type: "tier",
+      period: "monthly",
+      tierLabel: "conexiones",
+      tiers: [
+        {
+          value: 10,
+          label: "10 conexiones",
+          monthly: 25
+        },
+        {
+          value: 25,
+          label: "25 conexiones",
+          monthly: 50
+        },
+        {
+          value: 50,
+          label: "50 conexiones",
+          monthly: 75
+        }
+      ]
     },
 
     accountancyNetwork: {
@@ -746,10 +815,6 @@ const els = {
   erpTotal: document.getElementById("erpTotal"),
   erpExtrasList: document.getElementById("erpExtrasList"),
   erpAnnualTotal: document.getElementById("erpAnnualTotal"),
-  erpDiscountTarget: document.getElementById("erpDiscountTarget"),
-  erpDiscountType: document.getElementById("erpDiscountType"),
-  erpDiscountValue: document.getElementById("erpDiscountValue"),
-  erpDiscountAmount: document.getElementById("erpDiscountAmount"),
   erpBaseDiscountType: document.getElementById("erpBaseDiscountType"),
   erpBaseDiscountValue: document.getElementById("erpBaseDiscountValue"),
   erpBaseFinalPrice: document.getElementById("erpBaseFinalPrice"),
@@ -964,19 +1029,25 @@ function init() {
 }
 
 function initErp() {
-  if (
-    !els.erpFamilySelect ||
-    !els.erpPlanSelect ||
-    !els.erpFeaturesTable
-  ) {
-    return;
-  }
-
   els.erpFamilySelect.addEventListener("change", refreshErpPlans);
   els.erpPlanSelect.addEventListener("change", renderErpPlan);
-  els.erpDiscountTarget.addEventListener("change", calculateErpTotal);
-  els.erpDiscountType.addEventListener("change", calculateErpTotal);
-  els.erpDiscountValue.addEventListener("input", calculateErpTotal);
+
+  els.erpBaseDiscountType.addEventListener("change", () => {
+    const discountType = els.erpBaseDiscountType.value;
+    const hasDiscount = discountType !== "none";
+
+    els.erpBaseDiscountValue.disabled = !hasDiscount;
+
+    if (!hasDiscount) {
+      els.erpBaseDiscountValue.value = 0;
+    }
+
+    calculateErpTotal();
+  });
+
+  els.erpBaseDiscountValue.addEventListener("input", () => {
+    calculateErpTotal();
+  });
 
   refreshErpPlans();
 }
@@ -1214,33 +1285,14 @@ function renderErpExtras(plan) {
 }
 
 function calculateErpTotal() {
+
   const familyKey = els.erpFamilySelect.value;
   const planKey = els.erpPlanSelect.value;
-
   const plan = erpPlans[familyKey]?.plans[planKey];
 
-  if (!plan) return;
-
-  let extrasMonthly = 0;
-  let extrasAnnual = 0;
-
-  document
-    .querySelectorAll(".erp-extra-checkbox:checked")
-    .forEach(checkbox => {
-      const extra = erpExtras[checkbox.dataset.extraKey];
-
-      if (!extra) return;
-
-      if (extra.period === "monthly") {
-        extrasMonthly += extra.price;
-        extrasAnnual += extra.price * 12;
-      }
-
-      if (extra.period === "annual") {
-        extrasAnnual += extra.price;
-        extrasMonthly += extra.price / 12;
-      }
-    });
+  if (!plan) {
+    return;
+  }
 
   const baseDiscountType = els.erpBaseDiscountType.value;
   const baseDiscountValue = Number(
@@ -1254,16 +1306,60 @@ function calculateErpTotal() {
   );
 
   const baseAnnual = baseMonthly * 12;
-  const totalMonthly = baseMonthly + extrasMonthly;
-  const totalAnnual = baseAnnual + extrasAnnual;
+
+  let extrasMonthly = 0;
+  let extrasAnnual = 0;
+
+  document.querySelectorAll(".erp-extra-row").forEach(row => {
+    const checkbox = row.querySelector(".erp-extra-checkbox");
+
+    if (!checkbox?.checked) return;
+
+    const extra = erpExtras[row.dataset.extraKey];
+
+    if (!extra) return;
+
+    const discountType =
+      row.querySelector(".erp-extra-discount-type")?.value || "none";
+
+    const discountValue = Number(
+      row.querySelector(".erp-extra-discount-value")?.value || 0
+    );
+
+    const finalExtraPrice = applyDiscount(
+      extra.price,
+      discountType,
+      discountValue
+    );
+
+    const finalPriceElement =
+      row.querySelector(".erp-extra-final-price");
+
+    if (finalPriceElement) {
+      finalPriceElement.textContent =
+        extra.period === "annual"
+          ? `${euros(finalExtraPrice)}/año`
+          : `${euros(finalExtraPrice)}/mes`;
+    }
+
+    if (extra.period === "monthly") {
+      extrasMonthly += finalExtraPrice;
+      extrasAnnual += finalExtraPrice * 12;
+    } else {
+      extrasAnnual += finalExtraPrice;
+      extrasMonthly += finalExtraPrice / 12;
+    }
+  });
 
   const totalMonthly = baseMonthly + extrasMonthly;
   const totalAnnual = baseAnnual + extrasAnnual;
+
+  els.erpBasePrice.textContent = euros(plan.price);
+  els.erpBaseFinalPrice.textContent = euros(baseMonthly);
 
   els.erpSummaryBase.textContent = euros(baseMonthly);
   els.erpSummaryExtras.textContent = euros(extrasMonthly);
   els.erpTotal.textContent = euros(totalMonthly);
-
   els.erpAnnualTotal.textContent = euros(totalAnnual);
 }
 
@@ -1273,6 +1369,7 @@ function applyDiscount(price, type, value) {
 
   if (type === "percentage") {
     const percentage = Math.min(safeValue, 100);
+
     return safePrice - safePrice * (percentage / 100);
   }
 
@@ -1281,69 +1378,6 @@ function applyDiscount(price, type, value) {
   }
 
   return safePrice;
-}
-
-function calculateErpTotal() {
-  const familyKey = els.erpFamilySelect.value;
-  const planKey = els.erpPlanSelect.value;
-  const plan = erpPlans[familyKey]?.plans[planKey];
-
-  if (!plan) return;
-
-  let extrasMonthly = 0;
-  let extrasAnnual = 0;
-
-  document.querySelectorAll(".erp-extra-row").forEach(row => {
-    const checkbox = row.querySelector(".erp-extra-checkbox");
-
-    if (!checkbox.checked) return;
-
-    const extraKey = row.dataset.extraKey;
-    const extra = erpExtras[extraKey];
-
-    if (!extra) return;
-
-    const discountType =
-      row.querySelector(".erp-extra-discount-type").value;
-
-    const discountValue = Number(
-      row.querySelector(".erp-extra-discount-value").value || 0
-    );
-
-    const discountedPrice = applyDiscount(
-      extra.price,
-      discountType,
-      discountValue
-    );
-
-    const finalPriceElement = row.querySelector(".erp-extra-final-price");
-
-    finalPriceElement.textContent =
-      extra.period === "annual"
-        ? `${euros(discountedPrice)}/año`
-        : `${euros(discountedPrice)}/mes`;
-
-    if (extra.period === "monthly") {
-      extrasMonthly += discountedPrice;
-      extrasAnnual += discountedPrice * 12;
-    }
-
-    if (extra.period === "annual") {
-      extrasAnnual += discountedPrice;
-      extrasMonthly += discountedPrice / 12;
-    }
-  });
-
-  const baseMonthly = plan.price;
-  const baseAnnual = plan.price * 12;
-
-  const totalMonthly = baseMonthly + extrasMonthly;
-  const totalAnnual = baseAnnual + extrasAnnual;
-
-  els.erpSummaryBase.textContent = euros(baseMonthly);
-  els.erpSummaryExtras.textContent = euros(extrasMonthly);
-  els.erpTotal.textContent = euros(totalMonthly);
-  els.erpAnnualTotal.textContent = euros(totalAnnual);
 }
 
 function refreshPlans() {

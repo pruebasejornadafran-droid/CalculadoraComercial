@@ -1,10 +1,10 @@
 :root {
-  --bg: #448049;
+  --bg: #FFF389;
   --card: rgba(255,255,255,0.86);
-  --text: #002c52;
-  --muted: #002c52;
-  --line: #002c52;
-  --accent: #002c52;
+  --text: #0e4e29;
+  --muted: #0e4e29;
+  --line: #0e4e29;
+  --accent: #0e4e29;
   --soft: #c9cfd3;
   --shadow: 0 24px 70px rgba(31, 41, 51, 0.12);
   --radius: 24px;
@@ -428,32 +428,41 @@ button {
 }
 
 .erp-plan-summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   overflow: hidden;
   border: 1px solid #d9e2ef;
   border-radius: 18px;
   background: #fff;
 }
 
-.erp-plan-summary > div {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+.erp-pricing-block {
   padding: 18px;
-  border-right: 1px solid #d9e2ef;
+  border-bottom: 1px solid #d9e2ef;
 }
 
-.erp-plan-summary > div:last-child {
-  border-right: 0;
+.erp-pricing-head,
+.erp-base-row {
+  display: grid;
+  grid-template-columns:
+    minmax(110px, 0.8fr)
+    minmax(190px, 1.2fr)
+    90px
+    minmax(150px, 0.9fr);
+
+  gap: 16px;
+  align-items: center;
 }
 
-.erp-summary-label {
+.erp-pricing-head {
+  margin-bottom: 10px;
   color: #64748b;
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.06em;
+}
+
+.erp-pricing-head span:last-child {
+  text-align: right;
 }
 
 .erp-plan-summary strong {
@@ -475,7 +484,7 @@ button {
   align-items: center;
   gap: 18px;
   padding: 18px 20px;
-  background: #0754f8;
+  background: var(--text);
   color: #fff;
 }
 
@@ -506,21 +515,21 @@ button {
 
 .status.included {
   border-radius: 50%;
-  background: #0754f8;
+  background: var(--bg);
 }
 
 .erp-table-title .status.included {
-  background: #fff;
+  background: var(--bg);
 }
 
 .status.optional {
-  border: 2px solid #0754f8;
+  border: 2px solid var(--bg);
   border-radius: 50%;
   background: transparent;
 }
 
 .erp-table-title .status.optional {
-  border-color: #fff;
+  border-color: var(--bg);
 }
 
 .status.unavailable {
@@ -534,7 +543,7 @@ button {
   left: 0;
   width: 10px;
   height: 2px;
-  background: currentColor;
+  background: var(--bg);
 }
 
 .erp-feature-row {
@@ -560,7 +569,7 @@ button {
   justify-content: flex-end;
   align-items: center;
   gap: 8px;
-  color: #0754f8;
+  color: var(--text);
   font-weight: 700;
   text-align: right;
 }
@@ -868,4 +877,185 @@ button {
   .erp-extra-final-price {
     text-align: left;
   }
+}
+
+.erp-base-row {
+    display: grid;
+    grid-template-columns:
+      1fr
+      230px
+      90px
+      1fr;
+    align-items: center;
+    gap: 16px;
+}
+
+.erp-base-row > strong:first-child {
+  text-align: left;
+}
+
+.erp-base-row > strong:last-child {
+  text-align: right;
+  font-size: 18px;
+}
+
+.erp-base-row select,
+.erp-base-row input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.erp-users-block {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.erp-users-block > div {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+}
+
+.erp-users-block > div:first-child {
+  border-right: 1px solid #d9e2ef;
+}
+
+.erp-users-block strong {
+  font-size: 20px;
+}
+
+.erp-base-original,
+.erp-base-row strong {
+  white-space: nowrap;
+}
+
+.erp-base-row strong {
+  text-align: right;
+  font-size: 18px;
+}
+
+@media (max-width: 750px) {
+  .erp-pricing-head {
+    display: none;
+  }
+
+  .erp-base-row {
+    grid-template-columns: 1fr;
+  }
+
+  .erp-base-row > strong:last-child {
+    text-align: left;
+  }
+
+  .erp-users-block {
+    grid-template-columns: 1fr;
+  }
+
+  .erp-users-block > div:first-child {
+    border-right: 0;
+    border-bottom: 1px solid #d9e2ef;
+  }
+}
+.erp-plan-summary {
+  overflow: hidden;
+  border: 1px solid #d9e2ef;
+  border-radius: 18px;
+  background: #fff;
+}
+
+/* Bloque superior: precio y descuento */
+
+.erp-pricing-block {
+  padding: 18px;
+  border-bottom: 1px solid #d9e2ef;
+}
+
+.erp-pricing-head,
+.erp-base-row {
+  display: grid;
+  grid-template-columns:
+    minmax(110px, 1fr)
+    minmax(180px, 1.2fr)
+    90px
+    minmax(140px, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.erp-pricing-head {
+  margin-bottom: 10px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.erp-pricing-head span:nth-child(2),
+.erp-pricing-head span:nth-child(3) {
+  text-align: left;
+}
+
+.erp-pricing-head span:last-child {
+  text-align: right;
+}
+
+.erp-base-row strong {
+  color: var(--text);
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.erp-base-row > strong:first-child {
+  text-align: left;
+}
+
+.erp-base-row > strong:last-child {
+  text-align: right;
+}
+
+.erp-base-row select,
+.erp-base-row input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+/* Bloque inferior: usuarios */
+
+.erp-users-block {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.erp-users-block > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+}
+
+.erp-users-block > div:first-child {
+  border-right: 1px solid #d9e2ef;
+}
+
+.erp-summary-label {
+  display: block;
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.erp-users-block strong {
+  color: var(--text);
+  font-size: 20px;
 }
