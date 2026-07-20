@@ -39,10 +39,10 @@ body {
 }
 
 .hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  align-items: center;
+  gap: 40px;
   margin-bottom: 22px;
   background: var(--card);
   border: 1px solid rgba(255,255,255,0.7);
@@ -50,6 +50,33 @@ body {
   border-radius: var(--radius);
   padding: clamp(18px, 3vw, 30px);
   backdrop-filter: blur(14px);
+}
+
+.hero-content {
+    min-width: 0;
+}
+
+.hero-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+}
+
+.hero-logo {
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    object-fit: contain;
+    align-self: center;
+}
+
+#generateBudgetBtn {
+    width: 100%;
+    min-height: 54px;
 }
 
 .eyebrow {
@@ -265,6 +292,22 @@ button {
 }
 .info-modal.hidden {
   display: none;
+}
+
+@media (max-width: 760px) {
+    .hero {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .hero-actions {
+        max-width: 320px;
+        justify-self: center;
+    }
+
+    .hero-logo {
+        max-width: 230px;
+    }
 }
 
 .info-modal {
@@ -773,14 +816,13 @@ button {
   width: auto;
   height: auto;
   padding: 14px 22px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: var(--bg);
+  border: 3px solid;
+  border-radius: var(--radius) var(--radius) var(--radius) var(--radius);
+  background: var(--text);
+  color: var(--card);
   font-size: 20px;
   font-weight: 700;
   cursor: pointer;
-  border-bottom: 3px solid transparent;
 }
 
 .tab.active .tab-button {
@@ -799,6 +841,20 @@ button {
 
 .tab.active .tab-content {
   display: block;
+}
+
+.top-button {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 14px 22px;
+  border: 3px solid;
+  border-radius: var(--radius) var(--radius) var(--radius) var(--radius);
+  background: var(--text);
+  color: var(--card);
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .tabs-header {

@@ -1141,14 +1141,6 @@ function createErpFeatureValue(value, featureName) {
   return wrapper;
 }
 
-function formatErpExtraPrice(extra) {
-  if (extra.period === "annual") {
-    return `${euros(extra.price)}/año`;
-  }
-
-  return `${euros(extra.price)}/mes`;
-}
-
 function renderErpPlan() {
   const familyKey = els.erpFamilySelect.value;
   const planKey = els.erpPlanSelect.value;
@@ -2018,6 +2010,581 @@ tabButtons.forEach(button => {
     });
   });
 });
+
+const generateBudgetBtn = document.getElementById(
+  "generateBudgetBtn"
+);
+
+generateBudgetBtn.addEventListener("click", async event => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  await generateBudgetDocument();
+});
+
+function getElementText(id) {
+    const element = document.getElementById(id);
+
+    if (!element) {
+        console.warn(`No existe ningún elemento con id="${id}"`);
+        return "";
+    }
+
+    return element.textContent.trim();
+}
+
+function getActiveBudgetType() {
+    const activeTabButton = document.querySelector(
+        ".tab-button.active"
+    );
+
+    const budgetType = activeTabButton?.dataset.tab;
+
+    if (
+        budgetType !== "microdata" &&
+        budgetType !== "erp"
+    ) {
+        throw new Error(
+            "No se ha podido identificar la pestaña activa."
+        );
+    }
+
+    return budgetType;
+}
+
+async function generateBudgetDocument() {
+    try {
+        const budgetType = getActiveBudgetType();
+
+        const templatePath =
+            budgetType === "erp"
+                ? "./templates/presupuesto-erp.docx"
+                : "./templates/presupuesto-microdata.docx";
+
+        const budgetData = buildBudgetData();
+
+        console.log("Tipo:", budgetType);
+        console.log("Plantilla:", templatePath);
+        console.log("Datos:", budgetData);
+
+        const content = await loadDocxTemplate(templatePath);
+
+        const zip = new PizZip(content);
+
+        const doc = new window.docxtemplater(zip, {
+            paragraphLoop: true,
+            linebreaks: true
+        });
+
+        doc.render(budgetData);
+
+        const blob = doc.getZip().generate({
+            type: "blob",
+            mimeType:
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        });
+
+        saveAs(
+            blob,
+            `presupuesto-${budgetType}-${budgetData.numPresupuesto}.docx`
+        );
+    } catch (error) {
+        console.error(
+            "Error generando el presupuesto:",
+            error
+        );
+
+        alert(
+            `No se pudo generar el presupuesto: ${error.message}`
+        );
+    }
+}
+
+function buildBudgetData() {
+    const budgetType = getActiveBudgetType();
+
+    if (budgetType === "erp") {
+        return buildErpBudgetData();
+    }
+
+    return buildMicrodataBudgetData();
+}
+
+function getElementText(id) {
+    const element = document.getElementById(id);
+
+    if (!element) {
+        console.warn(`No existe ningún elemento con id="${id}"`);
+        return "";
+    }
+
+    return element.textContent.trim();
+}
+
+function buildErpBudgetData() {
+    const familySelect =
+        document.getElementById("erpFamilySelect");
+
+    const planSelect =
+        document.getElementById("erpPlanSelect");
+
+    const extras = buildErpExtrasData();
+
+    return {
+        numPresupuesto: createBudgetNumber(),
+        fecha: formatBudgetDate(new Date()),
+
+        solucion:
+            familySelect?.selectedOptions?.[0]
+                ?.textContent?.trim() || "",
+
+        plan:
+            planSelect?.selectedOptions?.[0]
+                ?.textContent?.trim() || "",
+
+        precioBase: getElementText("erpBasePrice"),
+
+        descuentoBase: formatDiscount(
+            document.getElementById(
+                "erpBaseDiscountType"
+            )?.value || "none",
+            document.getElementById(
+                "erpBaseDiscountValue"
+            )?.value || 0
+        ),
+
+        precioBaseFinal:
+            getElementText("erpBaseFinalPrice"),
+
+        extras,
+
+        tieneExtras: extras.length > 0,
+
+        totalMensual:
+            getElementText("erpTotal"),
+
+        totalAnual:
+            getElementText("erpAnnualTotal"),
+
+        notas: ""
+    };
+}
+
+function buildErpExtrasData() {
+    const extras = [];
+
+    document
+        .querySelectorAll(
+            "#erpExtrasList .erp-extra-row"
+        )
+        .forEach(row => {
+            const checkbox = row.querySelector(
+                ".erp-extra-checkbox"
+            );
+
+            if (!checkbox?.checked) {
+                return;
+            }
+
+            const extraKey = row.dataset.extraKey;
+            const extra = erpExtras[extraKey];
+
+            const discountType =
+                row.querySelector(
+                    ".erp-extra-discount-type"
+                )?.value || "none";
+
+            const discountValue =
+                row.querySelector(
+                    ".erp-extra-discount-value"
+                )?.value || 0;
+
+            extras.push({
+                nombre:
+                    row.querySelector(
+                        ".erp-extra-description strong"
+                    )?.textContent?.trim() ||
+                    extra?.name ||
+                    "",
+
+                precioOriginal:
+                    row.querySelector(
+                        ".erp-extra-original-price"
+                    )?.textContent?.trim() || "",
+
+                descuento: formatDiscount(
+                    discountType,
+                    discountValue
+                ),
+
+                precioFinal:
+                    row.querySelector(
+                        ".erp-extra-final-price"
+                    )?.textContent?.trim() || "",
+
+                periodicidad:
+                    extra?.period === "annual"
+                        ? "Anual"
+                        : "Mensual"
+            });
+        });
+
+    return extras;
+}
+
+function addErpExtraLines(lineas) {
+    const checkedExtras = document.querySelectorAll(
+        "#erpExtrasList .erp-extra-row " +
+        ".erp-extra-checkbox:checked"
+    );
+
+    checkedExtras.forEach(checkbox => {
+        const row = checkbox.closest(".erp-extra-row");
+
+        if (!row) {
+            return;
+        }
+
+        const extraKey = row.dataset.extraKey;
+        const extraData = erpExtras[extraKey];
+
+        if (!extraData) {
+            console.warn(
+                "No se encuentra el extra en erpExtras:",
+                extraKey
+            );
+
+            return;
+        }
+
+        const extraName =
+            row.querySelector(
+                ".erp-extra-description strong"
+            )?.textContent?.trim() ||
+            extraData.name ||
+            extraKey;
+
+        const originalPrice =
+            row.querySelector(
+                ".erp-extra-original-price"
+            )?.textContent?.trim() ||
+            formatErpExtraPrice(extraData);
+
+        const discountType =
+            row.querySelector(
+                ".erp-extra-discount-type"
+            )?.value || "none";
+
+        const discountValue =
+            row.querySelector(
+                ".erp-extra-discount-value"
+            )?.value || "0";
+
+        const finalPrice =
+            row.querySelector(
+                ".erp-extra-final-price"
+            )?.textContent?.trim() ||
+            originalPrice;
+
+        const periodicidad =
+            extraData.period === "annual"
+                ? "A"
+                : "M";
+
+        lineas.push({
+            aplicacion: extraName,
+            modalidad: "S",
+
+            licenciaImporte: "",
+            licenciaDto: "",
+            licenciaTotal: "",
+
+            mantenimientoFecha: "",
+            mantenimientoImporte: originalPrice,
+            mantenimientoDto: formatDiscount(
+                discountType,
+                discountValue
+            ),
+            mantenimientoTotal: finalPrice,
+
+            periodicidad,
+            cuota: finalPrice
+        });
+    });
+}
+
+function formatErpExtraPrice(extra) {
+    if (!extra) {
+        return "";
+    }
+
+    if (extra.period === "annual") {
+        return `${euros(extra.price)}/año`;
+    }
+
+    return `${euros(extra.price)}/mes`;
+}
+
+function formatDiscount(type, value) {
+  const number = Number(value || 0);
+
+  if (!number || type === "none") {
+    return "";
+  }
+
+  if (type === "percentage") {
+    return `${number} %`;
+  }
+
+  if (type === "fixed") {
+    return `${number.toFixed(2).replace(".", ",")} €`;
+  }
+
+  return "";
+}
+
+function getSelectedTierPrice(row) {
+  const select = row.querySelector(".erp-extra-tier-select");
+
+  if (!select) return "";
+
+  const selectedOption = select.selectedOptions?.[0];
+
+  return (
+    selectedOption?.dataset.price ||
+    selectedOption?.getAttribute("data-price") ||
+    ""
+  );
+}
+
+function buildMicrodataBudgetData() {
+  const lineas = [];
+
+  document
+    .querySelectorAll(
+      "#microdataTab .microdata-result-row"
+    )
+    .forEach(row => {
+      const aplicacion =
+        row.querySelector('[data-field="application"]')
+          ?.textContent?.trim() || "";
+
+      const modalidad =
+        row.querySelector('[data-field="mode"]')
+          ?.textContent?.trim() || "S";
+
+      const licenciaImporte =
+        row.querySelector('[data-field="license-original"]')
+          ?.textContent?.trim() || "";
+
+      const licenciaDto =
+        row.querySelector('[data-field="license-discount"]')
+          ?.textContent?.trim() || "";
+
+      const licenciaTotal =
+        row.querySelector('[data-field="license-final"]')
+          ?.textContent?.trim() || "";
+
+      const mantenimientoImporte =
+        row.querySelector(
+          '[data-field="maintenance-original"]'
+        )?.textContent?.trim() || "";
+
+      const mantenimientoDto =
+        row.querySelector(
+          '[data-field="maintenance-discount"]'
+        )?.textContent?.trim() || "";
+
+      const mantenimientoTotal =
+        row.querySelector(
+          '[data-field="maintenance-final"]'
+        )?.textContent?.trim() || "";
+
+      const periodicidad =
+        row.querySelector('[data-field="period"]')
+          ?.textContent?.trim() || "";
+
+      const cuota =
+        row.querySelector('[data-field="fee"]')
+          ?.textContent?.trim() || "";
+
+      if (!aplicacion) return;
+
+      lineas.push({
+        aplicacion,
+        modalidad,
+        licenciaImporte,
+        licenciaDto,
+        licenciaTotal,
+        mantenimientoFecha: "",
+        mantenimientoImporte,
+        mantenimientoDto,
+        mantenimientoTotal,
+        periodicidad,
+        cuota
+      });
+    });
+
+  const totalLicencia =
+    document.getElementById("microdataTotalLicense")
+      ?.textContent?.trim() || "";
+
+  const totalMantenimiento =
+    document.getElementById("microdataTotalMaintenance")
+      ?.textContent?.trim() || "";
+
+  const totalCuota =
+    document.getElementById("microdataTotal")
+      ?.textContent?.trim() || "";
+
+  return {
+    numPresupuesto: createBudgetNumber(),
+    fecha: formatBudgetDate(new Date()),
+
+    lineas,
+
+    totalLicencia,
+    totalMantenimiento,
+    totalCuota,
+
+    notas: "",
+    infoServicios: lineas
+      .map(line => line.aplicacion)
+      .filter(Boolean)
+      .join("\n")
+  };
+}
+
+function loadDocxTemplate(url) {
+  return new Promise((resolve, reject) => {
+    PizZipUtils.getBinaryContent(
+      url,
+      (error, content) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        resolve(content);
+      }
+    );
+  });
+}
+
+function buildTestBudgetData() {
+  return {
+    numPresupuesto: createBudgetNumber(),
+    fecha: formatBudgetDate(new Date()),
+
+    lineas: [
+      {
+        app: "ERP Despacho Estándar",
+        modalidad: "C",
+
+        licImp: "299,95 €",
+        licDto: "10 %",
+        licTotal: "269,96 €",
+
+        mantFecha: "",
+        mantImporte: "",
+        mantDto: "",
+        mantTotal: "",
+
+        periodo: "M",
+        cuota: "269,96 €"
+      },
+      {
+        aplicacion: "DiezScan - 3.000 documentos",
+        mod: "S",
+
+        licenciaImporte: "",
+        licenciaDto: "",
+        licenciaTotal: "",
+
+        mantFecha: "",
+        mantImp: "50,00 €",
+        mantDto: "0 %",
+        mantTotal: "50,00 €",
+
+        periodo: "M",
+        cuota: "50,00 €"
+      }
+    ],
+
+    sumLicTotal: "269,96 €",
+    totalMantenimiento: "50,00 €",
+    sumCuota: "319,96 €",
+
+    notas:
+      "Presupuesto generado desde la calculadora comercial.",
+
+    infoServicios:
+      "ERP Despacho Estándar y servicios adicionales seleccionados."
+  };
+}
+
+function createBudgetNumber() {
+  const now = new Date();
+
+  const year = now.getFullYear();
+
+  const month = String(
+    now.getMonth() + 1
+  ).padStart(2, "0");
+
+  const day = String(
+    now.getDate()
+  ).padStart(2, "0");
+
+  const hours = String(
+    now.getHours()
+  ).padStart(2, "0");
+
+  const minutes = String(
+    now.getMinutes()
+  ).padStart(2, "0");
+
+  return `${year}${month}${day}-${hours}${minutes}`;
+}
+
+
+
+function formatBudgetDate(date) {
+  return new Intl.DateTimeFormat("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  }).format(date);
+}
+
+function getDocxErrorMessage(error) {
+  const errors = error?.properties?.errors;
+
+  if (Array.isArray(errors)) {
+    const details = errors
+      .map(item => {
+        return (
+          item.properties?.explanation ||
+          item.message
+        );
+      })
+      .filter(Boolean)
+      .join("\n");
+
+    if (details) {
+      return (
+        "La plantilla contiene etiquetas incorrectas:\n\n" +
+        details
+      );
+    }
+  }
+
+  return (
+    "No se pudo generar el presupuesto. " +
+    "Revisa la consola del navegador."
+  );
+}
+
 
 init();
 initErp();

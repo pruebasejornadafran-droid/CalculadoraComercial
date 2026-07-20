@@ -9,24 +9,29 @@
 <body>
   <main class="app-shell">
     <section class="hero">
-      <div>
+      <div class="hero-content">
         <p class="eyebrow">Calculadora comercial</p>
         <h1>Calcular tarifas</h1>
         <p class="subtitle">Selecciona la aplicación, indica el volumen y obtén el precio recomendado automáticamente.</p>
       </div>
+      <div class="hero-actions">
+        <img src="./shinelogo.webp" alt="Shine by Cegid" class="hero-logo">
+        <button type="button" id="generateBudgetBtn">Generar presupuesto</button>
+      </div>
     </section>
+    
     <div class="tabs">
       <div class="tabs-header">
-        <button type="button" class="tab-button " data-tab="tab1">
+        <button type="button" class="tab-button " data-tab="microdata">
           Microdata
         </button>
 
-        <button type="button" class="tab-button active" data-tab="tab2">
+        <button type="button" class="tab-button active" data-tab="erp">
           ERP
         </button>
       </div>
       <div class="tab-container">
-        <div class="tab " id="tab1">
+        <div class="tab " id="microdata">
           <div class="tab-content">
             <div class="calculator-layout">
               <section class="calculator-card">
@@ -137,7 +142,7 @@
             </div>
           </div>
         </div>
-        <div class="tab active" id="tab2">
+        <div class="tab active" id="erp">
           <div class="tab-content">
             <section class="erp-calculator">
               <div class="erp-header">
@@ -399,6 +404,10 @@
     
   </div>
 </div>
+  <script src="https://unpkg.com/docxtemplater@3.69.0/build/docxtemplater.js"></script>
+  <script src="https://unpkg.com/pizzip@3.2.0/dist/pizzip.js"></script>
+  <script src="https://unpkg.com/pizzip@3.2.0/dist/pizzip-utils.js"></script>
+  <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
