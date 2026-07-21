@@ -2011,16 +2011,51 @@ tabButtons.forEach(button => {
   });
 });
 
-const generateBudgetBtn = document.getElementById(
-  "generateBudgetBtn"
-);
+const generateBudgetBtn = document.getElementById("generateBudgetBtn");
+const clientModal = document.getElementById("clientModal");
+const clientForm = document.getElementById("clientForm");
+const closeClientModal = document.getElementById("closeClientModal");
+const cancelClientData = document.getElementById("cancelClientData");
+
+/*generateBudgetBtn.addEventListener("click", () => {
+    clientModal.classList.remove("hidden");
+});*/
+
+closeClientModal.addEventListener("click", closeClientDataModal);
+cancelClientData.addEventListener("click", closeClientDataModal);
+
+function closeClientDataModal() {
+    clientModal.classList.add("hidden");
+}
 
 generateBudgetBtn.addEventListener("click", async event => {
   event.preventDefault();
   event.stopPropagation();
 
-  await generateBudgetDocument();
+  clientModal.classList.remove("hidden");
 });
+
+clientForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  const clientData = getClientData();
+  clientModal.classList.add("hidden");
+  await generateBudgetDocument(clientData);
+});
+
+function getClientData() {
+    return {
+        clienteNombre:document.getElementById("clientName").value.trim(),
+        clienteCif:document.getElementById("clientTaxId").value.trim(),
+        clienteDireccion:document.getElementById("clientAddress").value.trim(),
+        clienteCodigoPostal:document.getElementById("clientPostalCode").value.trim(),
+        clientePoblacion:document.getElementById("clientCity").value.trim(),
+        provincia:document.getElementById("clientProvince").value.trim(),
+        clienteEmail:document.getElementById("clientEmail").value.trim(),
+        clienteTelefono:document.getElementById("clientPhone").value.trim(),
+        clienteContacto:document.getElementById("clientRepresentative").value.trim(),
+        nifRepres:document.getElementById("clientRepresentativeTaxId").value.trim()
+    };
+}
 
 function getElementText(id) {
     const element = document.getElementById(id);
@@ -2052,7 +2087,7 @@ function getActiveBudgetType() {
     return budgetType;
 }
 
-async function generateBudgetDocument() {
+async function generateBudgetDocument(clientData) {
     try {
         const budgetType = getActiveBudgetType();
 
@@ -2061,11 +2096,12 @@ async function generateBudgetDocument() {
                 ? "./templates/presupuesto-erp.docx"
                 : "./templates/presupuesto-microdata.docx";
 
-        const budgetData = buildBudgetData();
+        const budgetData = {
+            ...buildBudgetData(),
+            ...clientData
+        };
 
-        console.log("Tipo:", budgetType);
-        console.log("Plantilla:", templatePath);
-        console.log("Datos:", budgetData);
+        console.log("Datos completos:", budgetData);
 
         const content = await loadDocxTemplate(templatePath);
 

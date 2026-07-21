@@ -15,7 +15,7 @@
         <p class="subtitle">Selecciona la aplicación, indica el volumen y obtén el precio recomendado automáticamente.</p>
       </div>
       <div class="hero-actions">
-        <img src="./shinelogo.webp" alt="Shine by Cegid" class="hero-logo">
+        <img src="./shinelogo.png" alt="Shine by Cegid" class="hero-logo">
         <button type="button" id="generateBudgetBtn">Generar presupuesto</button>
       </div>
     </section>
@@ -264,7 +264,58 @@
       </div>
     </div>
     </main>
-
+    <div id="clientModal" class="client-modal hidden">
+      <div class="client-modal-card">
+          <button type="button" id="closeClientModal" class="client-modal-close" >X</button>
+          <h2>Datos del cliente</h2>
+          <form id="clientForm">
+            <label>
+                <span>Nombre o razón social</span>
+                <input type="text" id="clientName" required>
+            </label>
+            <label>
+                <span>NIF / CIF</span>
+                <input type="text" id="clientTaxId" required>
+            </label>
+            <label class="client-form-full">
+                <span>Domicilio</span>
+                <input type="text" id="clientAddress">
+            </label>
+            <label>
+                <span>Código postal</span>
+                <input type="text" id="clientPostalCode">
+            </label>
+            <label>
+                <span>Población</span>
+                <input type="text" id="clientCity">
+            </label>
+            <label>
+                <span>Provincia</span>
+                <input type="text" id="clientProvince">
+            </label>
+            <label>
+                <span>Email</span>
+                <input type="email" id="clientEmail">
+            </label>
+            <label>
+                <span>Teléfono</span>
+                <input type="tel" id="clientPhone">
+            </label>
+            <label>
+                <span>Representante</span>
+                <input type="text" id="clientRepresentative">
+            </label>
+            <label>
+                <span>NIF del representante</span>
+                <input type="text" id="clientRepresentativeTaxId">
+            </label>
+            <div class="client-form-actions">
+                <button type="button" id="cancelClientData">Cancelar</button>
+                <button type="submit" class="primary">Generar presupuesto</button>
+            </div>
+        </form>
+      </div>
+  </div>
   <div id="infoModal" class="info-modal hidden">
   <div class="info-modal-card">
     <button id="closeInfoModal" class="info-close">X</button>
@@ -403,6 +454,7 @@
     </div>
     
   </div>
+
 </div>
   <script src="https://unpkg.com/docxtemplater@3.69.0/build/docxtemplater.js"></script>
   <script src="https://unpkg.com/pizzip@3.2.0/dist/pizzip.js"></script>
