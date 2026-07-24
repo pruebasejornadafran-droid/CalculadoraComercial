@@ -507,7 +507,7 @@ const erpPlans = {
   },
 
   fiscal: {
-    name: "Fiscal",
+    name: "ERP Despacho Fiscal",
     plans: {
       esencial: {
         name: "Esencial",
@@ -600,7 +600,7 @@ const erpPlans = {
   },
 
   laboral: {
-    name: "Laboral",
+    name: "ERP Despacho Laboral",
     plans: {
       estandar: {
         name: "Estándar",
@@ -840,6 +840,1104 @@ const usersCFExtra = document.getElementById("usersCertiFExtra");
 const moduleGestExtra = document.getElementById("moduleGestExtra");
 const usersExtra = document.getElementById("userExtra");
 const uExtra = document.getElementById("usersCFExtra");
+const calculatorSection = document.getElementById("calculatorSection");
+const historySection = document.getElementById("historyView");
+const showCalculatorButton = document.getElementById("showCalculatorButton");
+const showHistoryButton = document.getElementById("showHistoryButton");
+const refreshHistoryButton = document.getElementById("refreshHistoryButton");
+const historySearchInput = document.getElementById("historySearchInput");
+const historyStatusFilter = document.getElementById("historyStatusFilter");
+const historyTableBody = document.getElementById("historyTableBody");
+const historyMessage = document.getElementById("historyMessage");
+const budgetDetailModal = document.getElementById("budgetDetailModal");
+const closeBudgetDetailModal = document.getElementById("closeBudgetDetailModal");
+const budgetNotes = document.getElementById("budgetNotes");
+const loginScreen = document.getElementById("loginScreen");
+const appContainer = document.getElementById("app-container");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+const changePasswordForm = document.getElementById("changePasswordForm");
+const loginMessage = document.getElementById("loginMessage");
+const registerMessage = document.getElementById("registerMessage");
+const changePasswordMessage = document.getElementById("changePasswordMessage");
+const accessTitle = document.getElementById("accessTitle");
+const accessSubtitle = document.getElementById("accessSubtitle");
+const showRegisterButton = document.getElementById("showRegisterButton");
+const showChangePasswordButton = document.getElementById("showChangePasswordButton");
+const backToLoginButtons = document.querySelectorAll(".back-to-login");
+const registerPassword = document.getElementById("registerPassword");
+const registerPasswordConfirm = document.getElementById("registerPasswordConfirm");
+const registerPasswordMatch = document.getElementById("registerPasswordMatch");
+const newPassword = document.getElementById("newPassword");
+const newPasswordConfirm = document.getElementById("newPasswordConfirm");
+const changePasswordMatch = document.getElementById("changePasswordMatch");
+const logoutButton = document.getElementById("logoutButton");
+
+let currentSession = null;
+
+
+function saveSession(sessionData) {
+  currentSession = sessionData;
+  sessionStorage.setItem("budgetSession", JSON.stringify(sessionData));
+}
+
+function restoreSession() {
+  const storedSession = sessionStorage.getItem("budgetSession");
+  if (!storedSession) {
+    return false;
+  }
+  try {
+    currentSession = JSON.parse(storedSession);
+    if (!currentSession?.token || !currentSession?.user) {
+      throw new Error("La sesión almacenada no es válida.");
+    }
+    showApplication();
+    return true;
+  } catch (error) {
+    sessionStorage.removeItem("budgetSession");
+    currentSession = null;
+    return false;
+  }
+}
+
+function showApplication() {
+  loginScreen.classList.add("hidden");
+  appContainer.classList.remove("hidden");
+  updateLoggedUserIndicator();
+}
+
+function showLogin() {
+  appContainer.classList.add("hidden");
+  loginScreen.classList.remove("hidden");
+  showAccessForm("login");
+}
+
+async function logout() {
+  const token = currentSession?.token;
+
+  logoutButton.disabled = true;
+  logoutButton.classList.add("loading");
+
+  try {
+    if (token) {
+      const response = await jsonpRequest("logout", { token });
+
+      if (response && response.success === false) {
+        console.warn("Apps Script no pudo cerrar la sesión:", response.message);
+      }
+    }
+
+  } catch (error) {
+    /*
+     * Aunque Apps Script no responda, cerramos la
+     * sesión local para que el usuario pueda salir.
+     */
+    console.warn("No se pudo cerrar la sesión en el servidor:", error);
+
+  } finally {
+    clearLocalSession();
+    logoutButton.disabled = false;
+    logoutButton.classList.remove("loading");
+  }
+}
+
+function clearLocalSession() {
+  currentSession = null;
+
+  sessionStorage.removeItem("budgetSession");
+
+  budgetHistory = [];
+
+  const userInfo = document.getElementById("userInfo");
+  const loggedUserName = document.getElementById("loggedUserName");
+
+  if (userInfo) {
+    userInfo.classList.add("hidden");
+  }
+
+  if (loggedUserName) {
+    loggedUserName.textContent = "";
+  }
+
+  loginForm.reset();
+  registerForm.reset();
+  changePasswordForm.reset();
+
+  clearAllAccessMessages();
+
+  showLogin();
+
+  setAccessMessage(loginMessage, "Sesión cerrada correctamente.", "success");
+}
+
+logoutButton.addEventListener("click", logout);
+
+/* =========================================
+   CAMBIO ENTRE FORMULARIOS
+   ========================================= */
+
+function showAccessForm(formName) {
+  const forms = [loginForm, registerForm, changePasswordForm];
+  forms.forEach(form => {
+    form.classList.add("hidden");
+    form.classList.remove("access-form-active");
+  });
+  clearAllAccessMessages();
+  if (formName === "register") {
+    registerForm.classList.remove("hidden");
+    registerForm.classList.add("access-form-active");
+    accessTitle.textContent = "Crear usuario";
+    accessSubtitle.textContent = "Regístrate para utilizar la calculadora comercial";
+    setTimeout(() => {
+      document.getElementById("registerUsername")?.focus();
+    }, 100);
+    return;
+  }
+  if (formName === "changePassword") {
+    changePasswordForm.classList.remove("hidden");
+    changePasswordForm.classList.add("access-form-active");
+    accessTitle.textContent = "Cambiar contraseña";
+    accessSubtitle.textContent = "Actualiza de forma segura tus credenciales";
+    setTimeout(() => {
+      document.getElementById("changePasswordUsername")?.focus();
+    }, 100);
+    return;
+  }
+  loginForm.classList.remove("hidden");
+  loginForm.classList.add("access-form-active");
+  accessTitle.textContent = "Calculadora comercial";
+  accessSubtitle.textContent = "Accede para crear y consultar tus presupuestos";
+  setTimeout(() => {
+    document.getElementById("loginUsername")?.focus();
+  }, 100);
+}
+
+showRegisterButton.addEventListener("click",() => {
+    showAccessForm("register");
+  }
+);
+
+showChangePasswordButton.addEventListener("click",() => {
+    showAccessForm("changePassword");
+  }
+);
+
+backToLoginButtons.forEach(button => {
+  button.addEventListener("click",() => {
+      showAccessForm("login");
+    }
+  );
+});
+
+/* =========================================
+   MENSAJES
+   ========================================= */
+
+function setAccessMessage(element, message, type = "info") {
+  if (!element) {
+    return;
+  }
+  element.textContent = message || "";
+  element.classList.remove("message-error", "message-success", "message-info");
+  if (message) {
+    element.classList.add(`message-${type}`);
+  }
+}
+
+function clearAllAccessMessages() {
+  setAccessMessage(loginMessage,"");
+  setAccessMessage(registerMessage,"");
+  setAccessMessage(changePasswordMessage,"");
+  clearPasswordMatchMessage(registerPasswordMatch);
+  clearPasswordMatchMessage(changePasswordMatch);
+}
+
+/* =========================================
+   ESTADO DE BOTONES
+   ========================================= */
+
+function setButtonLoading(button, isLoading) {
+  if (!button) {
+    return;
+  }
+  const defaultContent = button.querySelector(".button-default-content");
+  const loadingContent = button.querySelector(".button-loading-content");
+
+  button.disabled = isLoading;
+
+  defaultContent?.classList.toggle("hidden", isLoading);
+  loadingContent?.classList.toggle("hidden", !isLoading);
+}
+
+/* =========================================
+   MOSTRAR / OCULTAR CONTRASEÑAS
+   ========================================= */
+
+document.querySelectorAll(".password-toggle")
+  .forEach(button => {
+    button.addEventListener("click", () => {
+        const inputId = button.dataset.passwordTarget;
+        const input = document.getElementById(inputId);
+
+        if (!input) {
+          return;
+        }
+
+        const isPassword = input.type === "password";
+        input.type = isPassword ? "text" : "password";
+        button.textContent = isPassword ? "🙈" : "👁";
+        button.setAttribute("aria-label", isPassword ? "Ocultar contraseña" : "Mostrar contraseña");
+        button.title = isPassword ? "Ocultar contraseña" : "Mostrar contraseña";
+      }
+    );
+  });
+
+/* =========================================
+   VALIDACIÓN DE CONTRASEÑAS
+   ========================================= */
+
+function validatePasswordMatch(passwordInput, confirmationInput, messageElement) {
+  const password = passwordInput.value;
+  const confirmation = confirmationInput.value;
+  confirmationInput.classList.remove("input-error", "input-success");
+  if (!password && !confirmation) {
+    clearPasswordMatchMessage(messageElement);
+    return false;
+  }
+
+  if (!confirmation) {
+    clearPasswordMatchMessage(messageElement);
+    return false;
+  }
+
+  if (password === confirmation) {
+    messageElement.textContent = "✓ Las contraseñas coinciden";
+    messageElement.className = "password-match-message match-success";
+    confirmationInput.classList.add("input-success");
+    return true;
+  }
+
+  messageElement.textContent = "✕ Las contraseñas no coinciden";
+  messageElement.className = "password-match-message match-error";
+  confirmationInput.classList.add("input-error");
+
+  return false;
+}
+
+function clearPasswordMatchMessage(messageElement) {
+  if (!messageElement) {
+    return;
+  }
+
+  messageElement.textContent = "";
+
+  messageElement.className = "password-match-message";
+}
+
+registerPassword.addEventListener("input", () => {
+    validatePasswordMatch(registerPassword, registerPasswordConfirm, registerPasswordMatch);
+  }
+);
+
+registerPasswordConfirm.addEventListener("input", () => {
+    validatePasswordMatch(registerPassword, registerPasswordConfirm, registerPasswordMatch);
+  }
+);
+
+newPassword.addEventListener("input", () => {
+    validatePasswordMatch(newPassword, newPasswordConfirm, changePasswordMatch);
+  }
+);
+
+newPasswordConfirm.addEventListener("input", () => {
+    validatePasswordMatch(newPassword, newPasswordConfirm, changePasswordMatch);
+  }
+);
+
+
+/* =========================================
+   INICIAR SESIÓN
+   ========================================= */
+
+loginForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const submitButton = document.getElementById("loginSubmitButton");
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    setAccessMessage(loginMessage, "", "info");
+    setButtonLoading(submitButton, true);
+
+    try {
+      const response = await jsonpRequest("login", 
+          {
+            username,
+            password
+          }
+        );
+
+      if (!response?.success) {
+        throw new Error(response?.message || "No se ha podido iniciar sesión.");
+      }
+
+      saveSession(response);
+
+      loginForm.reset();
+
+      setAccessMessage(loginMessage, "", "info");
+
+      showApplication();
+
+    } catch (error) {
+      setAccessMessage(loginMessage, error.message || "No se ha podido iniciar sesión.", "error");
+    } finally {
+      setButtonLoading(submitButton, false);
+    }
+  }
+);
+
+/* =========================================
+   CREAR USUARIO
+   ========================================= */
+
+registerForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const submitButton = document.getElementById("registerSubmitButton");
+    const username = document.getElementById("registerUsername").value.trim();
+    const commercial = document.getElementById("registerCommercial").value.trim();
+    const password = registerPassword.value;
+    const passwordConfirm = registerPasswordConfirm.value;
+    
+    setAccessMessage(registerMessage, "", "info");
+
+    if (username.length < 3) {
+      setAccessMessage(registerMessage, "El usuario debe tener al menos 3 caracteres.", "error");
+      return;
+    }
+
+    if (password.length < 4) {
+      setAccessMessage(registerMessage, "La contraseña debe tener al menos 4 caracteres.", "error");
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      setAccessMessage(registerMessage, "Las contraseñas no coinciden.", "error");
+      return;
+    }
+
+    setButtonLoading(submitButton, true);
+
+    try {
+      const response = await jsonpRequest("register", {
+            username,
+            commercial,
+            password
+          }
+        );
+
+      if (!response?.success) {
+        throw new Error(response?.message || "No se ha podido crear el usuario.");
+      }
+
+      registerForm.reset();
+      clearPasswordMatchMessage(registerPasswordMatch);
+      showAccessForm("login");
+      document.getElementById("loginUsername").value = username;
+      setAccessMessage(loginMessage,"Usuario creado correctamente. Ya puedes iniciar sesión.", "success");
+
+    } catch (error) {
+      setAccessMessage(registerMessage, error.message || "No se ha podido crear el usuario.", "error");
+    } finally {
+      setButtonLoading(submitButton, false);
+    }
+  }
+);
+
+/* =========================================
+   CAMBIAR CONTRASEÑA
+   ========================================= */
+
+changePasswordForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const submitButton = document.getElementById("changePasswordSubmitButton");
+    const username = document.getElementById("changePasswordUsername").value.trim();
+    const currentPassword = document.getElementById("currentPassword").value;
+    const nextPassword = newPassword.value;
+    const confirmation = newPasswordConfirm.value;
+
+    setAccessMessage(changePasswordMessage, "", "info");
+
+    if (nextPassword.length < 4) {
+      setAccessMessage(changePasswordMessage, "La nueva contraseña debe tener al menos 4 caracteres.", "error");
+      return;
+    }
+
+    if (nextPassword !== confirmation) {
+      setAccessMessage(changePasswordMessage, "Las nuevas contraseñas no coinciden.", "error");
+      return;
+    }
+
+    if (currentPassword === nextPassword) {
+      setAccessMessage(changePasswordMessage, "La nueva contraseña debe ser diferente de la actual.", "error");
+      return;
+    }
+
+    setButtonLoading(submitButton, true);
+
+    try {
+      const response = await jsonpRequest("changePassword", {
+            username,
+            currentPassword,
+            newPassword:
+              nextPassword
+          }
+        );
+
+      if (!response?.success) {
+        throw new Error(response?.message || "No se ha podido cambiar la contraseña.");
+      }
+
+      changePasswordForm.reset();
+      clearPasswordMatchMessage(changePasswordMatch);
+      showAccessForm("login");
+      document.getElementById("loginUsername").value = username;
+      setAccessMessage(loginMessage, "Contraseña actualizada. Ya puedes iniciar sesión.", "success");
+
+    } catch (error) {
+      setAccessMessage(changePasswordMessage, error.message || "No se ha podido cambiar la contraseña.", "error");
+
+    } finally {
+      setButtonLoading(submitButton, false);
+    }
+  }
+);
+
+function updateLoggedUserIndicator() {
+  const userInfo = document.getElementById("userInfo");
+  const loggedUserName = document.getElementById("loggedUserName");
+
+  if (!userInfo || !loggedUserName) {
+    return;
+  }
+
+  const userName = currentSession?.user?.commercial || currentSession?.user?.username || "";
+
+  if (!userName) {
+    userInfo.classList.add("hidden");
+    loggedUserName.textContent = "";
+    return;
+  }
+
+  loggedUserName.textContent = userName;
+  userInfo.classList.remove("hidden");
+}
+
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVZBXBRiJ2TnMmoYyTf-GGc8q6bYGfakYph1oXveLO7met5nLxDLbSgGVHKI70_Ts/exec";
+
+let budgetHistory = [];
+
+function showCalculator() {
+    calculatorSection.classList.remove("hidden");
+    historySection.classList.add("hidden");
+
+    showCalculatorButton.classList.add("active");
+    showHistoryButton.classList.remove("active");
+}
+
+async function showHistory() {
+    calculatorSection.classList.add("hidden");
+    historySection.classList.remove("hidden");
+
+    showCalculatorButton.classList.remove("active");
+    showHistoryButton.classList.add("active");
+
+    await loadBudgetHistory();
+}
+
+showCalculatorButton.addEventListener("click",showCalculator);
+showHistoryButton.addEventListener("click",showHistory);
+refreshHistoryButton.addEventListener("click",loadBudgetHistory);
+
+function jsonpRequest(action, parameters = {}) {
+    return new Promise((resolve, reject) => {
+        const callbackName =
+            "jsonpCallback_" +
+            Date.now() +
+            "_" +
+            Math.floor(Math.random() * 1000000);
+
+        const script = document.createElement("script");
+
+        const timeoutId = setTimeout(() => {
+            script.remove();
+            delete window[callbackName];
+
+            reject(
+                new Error(
+                    "Apps Script no ha respondido en 15 segundos."
+                )
+            );
+        }, 15000);
+
+        window[callbackName] = function (result) {
+            clearTimeout(timeoutId);
+
+            script.remove();
+            delete window[callbackName];
+
+            resolve(result);
+        };
+
+        script.onerror = function () {
+            clearTimeout(timeoutId);
+
+            console.error(
+                "URL JSONP que ha fallado:",
+                script.src
+            );
+
+            script.remove();
+            delete window[callbackName];
+
+            reject(
+                new Error(
+                    "No se ha podido cargar la respuesta de Apps Script."
+                )
+            );
+        };
+
+        const query = new URLSearchParams({
+            action: action,
+            ...parameters,
+            callback: callbackName,
+            _: Date.now()
+        });
+
+        script.src =
+            APPS_SCRIPT_URL +
+            "?" +
+            query.toString();
+
+        document.body.appendChild(script);
+    });
+}
+
+function getBudgetValue(budget, field) {
+    const value = budget[field];
+
+    return value === null ||
+        value === undefined ||
+        value === ""
+            ? "—"
+            : String(value);
+}
+
+function setDetailText(id, value) {
+    const element = document.getElementById(id);
+
+    if (!element) {
+        return;
+    }
+
+    element.textContent =
+        value === null ||
+        value === undefined ||
+        value === ""
+            ? "—"
+            : String(value);
+}
+
+function openBudgetDetail(budget) {
+    setDetailText(
+        "detailBudgetId",
+        getBudgetValue(budget, "ID Presupuesto")
+    );
+
+    setDetailText(
+        "detailBudgetDate",
+        formatBudgetDate(budget["Fecha"])
+    );
+
+    setDetailText(
+        "detailClient",
+        getBudgetValue(budget, "Cliente")
+    );
+
+    setDetailText(
+        "detailCif",
+        getBudgetValue(budget, "CIF")
+    );
+
+    setDetailText(
+        "detailAddress",
+        getBudgetValue(budget, "Dirección")
+    );
+
+    const locationParts = [
+        budget["C. P."],
+        budget["Población"],
+        budget["Provincia"]
+    ].filter(Boolean);
+
+    setDetailText(
+        "detailLocation",
+        locationParts.length
+            ? locationParts.join(" · ")
+            : "—"
+    );
+
+    setDetailText(
+        "detailContact",
+        getBudgetValue(budget, "Contacto")
+    );
+
+    setDetailText(
+        "detailEmail",
+        getBudgetValue(budget, "Email")
+    );
+
+    setDetailText(
+        "detailPhone",
+        getBudgetValue(budget, "Teléfono")
+    );
+
+    setDetailText(
+        "detailCommercial",
+        getBudgetValue(budget, "Comercial")
+    );
+
+    setDetailText(
+        "detailSolution",
+        getBudgetValue(budget, "Solución")
+    );
+
+    setDetailText(
+        "detailPlan",
+        getBudgetValue(budget, "Plan")
+    );
+
+    setDetailText(
+        "detailBasePrice",
+        getBudgetValue(budget, "Precio Base")
+    );
+
+    setDetailText(
+        "detailDiscount",
+        getBudgetValue(budget, "DescuentoBase")
+    );
+
+    setDetailText(
+        "detailMonthlyTotal",
+        getBudgetValue(budget, "Total Mensual")
+    );
+
+    setDetailText(
+        "detailAnnualTotal",
+        getBudgetValue(budget, "Total Anual")
+    );
+
+    setDetailText(
+        "detailExtras",
+        budget["Tiene Extras"]
+            ? getBudgetValue(budget, "Extras Añadidos")
+            : "Sin extras"
+    );
+
+    setDetailText(
+        "detailNotes",
+        budget["Notas Adicionales"] ||
+        "Sin notas adicionales."
+    );
+
+    const statusElement =
+        document.getElementById("detailBudgetStatus");
+
+    statusElement.textContent =
+        budget["Estado"] || "Generado";
+
+    statusElement.className =
+        "budget-detail-status history-status-select";
+
+    statusElement.value =
+        budget["Estado"] || "Generado";
+
+    updateStatusStyle(statusElement);
+
+    budgetDetailModal.classList.remove("hidden");
+}
+
+function closeBudgetDetail() {
+    budgetDetailModal.classList.add("hidden");
+}
+
+async function loadBudgetHistory() {
+    if (!currentSession?.token) {
+        showLogin();
+        throw new Error("Debes iniciar sesión.");
+    }
+    setHistoryMessage("Cargando presupuestos...", "loading");
+    try {
+        const result = await jsonpRequest("list", {token: currentSession.token});
+        if (result.success && Array.isArray(result.presupuestos)) {
+            budgetHistory = result.presupuestos;
+            applyHistoryFilters();
+            return;
+        }
+        throw new Error(result.message || "Apps Script no ha devuelto los presupuestos correctamente.");
+
+    } catch (error) {
+        budgetHistory = [];
+        renderBudgetHistory([]);
+
+        setHistoryMessage("No se ha podido cargar el historial: " + error.message, "error");
+    }
+}
+
+function renderBudgetHistory(budgets) {
+    historyTableBody.innerHTML = "";
+
+    if (budgets.length === 0) {
+        setHistoryMessage(
+            "No se han encontrado presupuestos.",
+            "empty"
+        );
+
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    budgets.forEach(budget => {
+        const row = document.createElement("tr");
+        row.addEventListener("click", () => {
+            openBudgetDetail(budget);
+        });
+        row.appendChild(createTableCell(budget["ID Presupuesto"]));
+        row.appendChild(createTableCell(formatBudgetDate(budget["Fecha"])));
+        row.appendChild(createTableCell(budget["Cliente"]));
+        row.appendChild(createTableCell(budget["Solución"]));
+        row.appendChild(createTableCell(budget["Plan"]));
+        row.appendChild(createTableCell(formatCurrencyValue(budget["Total Mensual"])));
+        row.appendChild(createStatusCell(budget));
+        fragment.appendChild(row);
+    });
+
+    historyTableBody.appendChild(fragment);
+
+    setHistoryMessage(
+        `${budgets.length} presupuesto${budgets.length === 1 ? "" : "s"}`,
+        "success"
+    );
+}
+
+function updateStatusStyle(select) {
+
+    select.classList.remove(
+        "status-generado",
+        "status-pendiente",
+        "status-aceptado",
+        "status-rechazado"
+    );
+
+    switch (select.value) {
+
+        case "Generado":
+            select.classList.add("status-generado");
+            break;
+
+        case "Pendiente":
+            select.classList.add("status-pendiente");
+            break;
+
+        case "Aceptado":
+            select.classList.add("status-aceptado");
+            break;
+
+        case "Rechazado":
+            select.classList.add("status-rechazado");
+            break;
+        case "Enviado":
+            select.classList.add("status-enviado");
+            break;
+
+        case "Perdido":
+            select.classList.add("status-perdido");
+            break;
+
+        case "Cancelado":
+            select.classList.add("status-cancelado");
+            break;
+            }
+}
+
+function createTableCell(value) {
+    const cell = document.createElement("td");
+
+    cell.textContent =
+        value === null ||
+        value === undefined ||
+        value === ""
+            ? "—"
+            : String(value);
+
+    return cell;
+}
+
+function formatBudgetDate(value) {
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+    let date;
+
+    // Fecha española: dd/mm/aaaa
+    if (
+        typeof value === "string" &&
+        /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(value.trim())
+    ) {
+        const [day, month, year] =
+            value.trim().split("/").map(Number);
+
+        date = new Date(
+            year,
+            month - 1,
+            day
+        );
+    } else {
+        // ISO, timestamp u otros formatos válidos
+        date = new Date(value);
+    }
+
+    if (Number.isNaN(date.getTime())) {
+        console.warn(
+            "Fecha no reconocida:",
+            value
+        );
+
+        return String(value);
+    }
+
+    return new Intl.DateTimeFormat(
+        "es-ES",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        }
+    ).format(date);
+}
+
+function formatCurrencyValue(value) {
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+    if (typeof value === "number") {
+        return new Intl.NumberFormat(
+            "es-ES",
+            {
+                style: "currency",
+                currency: "EUR"
+            }
+        ).format(value);
+    }
+
+    return String(value);
+}
+
+function applyHistoryFilters() {
+    const searchTerm = historySearchInput.value
+        .trim()
+        .toLocaleLowerCase("es");
+
+    const selectedStatus =
+        historyStatusFilter.value;
+
+    const filteredBudgets =
+        budgetHistory.filter(budget => {
+            const searchableValues = [
+                budget["ID Presupuesto"],
+                budget["Cliente"],
+                budget["CIF"],
+                budget["Solución"],
+                budget["Plan"],
+                budget["Email"],
+                budget["Contacto"],
+                budget["Comercial"]
+            ];
+
+            const matchesSearch =
+                !searchTerm ||
+                searchableValues.some(value =>
+                    String(value || "")
+                        .toLocaleLowerCase("es")
+                        .includes(searchTerm)
+                );
+
+            const matchesStatus =
+                !selectedStatus ||
+                String(budget["Estado"] || "") ===
+                    selectedStatus;
+
+            return matchesSearch && matchesStatus;
+        });
+
+    renderBudgetHistory(filteredBudgets);
+}
+
+historySearchInput.addEventListener(
+    "input",
+    applyHistoryFilters
+);
+
+historyStatusFilter.addEventListener(
+    "change",
+    applyHistoryFilters
+);
+
+closeBudgetDetailModal.addEventListener(
+    "click",
+    closeBudgetDetail
+);
+
+budgetDetailModal.addEventListener(
+    "click",
+    event => {
+        if (event.target === budgetDetailModal) {
+            closeBudgetDetail();
+        }
+    }
+);
+
+document.addEventListener("keydown", event => {
+    if (
+        event.key === "Escape" &&
+        !budgetDetailModal.classList.contains("hidden")
+    ) {
+        closeBudgetDetail();
+    }
+});
+
+function createStatusCell(budget) {
+    const cell = document.createElement("td");
+    const select = document.createElement("select");
+
+    const statuses = [
+        "Generado",
+        "Enviado",
+        "Pendiente",
+        "Aceptado",
+        "Perdido",
+        "Cancelado"
+    ];
+
+    const currentStatus =
+        budget["Estado"] || "Generado";
+
+    statuses.forEach(status => {
+        const option =
+            document.createElement("option");
+
+        option.value = status;
+        option.textContent = status;
+        option.selected =
+            status === currentStatus;
+
+        select.appendChild(option);
+    });
+
+    select.className = "history-status-select";
+    updateStatusStyle(select);
+    select.addEventListener("click", event => {
+        event.stopPropagation();
+    });
+
+    select.addEventListener(
+        "change",
+        async event => {
+            const newStatus = event.target.value;
+            const previousStatus =
+                budget["Estado"] || "Generado";
+
+            updateStatusStyle(select);
+
+            select.disabled = true;
+
+            try {
+                await updateBudgetStatus(
+                    budget["ID Presupuesto"],
+                    newStatus
+                );
+
+                budget["Estado"] = newStatus;
+
+                setHistoryMessage(
+                    `Estado del presupuesto ${budget["ID Presupuesto"]} actualizado.`,
+                    "success"
+                );
+
+            } catch (error) {
+                select.value = previousStatus;
+
+                updateStatusStyle(select);
+
+                setHistoryMessage(
+                    `No se ha podido actualizar el estado: ${error.message}`,
+                    "error"
+                );
+            } finally {
+                select.disabled = false;
+            }
+        }
+    );
+
+    cell.appendChild(select);
+
+    return cell;
+}
+
+async function updateBudgetStatus(id, estado) {
+    if (!currentSession?.token) {
+        throw new Error("Debes iniciar sesión.");
+    }
+    if (!id) {
+        throw new Error("El presupuesto no tiene ID.");
+    }
+    await fetch(APPS_SCRIPT_URL,{
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type":
+                    "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify({
+                action: "updateStatus",
+                token: currentSession.token,
+                id,
+                estado
+            })
+        }
+    );
+}
+
+function setHistoryMessage(
+    message,
+    type = ""
+) {
+    historyMessage.textContent = message;
+    historyMessage.className =
+        `history-message ${type}`;
+}
 
 addModl.addEventListener("change", () => {
   addModulesExtraApp();
@@ -2017,10 +3115,6 @@ const clientForm = document.getElementById("clientForm");
 const closeClientModal = document.getElementById("closeClientModal");
 const cancelClientData = document.getElementById("cancelClientData");
 
-/*generateBudgetBtn.addEventListener("click", () => {
-    clientModal.classList.remove("hidden");
-});*/
-
 closeClientModal.addEventListener("click", closeClientDataModal);
 cancelClientData.addEventListener("click", closeClientDataModal);
 
@@ -2036,10 +3130,28 @@ generateBudgetBtn.addEventListener("click", async event => {
 });
 
 clientForm.addEventListener("submit", async event => {
-  event.preventDefault();
-  const clientData = getClientData();
-  clientModal.classList.add("hidden");
-  await generateBudgetDocument(clientData);
+    event.preventDefault();
+    const submitButton = clientForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    try {
+        const clientData = getClientData();
+        const budgetData = {
+            ...buildBudgetData(),
+            ...clientData
+        };
+        console.log("Datos del presupuesto:", budgetData);
+        await saveBudgetRecord(budgetData);
+        clientModal.classList.add("hidden");
+        await generateBudgetDocument(budgetData);
+    } catch (error) {
+        console.error(error);
+        alert(
+            "No se ha podido guardar el presupuesto. " +
+            "No se generará el documento para evitar que quede sin registrar."
+        );
+    } finally {
+        submitButton.disabled = false;
+    }
 });
 
 function getClientData() {
@@ -2087,53 +3199,33 @@ function getActiveBudgetType() {
     return budgetType;
 }
 
-async function generateBudgetDocument(clientData) {
-    try {
-        const budgetType = getActiveBudgetType();
+async function generateBudgetDocument(budgetData) {
+    const budgetType = getActiveBudgetType();
 
-        const templatePath =
-            budgetType === "erp"
-                ? "./templates/presupuesto-erp.docx"
-                : "./templates/presupuesto-microdata.docx";
+    const templatePath =
+        budgetType === "erp"
+            ? "templates/presupuesto-erp.docx"
+            : "templates/presupuesto-microdata.docx";
 
-        const budgetData = {
-            ...buildBudgetData(),
-            ...clientData
-        };
+    const content =
+        await loadDocxTemplate(templatePath);
 
-        console.log("Datos completos:", budgetData);
+    const zip = new PizZip(content);
 
-        const content = await loadDocxTemplate(templatePath);
+    const doc = new window.docxtemplater(zip, {
+        paragraphLoop: true,
+        linebreaks: true
+    });
 
-        const zip = new PizZip(content);
+    doc.render(budgetData);
 
-        const doc = new window.docxtemplater(zip, {
-            paragraphLoop: true,
-            linebreaks: true
-        });
+    const blob = doc.getZip().generate({
+        type: "blob",
+        mimeType:
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    });
 
-        doc.render(budgetData);
-
-        const blob = doc.getZip().generate({
-            type: "blob",
-            mimeType:
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        });
-
-        saveAs(
-            blob,
-            `presupuesto-${budgetType}-${budgetData.numPresupuesto}.docx`
-        );
-    } catch (error) {
-        console.error(
-            "Error generando el presupuesto:",
-            error
-        );
-
-        alert(
-            `No se pudo generar el presupuesto: ${error.message}`
-        );
-    }
+    saveAs(blob, "presupuesto.docx");
 }
 
 function buildBudgetData() {
@@ -2146,23 +3238,10 @@ function buildBudgetData() {
     return buildMicrodataBudgetData();
 }
 
-function getElementText(id) {
-    const element = document.getElementById(id);
-
-    if (!element) {
-        console.warn(`No existe ningún elemento con id="${id}"`);
-        return "";
-    }
-
-    return element.textContent.trim();
-}
-
 function buildErpBudgetData() {
-    const familySelect =
-        document.getElementById("erpFamilySelect");
+    const familySelect = document.getElementById("erpFamilySelect");
 
-    const planSelect =
-        document.getElementById("erpPlanSelect");
+    const planSelect = document.getElementById("erpPlanSelect");
 
     const extras = buildErpExtrasData();
 
@@ -2202,7 +3281,7 @@ function buildErpBudgetData() {
         totalAnual:
             getElementText("erpAnnualTotal"),
 
-        notas: ""
+        notasAdicionales: budgetNotes.value.trim(),
     };
 }
 
@@ -2507,56 +3586,25 @@ function loadDocxTemplate(url) {
   });
 }
 
-function buildTestBudgetData() {
-  return {
-    numPresupuesto: createBudgetNumber(),
-    fecha: formatBudgetDate(new Date()),
-
-    lineas: [
-      {
-        app: "ERP Despacho Estándar",
-        modalidad: "C",
-
-        licImp: "299,95 €",
-        licDto: "10 %",
-        licTotal: "269,96 €",
-
-        mantFecha: "",
-        mantImporte: "",
-        mantDto: "",
-        mantTotal: "",
-
-        periodo: "M",
-        cuota: "269,96 €"
-      },
-      {
-        aplicacion: "DiezScan - 3.000 documentos",
-        mod: "S",
-
-        licenciaImporte: "",
-        licenciaDto: "",
-        licenciaTotal: "",
-
-        mantFecha: "",
-        mantImp: "50,00 €",
-        mantDto: "0 %",
-        mantTotal: "50,00 €",
-
-        periodo: "M",
-        cuota: "50,00 €"
-      }
-    ],
-
-    sumLicTotal: "269,96 €",
-    totalMantenimiento: "50,00 €",
-    sumCuota: "319,96 €",
-
-    notas:
-      "Presupuesto generado desde la calculadora comercial.",
-
-    infoServicios:
-      "ERP Despacho Estándar y servicios adicionales seleccionados."
-  };
+async function saveBudgetRecord(budgetData) {
+    if (!currentSession?.token) {
+        throw new Error("Debes iniciar sesión para guardar un presupuesto.");
+    }
+    await fetch(APPS_SCRIPT_URL,{
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type":
+                    "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify({
+                action: "create",
+                token: currentSession.token,
+                data: budgetData
+            })
+        }
+    );
+    console.log("Presupuesto enviado a Apps Script.");
 }
 
 function createBudgetNumber() {
@@ -2581,16 +3629,6 @@ function createBudgetNumber() {
   ).padStart(2, "0");
 
   return `${year}${month}${day}-${hours}${minutes}`;
-}
-
-
-
-function formatBudgetDate(date) {
-  return new Intl.DateTimeFormat("es-ES", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
-  }).format(date);
 }
 
 function getDocxErrorMessage(error) {
@@ -2621,6 +3659,9 @@ function getDocxErrorMessage(error) {
   );
 }
 
+if (!restoreSession()) {
+    showLogin();
+}
 
 init();
 initErp();

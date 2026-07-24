@@ -7,263 +7,468 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="app-shell">
-    <section class="hero">
-      <div class="hero-content">
-        <p class="eyebrow">Calculadora comercial</p>
-        <h1>Calcular tarifas</h1>
-        <p class="subtitle">Selecciona la aplicación, indica el volumen y obtén el precio recomendado automáticamente.</p>
-      </div>
-      <div class="hero-actions">
-        <img src="./shinelogo.png" alt="Shine by Cegid" class="hero-logo">
-        <button type="button" id="generateBudgetBtn">Generar presupuesto</button>
+  <section id="loginScreen" class="login-screen">
+    <section id="loginScreen" class="access-screen">
+      <div class="access-decoration access-decoration-left"></div>
+      <div class="access-decoration access-decoration-right"></div>
+      <div class="access-card">
+          <header class="access-header">
+              <div class="access-logo">
+                  <span class="access-logo-icon">€</span>
+              </div>
+              <h1 id="accessTitle">
+                  Calculadora comercial
+              </h1>
+              <p id="accessSubtitle">
+                  Accede para crear y consultar tus presupuestos
+              </p>
+          </header>
+          <div class="access-forms-container">
+              <!-- ===================================== -->
+              <!-- INICIAR SESIÓN                        -->
+              <!-- ===================================== -->
+              <form id="loginForm" class="access-form access-form-active" autocomplete="on">
+                  <div class="access-field">
+                      <label for="loginUsername">Usuario</label>
+                      <div class="access-input-wrapper">
+                        <span class="access-input-icon">👤</span>
+                        <input id="loginUsername" name="username" type="text" autocomplete="username" placeholder="Introduce tu usuario" required>
+                      </div>
+                  </div>
+                  <div class="access-field">
+                      <label for="loginPassword">Contraseña</label>
+                      <div class="access-input-wrapper">
+                          <span class="access-input-icon">🔒</span>
+                          <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="Introduce tu contraseña"required>
+                          <button type="button" class="password-toggle" data-password-target="loginPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                      </div>
+                  </div>
+                  <div id="loginMessage" class="access-message" aria-live="polite"></div>
+                  <button id="loginSubmitButton" type="submit" class="access-primary-button">
+                      <span class="button-default-content">Iniciar sesión</span>
+                      <span class="button-loading-content hidden">
+                          <span class="access-spinner"></span>
+                          Comprobando...
+                      </span>
+                  </button>
+                  <div class="access-links">
+                      <button id="showRegisterButton" type="button" class="access-link-button">Crear usuario</button>
+                      <span class="access-link-separator">·</span>
+                      <button id="showChangePasswordButton" type="button" class="access-link-button">Cambiar contraseña</button>
+                  </div>
+              </form>
+              <!-- ===================================== -->
+              <!-- CREAR USUARIO                         -->
+              <!-- ===================================== -->
+              <form id="registerForm" class="access-form hidden" autocomplete="off">
+                  <div class="access-form-intro">
+                      <div class="access-form-icon">＋</div>
+                      <h2>Crear usuario</h2>
+                      <p>
+                          Crea tus credenciales para acceder a la
+                          calculadora comercial.
+                      </p>
+                  </div>
+                  <div class="access-field">
+                      <label for="registerUsername">Nombre de usuario</label>
+                      <div class="access-input-wrapper">
+                          <span class="access-input-icon">👤</span>
+                          <input id="registerUsername" name="registerUsername" type="text" autocomplete="off" placeholder="Ejemplo: jperez" minlength="3" required>
+                      </div>
+                      <small class="access-field-help">Utiliza al menos 3 caracteres.</small>
+                  </div>
+                  <div class="access-field">
+                      <label for="registerCommercial">Nombre completo</label>
+                      <div class="access-input-wrapper">
+                          <span class="access-input-icon">🪪</span>
+                          <input id="registerCommercial" name="registerCommercial" type="text" autocomplete="name" placeholder="Ejemplo: Juan Pérez" required>
+                      </div>
+                  </div>
+                  <div class="access-field">
+                      <label for="registerPassword">Contraseña</label>
+                      <div class="access-input-wrapper">
+                          <span class="access-input-icon">🔒</span>
+                          <input id="registerPassword" name="registerPassword" type="password" autocomplete="new-password" placeholder="Mínimo 4 caracteres" minlength="4" required>
+                          <button type="button" class="password-toggle" data-password-target="registerPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                      </div>
+                  </div>
+                  <div class="access-field">
+                      <label for="registerPasswordConfirm">Repetir contraseña</label>
+                      <div class="access-input-wrapper">
+                          <span class="access-input-icon">🔒</span>
+                          <input id="registerPasswordConfirm" name="registerPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repite la contraseña" minlength="4" required>
+                          <button type="button" class="password-toggle" data-password-target="registerPasswordConfirm" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                      </div>
+                      <small id="registerPasswordMatch" class="password-match-message"></small>
+                  </div>
+                  <div id="registerMessage" class="access-message" aria-live="polite"></div>
+                  <button id="registerSubmitButton" type="submit" class="access-primary-button">
+                      <span class="button-default-content">Crear usuario</span>
+                      <span class="button-loading-content hidden">
+                          <span class="access-spinner"></span>
+                          Creando usuario...
+                      </span>
+                  </button>
+                  <button type="button" class="access-secondary-button back-to-login">← Volver al inicio de sesión</button>
+              </form>
+              <!-- ===================================== -->
+              <!-- CAMBIAR CONTRASEÑA                    -->
+              <!-- ===================================== -->
+              <form id="changePasswordForm" class="access-form hidden" autocomplete="off">
+                  <div class="access-form-intro">
+                      <div class="access-form-icon">🔑</div>
+                      <h2>Cambiar contraseña</h2>
+                      <p>
+                          Introduce tu contraseña actual y establece una nueva.
+                      </p>
+                  </div>
+                  <div class="access-field">
+                      <label for="changePasswordUsername">Usuario</label>
+                      <div class="access-input-wrapper">
+                          <span class="access-input-icon">👤</span>
+                          <input id="changePasswordUsername" name="changePasswordUsername" type="text" autocomplete="username" placeholder="Introduce tu usuario" required>
+                      </div>
+                  </div>
+                  <div class="access-field">
+                      <label for="currentPassword">Contraseña actual</label>
+                      <div class="access-input-wrapper">
+                          <span class="access-input-icon">🔒</span>
+                          <input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" placeholder="Contraseña actual" required>
+                          <button type="button" class="password-toggle" data-password-target="currentPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                      </div>
+                  </div>
+                  <div class="access-field">
+                      <label for="newPassword">Nueva contraseña</label>
+                      <div class="access-input-wrapper">
+                          <span class="access-input-icon">🔒</span>
+                          <input id="newPassword" name="newPassword" type="password" autocomplete="new-password" placeholder="Mínimo 4 caracteres" minlength="4" required>
+                          <button type="button" class="password-toggle" data-password-target="newPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                      </div>
+                  </div>
+                  <div class="access-field">
+                      <label for="newPasswordConfirm">Repetir nueva contraseña</label>
+                      <div class="access-input-wrapper">
+                          <span class="access-input-icon">🔒</span>
+                          <input id="newPasswordConfirm" name="newPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repite la nueva contraseña" minlength="4" required>
+                          <button type="button" class="password-toggle" data-password-target="newPasswordConfirm" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                      </div>
+                      <small id="changePasswordMatch" class="password-match-message"></small>
+                  </div>
+                  <div id="changePasswordMessage" class="access-message" aria-live="polite"></div>
+                  <button id="changePasswordSubmitButton" type="submit" class="access-primary-button">
+                      <span class="button-default-content">Cambiar contraseña</span>
+                      <span class="button-loading-content hidden">
+                          <span class="access-spinner"></span>
+                          Actualizando...
+                      </span>
+                  </button>
+                  <button type="button" class="access-secondary-button back-to-login">
+                      ← Volver al inicio de sesión
+                  </button>
+              </form>
+          </div>
+          <footer class="access-footer">
+              <span class="access-security-icon">🔐</span>
+              Acceso exclusivo para usuarios autorizados
+          </footer>
       </div>
     </section>
-    
-    <div class="tabs">
-      <div class="tabs-header">
-        <button type="button" class="tab-button " data-tab="microdata">
-          Microdata
-        </button>
-
-        <button type="button" class="tab-button active" data-tab="erp">
-          ERP
-        </button>
+  </section>
+  <main id="app-container" class="app-shell hidden">
+    <nav class="main-navigation">
+      <button type="button" id="showCalculatorButton" class="navigation-button active">Nueva simulación</button>
+      <button type="button" id="showHistoryButton" class="navigation-button">Historial</button>
+      <div id="userInfo" class="user-info hidden">
+        <span class="user-avatar">👤</span>
+        <div class="user-info-text">
+            <span class="user-info-label">Usuario</span>
+            <strong id="loggedUserName">—</strong>
+            <button id="logoutButton" type="button" class="logout-button" title="Cerrar sesión" aria-label="Cerrar sesión">
+              <span class="logout-button-icon">↪</span>
+              <span class="logout-button-text">Cerrar sesión</span>
+            </button>
+        </div>
       </div>
-      <div class="tab-container">
-        <div class="tab " id="microdata">
-          <div class="tab-content">
-            <div class="calculator-layout">
-              <section class="calculator-card">
-                <div class="derecha">
-                    <button id="infoButton" class="info-button">Particularidades</button>
-                </div>
-                <div class="grid two">
-                  <label class="field">
-                    <span>Aplicación</span>
-                    <select id="appSelect"></select>
-                  </label>
+    </nav>
+    <section id="calculatorSection">
+        <section class="hero">
+          <div class="hero-content">
+            <p class="eyebrow">Centro de presupuestos comercial</p>
+            <h1>Cálculo de presupuestos</h1>
+            <p class="subtitle">Selecciona la aplicación, indica el volumen y obtén el precio recomendado automáticamente.</p>
+          </div>
+          <div class="hero-actions">
+            <img src="./shinelogo.png" alt="Shine by Cegid" class="hero-logo">
+            <button class="hero-button" type="button" id="generateBudgetBtn">Generar presupuesto</button>
+          </div>
+        </section>
+        
+        <div class="tabs">
+          <div class="tabs-header">
+            <button type="button" class="tab-button " data-tab="microdata">Microdata</button>
+            <button type="button" class="tab-button active" data-tab="erp">ERP</button>
+          </div>
+          <div class="tab-container">
+            <div class="tab " id="microdata">
+              <div class="tab-content">
+                <div class="calculator-layout">
+                  <section class="calculator-card">
+                    <div class="derecha">
+                        <button id="infoButton" class="info-button">Particularidades</button>
+                    </div>
+                    <div class="grid two">
+                      <label class="field">
+                        <span>Aplicación</span>
+                        <select id="appSelect"></select>
+                      </label>
 
-                  <label class="field" id="planField">
-                    <span>Plan</span>
-                    <select id="planSelect"></select>
-                  </label>
-                </div>
+                      <label class="field" id="planField">
+                        <span>Plan</span>
+                        <select id="planSelect"></select>
+                      </label>
+                    </div>
 
-                <div class="grid two">
-                  <label class="field">
-                    <span id="quantityLabel">Cantidad</span>
-                    <input id="quantityInput" type="number" min="1" step="1" value="5" />
-                    <select id="selectBuzones" style="display: none;"></select>
-                  </label>
+                    <div class="grid two">
+                      <label class="field">
+                        <span id="quantityLabel">Cantidad</span>
+                        <input id="quantityInput" type="number" min="1" step="1" value="5" />
+                        <select id="selectBuzones" style="display: none;"></select>
+                      </label>
 
-                  <label class="field" id="billingField">
-                    <span>Facturación</span>
-                    <select id="billingSelect">
-                      <option value="annual" selected>Anual</option>
-                      <option value="monthly">Mensual</option>
-                    </select>
-                  </label>
-                </div>
-                <div class="grid two">
-                <label id="extraUsersLabel" class="field hidden">
-                    <span id="extraUsers">Usuarios extra</span>
-                    <input id="usersInput" type="number" min="0" step="1" value="0" />
-                  </label>
+                      <label class="field" id="billingField">
+                        <span>Facturación</span>
+                        <select id="billingSelect">
+                          <option value="annual" selected>Anual</option>
+                          <option value="monthly">Mensual</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div class="grid two">
+                    <label id="extraUsersLabel" class="field hidden">
+                        <span id="extraUsers">Usuarios extra</span>
+                        <input id="usersInput" type="number" min="0" step="1" value="0" />
+                      </label>
+                      <label id="extraMdl" class="field2 hidden">
+                        <span id="extraModule"><label class="field" id="modulo"></label><input id="addModl" type="checkbox"/></span>
+                          <div class="hidden" id="usersCertiFExtra">
+                            <div class="doble">Usuarios Extra:<input type="checkbox" class="peque" id="userExtra"/></div>
+                            <input class="hidden" id="usersCFExtra" type="number" min="" step="1" value="0" />
+                          </div>
+                          <div class="hidden" id="moduleGestExtra">
+                            <select id="gestModules"></select>
+                          </div>
+                      </label>        
+                      
+                    </div>
+                    <div class="notice" id="noticeBox"></div>
 
-                  <label id="extraMdl" class="field2 hidden">
-                    <span id="extraModule"><label class="field" id="modulo"></label><input id="addModl" type="checkbox"/></span>
-                      <div class="hidden" id="usersCertiFExtra">
-                        <div class="doble">Usuarios Extra:<input type="checkbox" class="peque" id="userExtra"/></div>
-                        <input class="hidden" id="usersCFExtra" type="number" min="" step="1" value="0" />
+                    <section class="result-card">
+                      <div>
+                        <p class="result-label">Resultado estimado</p>
+                        <h2 id="mainResult">0,00 €</h2>
+                        <p id="resultSubtitle">Selecciona una tarifa para calcular.</p>
                       </div>
-                      <div class="hidden" id="moduleGestExtra">
-                        <select id="gestModules"></select>
+                    </section>
+                      
+                    <section class="breakdown">
+                      <div class="row"><span>App</span><strong id="summaryApp">-</strong></div>
+                      <div class="row"><span>Plan / tarifa</span><strong id="summaryPlan">-</strong></div>
+                      <div class="row"><span>Mantenimiento</span><strong id="summaryMant">-</strong></div>
+                      <div class="row"><span id="summaryQuantityLabel">Cantidad</span><strong id="summaryQuantity">-</strong></div>
+                      <div class="row"><span>Precio mensual</span><strong id="summaryMonthly">-</strong></div>
+                      <div class="row"><span>Precio anual</span><strong id="summaryAnnual">-</strong></div>
+                    </section>
+                  </section>
+                  <aside class="variable-panel">
+                    <div class="accordion hidden" id="trfVrb">
+                      <div class="accordion-item hidden" id="gestFiscal">
+                        <button class="accordion-header">Calcula y compara tarifa variable</button>
+                        <div class="accordion-content" >
+                          <section class="tabla">
+                            <div class="row"><span>Empresas en Módulos</span></div>
+                            <div class="row"><input id="empMdl" type="number" min="0" step="1" value="0"/></div>
+
+                            <div class="row"><span>Empresas Directa y Simplificada</span></div>
+                            <div class="row"><input id="empDrct" type="number" min="0" step="1" value="0"/></div>
+
+                            <div class="row"><span>Empresas Sociedades</span></div>
+                            <div class="row"><input id="empScds" type="number" min="0" step="1" value="0"/></div>
+
+                            <div class="total-title">Total</div>
+                            <div id="ttlFiscal" class="total-value">0,00 €</div>
+                          </section>
+                        </div>
                       </div>
-                  </label>        
-                  
+                      <div class="accordion-item hidden" id="gestLaboral">
+                        <button class="accordion-header">Calcula y compara tarifa variable</button>
+                        <div class="accordion-content">
+                          <section class="tabla">
+                            <div class="label">Por empresa</div>
+                            <input id="porEmp" type="number" min="0" step="1" value="0">
+
+                            <div class="label">Por trabajador</div>
+                            <input id="porTbj" type="number" min="0" step="1" value="0">
+
+                            <div class="total-title">Total</div>
+                            <div id="ttlLaboral" class="total-value">35,00 €</div>
+                          </section>
+                        </div>
+                      </div>
+                    </div>
+                  </aside>
                 </div>
-                <div class="notice" id="noticeBox"></div>
-
-                <section class="result-card">
-                  <div>
-                    <p class="result-label">Resultado estimado</p>
-                    <h2 id="mainResult">0,00 €</h2>
-                    <p id="resultSubtitle">Selecciona una tarifa para calcular.</p>
-                  </div>
-                </section>
-                  
-                <section class="breakdown">
-                  <div class="row"><span>App</span><strong id="summaryApp">-</strong></div>
-                  <div class="row"><span>Plan / tarifa</span><strong id="summaryPlan">-</strong></div>
-                  <div class="row"><span>Mantenimiento</span><strong id="summaryMant">-</strong></div>
-                  <div class="row"><span id="summaryQuantityLabel">Cantidad</span><strong id="summaryQuantity">-</strong></div>
-                  <div class="row"><span>Precio mensual</span><strong id="summaryMonthly">-</strong></div>
-                  <div class="row"><span>Precio anual</span><strong id="summaryAnnual">-</strong></div>
-                </section>
-              </section>
-              <aside class="variable-panel">
-                <div class="accordion hidden" id="trfVrb">
-                  <div class="accordion-item hidden" id="gestFiscal">
-                    <button class="accordion-header">Calcula y compara tarifa variable</button>
-                    <div class="accordion-content" >
-                      <section class="tabla">
-                        <div class="row"><span>Empresas en Módulos</span></div>
-                        <div class="row"><input id="empMdl" type="number" min="0" step="1" value="0"/></div>
-
-                        <div class="row"><span>Empresas Directa y Simplificada</span></div>
-                        <div class="row"><input id="empDrct" type="number" min="0" step="1" value="0"/></div>
-
-                        <div class="row"><span>Empresas Sociedades</span></div>
-                        <div class="row"><input id="empScds" type="number" min="0" step="1" value="0"/></div>
-
-                        <div class="total-title">Total</div>
-                        <div id="ttlFiscal" class="total-value">0,00 €</div>
-                      </section>
+              </div>
+            </div>
+            <div class="tab active" id="erp">
+              <div class="tab-content">
+                <section class="erp-calculator">
+                  <div class="erp-header">
+                    <div>
+                      <p class="eyebrow">Aplicación</p>
+                      <h2 class="erp-title">ERP Despacho</h2>
+                      <p class="erp-subtitle">
+                        Selecciona una solución y añade los servicios opcionales.
+                      </p>
                     </div>
                   </div>
-                  <div class="accordion-item hidden" id="gestLaboral">
-                    <button class="accordion-header">Calcula y compara tarifa variable</button>
-                    <div class="accordion-content">
-                      <section class="tabla">
-                        <div class="label">Por empresa</div>
-                        <input id="porEmp" type="number" min="0" step="1" value="0">
-
-                        <div class="label">Por trabajador</div>
-                        <input id="porTbj" type="number" min="0" step="1" value="0">
-
-                        <div class="total-title">Total</div>
-                        <div id="ttlLaboral" class="total-value">35,00 €</div>
+                  <div class="erp-layout">
+                    <div class="erp-main">
+                      <div class="grid two">
+                        <label class="field">
+                          <span>Solución</span>
+                          <select id="erpFamilySelect">
+                            <option value="despacho">ERP Despacho</option>
+                            <option value="fiscal">ERP Despacho Fiscal</option>
+                            <option value="laboral">ERP Despacho Laboral</option>
+                          </select>
+                        </label>
+                        <label class="field">
+                          <span>Plan</span>
+                          <select id="erpPlanSelect"></select>
+                        </label>
+                      </div>
+                      <section class="erp-plan-summary">
+                          <div class="erp-pricing-block">
+                            <div class="erp-pricing-head">
+                              <span>Precio base</span>
+                              <span>Descuento</span>
+                              <span>Valor</span>
+                              <span>Precio con descuento</span>
+                            </div>
+                            <div class="erp-base-row">
+                              <strong id="erpBasePrice">0,00 €</strong>
+                              <select id="erpBaseDiscountType">
+                                <option value="none">Sin descuento</option>
+                                <option value="percentage">%</option>
+                                <option value="fixed">€</option>
+                              </select>
+                              <input id="erpBaseDiscountValue" type="number" min="0" step="0.01" value="0" disabled >
+                              <strong id="erpBaseFinalPrice">0,00 €</strong>
+                            </div>
+                          </div>
+                          <div class="erp-users-block">
+                            <div>
+                              <span class="erp-summary-label">Usuarios incluidos</span>
+                              <strong id="erpIncludedUsers">-</strong>
+                            </div>
+                            <div>
+                              <span class="erp-summary-label">Usuarios máximos</span>
+                              <strong id="erpMaxUsers">-</strong>
+                            </div>
+                          </div>
+                        </section>
+                      <section class="erp-table-card">
+                        <div class="erp-table-title">
+                          <h3>Servicios adicionales</h3>
+                        </div>
+                        <div id="erpExtrasList" class="erp-extras-list"></div>
+                      </section>
+                      <div class="form-group form-group-full">
+                        <label for="budgetNotes">Notas adicionales</label>
+                        <textarea id="budgetNotes" name="budgetNotes" rows="4" placeholder="Añade observaciones, condiciones especiales o información relevante para el presupuesto"></textarea>
+                      </div>
+                      <section class="erp-result">
+                        <div>
+                          <span>Precio base</span>
+                          <strong id="erpSummaryBase">0,00 €</strong>
+                        </div>
+                        <div>
+                          <span>Servicios adicionales</span>
+                          <strong id="erpSummaryExtras">0,00 €</strong>
+                        </div>
+                        <div class="erp-result-total">
+                          <span>Total mensual estimado</span>
+                          <strong id="erpTotal">0,00 €</strong>
+                        </div>
+                        <div class="erp-result-total-anual">
+                          <span>Total anual estimado</span>
+                          <strong id="erpAnnualTotal">0,00 €</strong>
+                        </div>
                       </section>
                     </div>
+                    <aside class="erp-side-panel">
+                      <section class="erp-table-card">
+                        <div class="erp-table-title">
+                          <h3>Funcionalidades del plan</h3>
+
+                          <div class="erp-legend">
+                            <span><i class="status included"></i> Incluido</span>
+                            <span><i class="status optional"></i> Opcional</span>
+                            <span><i class="status unavailable"></i> No disponible</span>
+                          </div>
+                        </div>
+
+                        <div id="erpFeaturesTable" class="erp-features-table">
+                          <!-- Se rellenará mediante JavaScript -->
+                        </div>
+                      </section>
+                    </aside>
                   </div>
-                </div>
-              </aside>
+                </section>
+              </div>
             </div>
           </div>
         </div>
-        <div class="tab active" id="erp">
-          <div class="tab-content">
-            <section class="erp-calculator">
-              <div class="erp-header">
-                <div>
-                  <p class="eyebrow">Cegid Diez</p>
-                  <h2 class="erp-title">ERP Despacho</h2>
-                  <p class="erp-subtitle">
-                    Selecciona una solución y añade los servicios opcionales.
-                  </p>
+      </section>
+      <section id="historyView" class="history-page hidden">
+        <div class="history-container">
+            <header class="history-header">
+                <div class="history-header-content">
+                    <h1 class="history-title">Historial de presupuestos</h1>
+                    <p class="history-subtitle">Consulta y actualiza los presupuestos generados.</p>
                 </div>
-              </div>
-              <div class="erp-layout">
-                <div class="erp-main">
-                  <div class="grid two">
-                    <label class="field">
-                      <span>Solución</span>
-                      <select id="erpFamilySelect">
-                        <option value="despacho">ERP Despacho</option>
-                        <option value="fiscal">Fiscal</option>
-                        <option value="laboral">Laboral</option>
-                      </select>
-                    </label>
-
-                    <label class="field">
-                      <span>Plan</span>
-                      <select id="erpPlanSelect"></select>
-                    </label>
-                  </div>
-
-                  <section class="erp-plan-summary">
-                      <div class="erp-pricing-block">
-                        <div class="erp-pricing-head">
-                          <span>Precio base</span>
-                          <span>Descuento</span>
-                          <span>Valor</span>
-                          <span>Precio con descuento</span>
-                        </div>
-
-                        <div class="erp-base-row">
-                          <strong id="erpBasePrice">0,00 €</strong>
-
-                          <select id="erpBaseDiscountType">
-                            <option value="none">Sin descuento</option>
-                            <option value="percentage">%</option>
-                            <option value="fixed">€</option>
-                          </select>
-
-                          <input id="erpBaseDiscountValue" type="number" min="0" step="0.01" value="0" disabled >
-
-                          <strong id="erpBaseFinalPrice">0,00 €</strong>
-                        </div>
-                      </div>
-
-                      <div class="erp-users-block">
-                        <div>
-                          <span class="erp-summary-label">Usuarios incluidos</span>
-                          <strong id="erpIncludedUsers">-</strong>
-                        </div>
-
-                        <div>
-                          <span class="erp-summary-label">Usuarios máximos</span>
-                          <strong id="erpMaxUsers">-</strong>
-                        </div>
-                      </div>
-
-                    </section>
-
-                  <section class="erp-table-card">
-                    <div class="erp-table-title">
-                      <h3>Servicios adicionales</h3>
-                    </div>
-
-                    <div id="erpExtrasList" class="erp-extras-list"></div>
-                  </section>
-
-                  <section class="erp-result">
-                    <div>
-                      <span>Precio base</span>
-                      <strong id="erpSummaryBase">0,00 €</strong>
-                    </div>
-
-                    <div>
-                      <span>Servicios adicionales</span>
-                      <strong id="erpSummaryExtras">0,00 €</strong>
-                    </div>
-
-                    <div class="erp-result-total">
-                      <span>Total mensual estimado</span>
-                      <strong id="erpTotal">0,00 €</strong>
-                    </div>
-
-                    <div class="erp-result-total-anual">
-                      <span>Total anual estimado</span>
-                      <strong id="erpAnnualTotal">0,00 €</strong>
-                    </div>
-                  </section>
+                <button type="button" class="history-refresh-button" id="refreshHistoryButton">Actualizar</button>
+            </header>
+            <div class="history-filters">
+                <input id="historySearchInput" class="history-search" type="search" placeholder="Buscar por ID, cliente, CIF o solución...">
+                <select class="history-status-filter" id="historyStatusFilter">
+                    <option value="">Todos los estados</option>
+                </select>
+            </div>
+            <div id="historyMessage" class="history-message"></div>
+            <div class="history-table-card">
+                <div class="history-table-scroll">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Solución</th>
+                                <th>Plan</th>
+                                <th>Total mensual</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                        </tbody>
+                    </table>
                 </div>
-                <aside class="erp-side-panel">
-                  <section class="erp-table-card">
-                    <div class="erp-table-title">
-                      <h3>Funcionalidades del plan</h3>
-
-                      <div class="erp-legend">
-                        <span><i class="status included"></i> Incluido</span>
-                        <span><i class="status optional"></i> Opcional</span>
-                        <span><i class="status unavailable"></i> No disponible</span>
-                      </div>
-                    </div>
-
-                    <div id="erpFeaturesTable" class="erp-features-table">
-                      <!-- Se rellenará mediante JavaScript -->
-                    </div>
-                  </section>
-                </aside>
-              </div>
-            </section>
-          </div>
+            </div>
         </div>
-      </div>
-    </div>
+      </section>
     </main>
+
     <div id="clientModal" class="client-modal hidden">
       <div class="client-modal-card">
           <button type="button" id="closeClientModal" class="client-modal-close" >X</button>
@@ -310,151 +515,251 @@
                 <input type="text" id="clientRepresentativeTaxId">
             </label>
             <div class="client-form-actions">
-                <button type="button" id="cancelClientData">Cancelar</button>
-                <button type="submit" class="primary">Generar presupuesto</button>
+                <button type="button" class="form-button" id="cancelClientData">Cancelar</button>
+                <button type="submit" class="form-button">Generar presupuesto</button>
             </div>
         </form>
       </div>
   </div>
   <div id="infoModal" class="info-modal hidden">
-  <div class="info-modal-card">
-    <button id="closeInfoModal" class="info-close">X</button>
+    <div class="info-modal-card">
+      <button id="closeInfoModal" class="info-close">X</button>
 
-    <h2>Particularidades por app</h2>
+      <h2>Particularidades por app</h2>
 
-    <div class="info-app-buttons">
-      <button class="info-app-btn active" data-info="ejornada">ejornada</button>
-      <button class="info-app-btn" data-info="efirma">efirma</button>
-      <button class="info-app-btn" data-info="notifica">MsNotifica</button>
-      <button class="info-app-btn" data-info="gest">MsGest</button>
-      <button class="info-app-btn" data-info="nomina">MsNómina</button>
-      <button class="info-app-btn" data-info="conta">MsConta</button>
-      <button class="info-app-btn" data-info="contrata">MsContrata</button>
-      <button class="info-app-btn" data-info="pfiscal">Paquete Fiscal</button>
-      <button class="info-app-btn" data-info="scan">MsScan</button>
-      <button class="info-app-btn" data-info="babelia">MsBabelia</button>
-      <button class="info-app-btn" data-info="dCompleto">Despacho Completo</button>
-      <button class="info-app-btn" data-info="express">MsExpress</button>
-    </div>
+      <div class="info-app-buttons">
+        <button class="info-app-btn active" data-info="ejornada">ejornada</button>
+        <button class="info-app-btn" data-info="efirma">efirma</button>
+        <button class="info-app-btn" data-info="notifica">MsNotifica</button>
+        <button class="info-app-btn" data-info="gest">MsGest</button>
+        <button class="info-app-btn" data-info="nomina">MsNómina</button>
+        <button class="info-app-btn" data-info="conta">MsConta</button>
+        <button class="info-app-btn" data-info="contrata">MsContrata</button>
+        <button class="info-app-btn" data-info="pfiscal">Paquete Fiscal</button>
+        <button class="info-app-btn" data-info="scan">MsScan</button>
+        <button class="info-app-btn" data-info="babelia">MsBabelia</button>
+        <button class="info-app-btn" data-info="dCompleto">Despacho Completo</button>
+        <button class="info-app-btn" data-info="express">MsExpress</button>
+      </div>
 
-    <div class="info-content active" id="info-ejornada">
-      <h3>ejornada</h3>
-      <ul>
-        <li>Bloque mínimo 5 trabajadores.</li>
-        <li>El número de trabajadores se corresponde con el número de trabajadores activos y como máximo 3 veces el número de trabajadores contratados.</li>
-        <li>Para las empresas con una alta fluctuación de trabajadores activos y con contratos temporales, existe una opción que solo se puede puede contratar
-          a partir de 50 trabajadores, y permite el triple de trabajadores (No continuos, sino se procederá a hacer una regularización en base a la media de trabajadores activos).
-          Esta modalidad debe ser autorizada La contratación de trabajadores extra se realiza al precio del bloque anterior</li>
-      </ul>
-    </div>
+      <div class="info-content active" id="info-ejornada">
+        <h3>ejornada</h3>
+        <ul>
+          <li>Bloque mínimo 5 trabajadores.</li>
+          <li>El número de trabajadores se corresponde con el número de trabajadores activos y como máximo 3 veces el número de trabajadores contratados.</li>
+          <li>Para las empresas con una alta fluctuación de trabajadores activos y con contratos temporales, existe una opción que solo se puede puede contratar
+            a partir de 50 trabajadores, y permite el triple de trabajadores (No continuos, sino se procederá a hacer una regularización en base a la media de trabajadores activos).
+            Esta modalidad debe ser autorizada La contratación de trabajadores extra se realiza al precio del bloque anterior</li>
+        </ul>
+      </div>
 
-    <div class="info-content" id="info-efirma">
-      <h3>efirmaGO</h3>
-      <ul>
-        <li>Tarificación por documentos anuales.</li>
-        <li>En las tarifas de pago mensual, la caducidad de los documentos no consumidos es mensual, en la anual 1 año.</li>
-        <li>El coste de los usuarios extras es a 9€/Mes ó 108€/año Coste sms: 0,09 €.</li>
-        <li>La API tiene un coste de mantenimiento de 800€ anuales, de momento tiene una bonificación del 100%. (Es gratis)</li>
-        <li>Esta tarifa NO incluye personalización de correos, ni almacenamiento web.</li>
-        <li>Para volúmenes altos revisar tarifa concertada.</li>
-        <li>Consultar condiciones específicas para documentos generados con API (según desarrollador) Los desarradores que desen compartir sus documentos con sus clientes deberan adquirir una tarifa concertada y nunca una tarifa web.</li>
-        <li>efirmaGO + MsNómina - Los pagos se consideran a cuenta de una liquidación anual.Mínimo de 65€ para empresas de menos de 9 trabajadores. Por cada empresa gestionada hay un coste de 14€ año.</li>
-      </ul>
-    </div>
+      <div class="info-content" id="info-efirma">
+        <h3>efirmaGO</h3>
+        <ul>
+          <li>Tarificación por documentos anuales.</li>
+          <li>En las tarifas de pago mensual, la caducidad de los documentos no consumidos es mensual, en la anual 1 año.</li>
+          <li>El coste de los usuarios extras es a 9€/Mes ó 108€/año Coste sms: 0,09 €.</li>
+          <li>La API tiene un coste de mantenimiento de 800€ anuales, de momento tiene una bonificación del 100%. (Es gratis)</li>
+          <li>Esta tarifa NO incluye personalización de correos, ni almacenamiento web.</li>
+          <li>Para volúmenes altos revisar tarifa concertada.</li>
+          <li>Consultar condiciones específicas para documentos generados con API (según desarrollador) Los desarradores que desen compartir sus documentos con sus clientes deberan adquirir una tarifa concertada y nunca una tarifa web.</li>
+          <li>efirmaGO + MsNómina - Los pagos se consideran a cuenta de una liquidación anual.Mínimo de 65€ para empresas de menos de 9 trabajadores. Por cada empresa gestionada hay un coste de 14€ año.</li>
+        </ul>
+      </div>
 
-    <div class="info-content" id="info-notifica">
-      <h3>MsNotifica y Certifácil</h3>
-      <ul>
-        <li>Licencia MsNotifica, buzón extra se factura a 0.25/mes mod. SaaS Es un pago por servicio</li>
-        <li>El precio de la licencia de Certifácil se corresponde a los gastos de activación. Es un pago por servicio. El mantenimiento incluye 3 usuarios.</li>
-      </ul>
-    </div>
+      <div class="info-content" id="info-notifica">
+        <h3>MsNotifica y Certifácil</h3>
+        <ul>
+          <li>Licencia MsNotifica, buzón extra se factura a 0.25/mes mod. SaaS Es un pago por servicio</li>
+          <li>El precio de la licencia de Certifácil se corresponde a los gastos de activación. Es un pago por servicio. El mantenimiento incluye 3 usuarios.</li>
+        </ul>
+      </div>
 
-    <div class="info-content" id="info-gest">
-      <h3>MsGest</h3>
-      <ul>
-        <li>La licencia extra de MsGest a partir de 10, consultar precio.</li> 
-        <li>El precio de mantenimiento de los módulos activables de MsGest se cobra por el número de licencias de la aplicación principal, salvo el mantenimiento del TPV que se cobra por el número de equipos con TPV.</li>
-        <li>Las aplicaciones MsGest Soluziona con contrato de Mantenimiento vigentes generan movimientos contables via MsBabelia (sin coste).</li>
-        <li>Consultar las limitaciones de MsGest Soluziona. El módulo de Liquidaciones Fiscales para MsGest No incluye Impuesto de Sociedades ni Depósito de Cuentas.</li>
-      </ul>
-    </div>
-    
-    <div class="info-content" id="info-nomina">
-      <h3>MsNómina</h3>
-      <ul>
-        <li>(1) -MsNomina PYME: Modelo SAAS. Hasta 2 empresas y 50 trabajadores(600 nóminas/año).</li>
-        <li>-MsNomina PYME + : Modelo SAAS. Hasta 3 empresas y 80 trabajadores(960 nóminas/año). </li>
-        <li>* Empresas de más de 250 trabajadores o facturación de 6 millones de €. </li>
-      </ul>
-    </div>
+      <div class="info-content" id="info-gest">
+        <h3>MsGest</h3>
+        <ul>
+          <li>La licencia extra de MsGest a partir de 10, consultar precio.</li> 
+          <li>El precio de mantenimiento de los módulos activables de MsGest se cobra por el número de licencias de la aplicación principal, salvo el mantenimiento del TPV que se cobra por el número de equipos con TPV.</li>
+          <li>Las aplicaciones MsGest Soluziona con contrato de Mantenimiento vigentes generan movimientos contables via MsBabelia (sin coste).</li>
+          <li>Consultar las limitaciones de MsGest Soluziona. El módulo de Liquidaciones Fiscales para MsGest No incluye Impuesto de Sociedades ni Depósito de Cuentas.</li>
+        </ul>
+      </div>
+      
+      <div class="info-content" id="info-nomina">
+        <h3>MsNómina</h3>
+        <ul>
+          <li>(1) -MsNomina PYME: Modelo SAAS. Hasta 2 empresas y 50 trabajadores(600 nóminas/año).</li>
+          <li>-MsNomina PYME + : Modelo SAAS. Hasta 3 empresas y 80 trabajadores(960 nóminas/año). </li>
+          <li>* Empresas de más de 250 trabajadores o facturación de 6 millones de €. </li>
+        </ul>
+      </div>
 
-    <div class="info-content" id="info-conta">
-      <h3>MsConta</h3>
-      <ul>
-        <li>Descuento del 25% en el mantenimiento de MsScan I para las empresas (No Asesores) que tienen contratado MsConta + MsPCI.</li>
-        <li>Modulo Incluido en los paquetes Fiscal 30, 60 e ilimitado.</li>
-        <li>El precio para los clientes que tienen contratado Tarifa Variable Fiscal es de 99€.</li>
-        <li>Aplicación por Servicio, solo activo mientras se tiene contratado. Una vez tramitada la baja se desactiva.</li>
-        <li>Clientes que tengan MsConta, MsConta + PCI y Modelos, el precio es de 327€ de mantenimiento, no tiene venta. Modulo SII incluye MsEos sin Cartera.</li>
-      </ul>
-    </div>
+      <div class="info-content" id="info-conta">
+        <h3>MsConta</h3>
+        <ul>
+          <li>Descuento del 25% en el mantenimiento de MsScan I para las empresas (No Asesores) que tienen contratado MsConta + MsPCI.</li>
+          <li>Modulo Incluido en los paquetes Fiscal 30, 60 e ilimitado.</li>
+          <li>El precio para los clientes que tienen contratado Tarifa Variable Fiscal es de 99€.</li>
+          <li>Aplicación por Servicio, solo activo mientras se tiene contratado. Una vez tramitada la baja se desactiva.</li>
+          <li>Clientes que tengan MsConta, MsConta + PCI y Modelos, el precio es de 327€ de mantenimiento, no tiene venta. Modulo SII incluye MsEos sin Cartera.</li>
+        </ul>
+      </div>
 
-    <div class="info-content" id="info-contrata">
-      <h3>MsContrata</h3>
-      <ul>
-        <li>Nómina + REA y Empresas Se aplica mismo precio para la tarifa PYME / PYME + y Pago por uso para asesores.</li>
-      </ul>
-    </div>
+      <div class="info-content" id="info-contrata">
+        <h3>MsContrata</h3>
+        <ul>
+          <li>Nómina + REA y Empresas Se aplica mismo precio para la tarifa PYME / PYME + y Pago por uso para asesores.</li>
+        </ul>
+      </div>
 
-    <div class="info-content" id="info-pqfiscal">
-      <h3>Paquete Fiscal</h3>
-      <ul>
-        <li>Todos los paquetes Fiscales incluyen MsMeos+MsConta+MsPCI+MsModelos y DC+IS en el limite establecido.</li>
-        <li>Paquete Fiscal Solo para empresas, para un grupo máximo de 5 empresas (Incluyendo Personas físicas).</li>
-        <li>Descuento del 50% en el servicio de MsScan en los Paquetes Fiscal Empresa.</li>
-        <li>Se fija una cuota mínima mensual de 36€ por cada paquete de programas. Instalación y Formación 300€ Por Paquete. En Laboral el coste es por contrato que tenga cada trabajador. </li>
-      </ul>
-    </div>
+      <div class="info-content" id="info-pqfiscal">
+        <h3>Paquete Fiscal</h3>
+        <ul>
+          <li>Todos los paquetes Fiscales incluyen MsMeos+MsConta+MsPCI+MsModelos y DC+IS en el limite establecido.</li>
+          <li>Paquete Fiscal Solo para empresas, para un grupo máximo de 5 empresas (Incluyendo Personas físicas).</li>
+          <li>Descuento del 50% en el servicio de MsScan en los Paquetes Fiscal Empresa.</li>
+          <li>Se fija una cuota mínima mensual de 36€ por cada paquete de programas. Instalación y Formación 300€ Por Paquete. En Laboral el coste es por contrato que tenga cada trabajador. </li>
+        </ul>
+      </div>
 
-    <div class="info-content" id="info-scan">
-      <h3>MsScan</h3>
-      <ul>
-        <li>El coste mínimo es de 332,00 Los documentos se adquieren en modalidad suscripción. Los documentos no consumidos en un año caducan </li>
-        <li>El producto MsScan en adquisición solo puede ser adquirido si se tiene algún paquete fiscal en modalidad SaaS.</li>
-      </ul>
-    </div>
+      <div class="info-content" id="info-scan">
+        <h3>MsScan</h3>
+        <ul>
+          <li>El coste mínimo es de 332,00 Los documentos se adquieren en modalidad suscripción. Los documentos no consumidos en un año caducan </li>
+          <li>El producto MsScan en adquisición solo puede ser adquirido si se tiene algún paquete fiscal en modalidad SaaS.</li>
+        </ul>
+      </div>
 
-    <div class="info-content" id="info-babelia">
-      <h3>MsBabelia</h3>
-      <ul>
-        <li>MsBabelia no se cobra cuando el programa de origen de los datos este al corriente en el pago del Mantenimiento con Microdata.</li>
-        <li>MsBabelia no tendra coste para la importación en MsConta Empresa si el plugin ya existe.</li>
-        <li>** Hasta 10.000 doc: 0,050€ 10.001-25.000 doc: 0,045€ 25.001-40.000 doc: 0,040€ 40.001-50.000 doc: 0,035€ Coste mínimo MsScan II 360 €.</li>
-        <li>Cuando una empresa cliente (individualmente) alcanza los 10.000 documentos se facturará a razón de 150€ por cada tramo de 10.000 documentos.</li>
-      </ul>
-    </div>
+      <div class="info-content" id="info-babelia">
+        <h3>MsBabelia</h3>
+        <ul>
+          <li>MsBabelia no se cobra cuando el programa de origen de los datos este al corriente en el pago del Mantenimiento con Microdata.</li>
+          <li>MsBabelia no tendra coste para la importación en MsConta Empresa si el plugin ya existe.</li>
+          <li>** Hasta 10.000 doc: 0,050€ 10.001-25.000 doc: 0,045€ 25.001-40.000 doc: 0,040€ 40.001-50.000 doc: 0,035€ Coste mínimo MsScan II 360 €.</li>
+          <li>Cuando una empresa cliente (individualmente) alcanza los 10.000 documentos se facturará a razón de 150€ por cada tramo de 10.000 documentos.</li>
+        </ul>
+      </div>
 
-    <div class="info-content" id="info-despacho">
-      <h3>Despacho Completo</h3>
-      <ul>
-        <li>Todos los precios son mensuales.</li>
-        <li>El producto despacho ilimitado incluye: MsNóminas + SEA, Paquete Fiscal Ilimitado, MsScan Ilimitado y Sistema Avanzado.Pasado 2 años el precio mensual será de 469€.</li>
-        <li>El producto despacho Avanzado incluye: MsNóminas 100, Paquete Fiscal 30, MsScan 25.000 y Sistema Avanzado. Pasado 2 años el precio mensual será de 319€.</li>
-        <li>El producto despacho Emergente incluye: MsNóminas 100, Paquete Fiscal 10, MsScan 10.000 y Sistema Avanzado. Pasado 2 años el precio mensual será de 246€.</li>
-        <li>El producto MsScan en adquisición solo puede ser adquirido si se tiene algún paquete fiscal en modalidad SaaS.</li>
-      </ul>
-    </div>
+      <div class="info-content" id="info-despacho">
+        <h3>Despacho Completo</h3>
+        <ul>
+          <li>Todos los precios son mensuales.</li>
+          <li>El producto despacho ilimitado incluye: MsNóminas + SEA, Paquete Fiscal Ilimitado, MsScan Ilimitado y Sistema Avanzado.Pasado 2 años el precio mensual será de 469€.</li>
+          <li>El producto despacho Avanzado incluye: MsNóminas 100, Paquete Fiscal 30, MsScan 25.000 y Sistema Avanzado. Pasado 2 años el precio mensual será de 319€.</li>
+          <li>El producto despacho Emergente incluye: MsNóminas 100, Paquete Fiscal 10, MsScan 10.000 y Sistema Avanzado. Pasado 2 años el precio mensual será de 246€.</li>
+          <li>El producto MsScan en adquisición solo puede ser adquirido si se tiene algún paquete fiscal en modalidad SaaS.</li>
+        </ul>
+      </div>
 
-    <div class="info-content" id="info-express">
-      <h3>MsExpress</h3>
-      <ul>
-        <li>El coste de cada SMS es de 0,068.</li>
-      </ul>
+      <div class="info-content" id="info-express">
+        <h3>MsExpress</h3>
+        <ul>
+          <li>El coste de cada SMS es de 0,068.</li>
+        </ul>
+      </div>
+      
     </div>
-    
   </div>
-
+  <div id="budgetDetailModal" class="hidden">
+    <div class="budget-detail-modal">
+        <button id="closeBudgetDetailModal" class="modal-close" type="button" aria-label="Cerrar">X</button>
+        <div class="budget-detail-header">
+            <div>
+                <span class="budget-detail-label">Presupuesto</span>
+                <h2 id="detailBudgetId">—</h2>
+                <p id="detailBudgetDate">—</p>
+            </div>
+            <span id="detailBudgetStatus" class="budget-detail-status">—</span>
+        </div>
+        <div class="budget-detail-grid">
+            <section class="budget-detail-card">
+                <h3>Cliente</h3>
+                <dl class="budget-detail-list">
+                    <div>
+                        <dt>Nombre</dt>
+                        <dd id="detailClient">—</dd>
+                    </div>
+                    <div>
+                        <dt>CIF</dt>
+                        <dd id="detailCif">—</dd>
+                    </div>
+                    <div>
+                        <dt>Dirección</dt>
+                        <dd id="detailAddress">—</dd>
+                    </div>
+                    <div>
+                        <dt>Población</dt>
+                        <dd id="detailLocation">—</dd>
+                    </div>
+                </dl>
+            </section>
+            <section class="budget-detail-card">
+                <h3>Contacto</h3>
+                <dl class="budget-detail-list">
+                    <div>
+                        <dt>Persona</dt>
+                        <dd id="detailContact">—</dd>
+                    </div>
+                    <div>
+                        <dt>Email</dt>
+                        <dd id="detailEmail">—</dd>
+                    </div>
+                    <div>
+                        <dt>Teléfono</dt>
+                        <dd id="detailPhone">—</dd>
+                    </div>
+                    <div>
+                        <dt>Comercial</dt>
+                        <dd id="detailCommercial">—</dd>
+                    </div>
+                </dl>
+            </section>
+            <section class="budget-detail-card">
+                <h3>Solución</h3>
+                <dl class="budget-detail-list">
+                    <div>
+                        <dt>Producto</dt>
+                        <dd id="detailSolution">—</dd>
+                    </div>
+                    <div>
+                        <dt>Plan</dt>
+                        <dd id="detailPlan">—</dd>
+                    </div>
+                    <div>
+                        <dt>Precio base</dt>
+                        <dd id="detailBasePrice">—</dd>
+                    </div>
+                    <div>
+                        <dt>Descuento</dt>
+                        <dd id="detailDiscount">—</dd>
+                    </div>
+                </dl>
+            </section>
+            <section class="budget-detail-card budget-detail-totals">
+                <h3>Totales</h3>
+                <dl class="budget-detail-list">
+                    <div>
+                        <dt>Total mensual</dt>
+                        <dd id="detailMonthlyTotal">—</dd>
+                    </div>
+                    <div>
+                        <dt>Total anual</dt>
+                        <dd id="detailAnnualTotal">—</dd>
+                    </div>
+                    <div>
+                        <dt>Extras</dt>
+                        <dd id="detailExtras">—</dd>
+                    </div>
+                </dl>
+            </section>
+        </div>
+        <section class="budget-detail-card budget-detail-notes">
+            <h3>Notas</h3>
+            <p id="detailNotes">
+                Sin notas adicionales.
+            </p>
+        </section>
+    </div>
 </div>
   <script src="https://unpkg.com/docxtemplater@3.69.0/build/docxtemplater.js"></script>
   <script src="https://unpkg.com/pizzip@3.2.0/dist/pizzip.js"></script>
