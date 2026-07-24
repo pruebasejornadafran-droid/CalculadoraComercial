@@ -27,6 +27,33 @@ body {
   color: var(--text);
 }
 
+.main-navigation{
+  display:flex;
+  gap:8px;
+  padding:6px;
+  background:#edf4ef;
+  border-radius:18px;
+}
+
+.app-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:28px;
+  margin-bottom:22px;
+  padding:18px 26px;
+  background:rgba(255,255,255,.88);
+  border-radius:26px;
+  backdrop-filter:blur(14px);
+  box-shadow: 0 18px 40px rgba(0,0,0,.08);
+}
+
+.header-logo{
+  height:42px;
+  width:auto;
+  display:block;
+}
+
 .derecha {
   display: flex;
   justify-content: end;
@@ -857,49 +884,61 @@ button {
   }
 }
 
-.tabs {
-  padding: 0;
-}
-
 .tab-container {
   position: relative;
   padding-top: 0;
 }
 
 .tab {
-  display: contents;
+  display: none;
 }
 
-.tab-button {
-  position: static;
-  width: auto;
-  height: auto;
-  padding: 14px 22px;
-  border: 3px solid;
-  border-radius: var(--radius) var(--radius) var(--radius) var(--radius);
-  background: var(--text);
-  color: var(--card);
-  font-size: 20px;
-  font-weight: 700;
-  cursor: pointer;
+.tab.active {
+  display: block;
+}
+
+.tab-content {
+  display: block;
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 0 0 22px 22px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+}
+
+.tab-button{
+  position:relative;
+  padding:0;
+  background:none;
+  border:none;
+  color:rgba(255,255,255,.72);
+  font-size:16px;
+  font-weight:700;
+  transition:.25s;
+}
+
+.tab-button:hover{
+  color:white;
+}
+
+.tab-button.active{
+  color:white;
+}
+
+.tab-button.active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-18px;
+  height:4px;
+  border-radius:50px;
+  background:#FFF389;
 }
 
 .tab.active .tab-button {
   color: var(--text);
   background: transparent;
   border-bottom-color: var(--accent);
-}
-
-.tab-content {
-  display: none;
-  padding: 20px;
-  background: var(--card);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 0 0 var(--radius) var(--radius);
-}
-
-.tab.active .tab-content {
-  display: block;
 }
 
 .top-button {
@@ -915,15 +954,63 @@ button {
   font-weight: 700;
   cursor: pointer;
 }
+.tabs {
+  padding: 0;
+}
 
 .tabs-header {
   display: flex;
-  gap: 8px;
-  padding: 0 20px;
-  background: var(--accent);
-  border-radius: var(--radius) var(--radius) 0 0;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-bottom: 0;
+  align-items: center;
+  gap: 34px;
+  min-height: 62px;
+  padding: 0 28px;
+  background: linear-gradient(180deg, #0b5b42, #083c2d);
+  border-radius: 22px 22px 0 0;
+}
+
+.tab-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  width: auto;
+  padding: 20px 2px;
+  color: rgba(255, 255, 255, 0.68);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 750;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.tab-button:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.tab-button.active {
+  color: #ffffff;
+  background: transparent;
+  box-shadow: none;
+}
+
+.tab-button.active::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: #fff389;
+  border-radius: 999px 999px 0 0;
+}
+
+.tab-button-icon {
+  font-size: 17px;
 }
 
 .erp-extra-toggle {
@@ -1275,19 +1362,25 @@ button {
     }
 }
 
-.navigation-button {
-  flex: 0 0 auto;
-  min-height: 46px;
-  padding: 0 22px;
-  border: 0;
-  border-radius: 999px;
-  background: #075333;
-  color: #ffffff;
-  font: inherit;
-  font-weight: 750;
-  cursor: pointer;
-  box-shadow: 0 8px 20px rgba(6, 77, 48, 0.18);
-  transition: transform 0.2s ease, background 0.2s ease;
+.navigation-button{
+  background:transparent;
+  color:#5a6f67;
+  font-size:15px;
+  font-weight:700;
+  border-radius:14px;
+  padding:12px 22px;
+  transition:.25s;
+}
+
+.navigation-button:hover{
+  background:white;
+  color:#0b4d3b;
+}
+
+.navigation-button.active{
+  background:#0b4d3b;
+  color:white;
+  box-shadow: 0 8px 18px rgba(11,77,59,.25);
 }
 
 /* ==================================================

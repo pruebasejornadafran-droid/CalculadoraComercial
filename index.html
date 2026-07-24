@@ -7,189 +7,189 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <section id="loginScreen" class="login-screen">
-    <section id="loginScreen" class="access-screen">
-      <div class="access-decoration access-decoration-left"></div>
-      <div class="access-decoration access-decoration-right"></div>
-      <div class="access-card">
-          <header class="access-header">
-              <div class="access-logo">
-                  <span class="access-logo-icon">€</span>
-              </div>
-              <h1 id="accessTitle">
-                  Calculadora comercial
-              </h1>
-              <p id="accessSubtitle">
-                  Accede para crear y consultar tus presupuestos
-              </p>
-          </header>
-          <div class="access-forms-container">
-              <!-- ===================================== -->
-              <!-- INICIAR SESIÓN                        -->
-              <!-- ===================================== -->
-              <form id="loginForm" class="access-form access-form-active" autocomplete="on">
-                  <div class="access-field">
-                      <label for="loginUsername">Usuario</label>
-                      <div class="access-input-wrapper">
+  <section id="loginScreen" class="access-screen">
+    <div class="access-decoration access-decoration-left"></div>
+    <div class="access-decoration access-decoration-right"></div>
+    <div class="access-card">
+        <header class="access-header">
+            <div class="access-logo">
+                <span class="access-logo-icon">€</span>
+            </div>
+            <h1 id="accessTitle">
+                Calculadora comercial
+            </h1>
+            <p id="accessSubtitle">
+                Accede para crear y consultar tus presupuestos
+            </p>
+        </header>
+        <div class="access-forms-container">
+            <!-- ===================================== -->
+            <!-- INICIAR SESIÓN                        -->
+            <!-- ===================================== -->
+            <form id="loginForm" class="access-form access-form-active" autocomplete="on">
+                <div class="access-field">
+                    <label for="loginUsername">Usuario</label>
+                    <div class="access-input-wrapper">
+                      <span class="access-input-icon">👤</span>
+                      <input id="loginUsername" name="username" type="text" autocomplete="username" placeholder="Introduce tu usuario" required>
+                    </div>
+                </div>
+                <div class="access-field">
+                    <label for="loginPassword">Contraseña</label>
+                    <div class="access-input-wrapper">
+                        <span class="access-input-icon">🔒</span>
+                        <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="Introduce tu contraseña"required>
+                        <button type="button" class="password-toggle" data-password-target="loginPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                    </div>
+                </div>
+                <div id="loginMessage" class="access-message" aria-live="polite"></div>
+                <button id="loginSubmitButton" type="submit" class="access-primary-button">
+                    <span class="button-default-content">Iniciar sesión</span>
+                    <span class="button-loading-content hidden">
+                        <span class="access-spinner"></span>
+                        Comprobando...
+                    </span>
+                </button>
+                <div class="access-links">
+                    <button id="showRegisterButton" type="button" class="access-link-button">Crear usuario</button>
+                    <span class="access-link-separator">·</span>
+                    <button id="showChangePasswordButton" type="button" class="access-link-button">Cambiar contraseña</button>
+                </div>
+            </form>
+            <!-- ===================================== -->
+            <!-- CREAR USUARIO                         -->
+            <!-- ===================================== -->
+            <form id="registerForm" class="access-form hidden" autocomplete="off">
+                <div class="access-form-intro">
+                    <div class="access-form-icon">＋</div>
+                    <h2>Crear usuario</h2>
+                    <p>
+                        Crea tus credenciales para acceder a la
+                        calculadora comercial.
+                    </p>
+                </div>
+                <div class="access-field">
+                    <label for="registerUsername">Nombre de usuario</label>
+                    <div class="access-input-wrapper">
                         <span class="access-input-icon">👤</span>
-                        <input id="loginUsername" name="username" type="text" autocomplete="username" placeholder="Introduce tu usuario" required>
-                      </div>
-                  </div>
-                  <div class="access-field">
-                      <label for="loginPassword">Contraseña</label>
-                      <div class="access-input-wrapper">
-                          <span class="access-input-icon">🔒</span>
-                          <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="Introduce tu contraseña"required>
-                          <button type="button" class="password-toggle" data-password-target="loginPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
-                      </div>
-                  </div>
-                  <div id="loginMessage" class="access-message" aria-live="polite"></div>
-                  <button id="loginSubmitButton" type="submit" class="access-primary-button">
-                      <span class="button-default-content">Iniciar sesión</span>
-                      <span class="button-loading-content hidden">
-                          <span class="access-spinner"></span>
-                          Comprobando...
-                      </span>
-                  </button>
-                  <div class="access-links">
-                      <button id="showRegisterButton" type="button" class="access-link-button">Crear usuario</button>
-                      <span class="access-link-separator">·</span>
-                      <button id="showChangePasswordButton" type="button" class="access-link-button">Cambiar contraseña</button>
-                  </div>
-              </form>
-              <!-- ===================================== -->
-              <!-- CREAR USUARIO                         -->
-              <!-- ===================================== -->
-              <form id="registerForm" class="access-form hidden" autocomplete="off">
-                  <div class="access-form-intro">
-                      <div class="access-form-icon">＋</div>
-                      <h2>Crear usuario</h2>
-                      <p>
-                          Crea tus credenciales para acceder a la
-                          calculadora comercial.
-                      </p>
-                  </div>
-                  <div class="access-field">
-                      <label for="registerUsername">Nombre de usuario</label>
-                      <div class="access-input-wrapper">
-                          <span class="access-input-icon">👤</span>
-                          <input id="registerUsername" name="registerUsername" type="text" autocomplete="off" placeholder="Ejemplo: jperez" minlength="3" required>
-                      </div>
-                      <small class="access-field-help">Utiliza al menos 3 caracteres.</small>
-                  </div>
-                  <div class="access-field">
-                      <label for="registerCommercial">Nombre completo</label>
-                      <div class="access-input-wrapper">
-                          <span class="access-input-icon">🪪</span>
-                          <input id="registerCommercial" name="registerCommercial" type="text" autocomplete="name" placeholder="Ejemplo: Juan Pérez" required>
-                      </div>
-                  </div>
-                  <div class="access-field">
-                      <label for="registerPassword">Contraseña</label>
-                      <div class="access-input-wrapper">
-                          <span class="access-input-icon">🔒</span>
-                          <input id="registerPassword" name="registerPassword" type="password" autocomplete="new-password" placeholder="Mínimo 4 caracteres" minlength="4" required>
-                          <button type="button" class="password-toggle" data-password-target="registerPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
-                      </div>
-                  </div>
-                  <div class="access-field">
-                      <label for="registerPasswordConfirm">Repetir contraseña</label>
-                      <div class="access-input-wrapper">
-                          <span class="access-input-icon">🔒</span>
-                          <input id="registerPasswordConfirm" name="registerPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repite la contraseña" minlength="4" required>
-                          <button type="button" class="password-toggle" data-password-target="registerPasswordConfirm" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
-                      </div>
-                      <small id="registerPasswordMatch" class="password-match-message"></small>
-                  </div>
-                  <div id="registerMessage" class="access-message" aria-live="polite"></div>
-                  <button id="registerSubmitButton" type="submit" class="access-primary-button">
-                      <span class="button-default-content">Crear usuario</span>
-                      <span class="button-loading-content hidden">
-                          <span class="access-spinner"></span>
-                          Creando usuario...
-                      </span>
-                  </button>
-                  <button type="button" class="access-secondary-button back-to-login">← Volver al inicio de sesión</button>
-              </form>
-              <!-- ===================================== -->
-              <!-- CAMBIAR CONTRASEÑA                    -->
-              <!-- ===================================== -->
-              <form id="changePasswordForm" class="access-form hidden" autocomplete="off">
-                  <div class="access-form-intro">
-                      <div class="access-form-icon">🔑</div>
-                      <h2>Cambiar contraseña</h2>
-                      <p>
-                          Introduce tu contraseña actual y establece una nueva.
-                      </p>
-                  </div>
-                  <div class="access-field">
-                      <label for="changePasswordUsername">Usuario</label>
-                      <div class="access-input-wrapper">
-                          <span class="access-input-icon">👤</span>
-                          <input id="changePasswordUsername" name="changePasswordUsername" type="text" autocomplete="username" placeholder="Introduce tu usuario" required>
-                      </div>
-                  </div>
-                  <div class="access-field">
-                      <label for="currentPassword">Contraseña actual</label>
-                      <div class="access-input-wrapper">
-                          <span class="access-input-icon">🔒</span>
-                          <input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" placeholder="Contraseña actual" required>
-                          <button type="button" class="password-toggle" data-password-target="currentPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
-                      </div>
-                  </div>
-                  <div class="access-field">
-                      <label for="newPassword">Nueva contraseña</label>
-                      <div class="access-input-wrapper">
-                          <span class="access-input-icon">🔒</span>
-                          <input id="newPassword" name="newPassword" type="password" autocomplete="new-password" placeholder="Mínimo 4 caracteres" minlength="4" required>
-                          <button type="button" class="password-toggle" data-password-target="newPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
-                      </div>
-                  </div>
-                  <div class="access-field">
-                      <label for="newPasswordConfirm">Repetir nueva contraseña</label>
-                      <div class="access-input-wrapper">
-                          <span class="access-input-icon">🔒</span>
-                          <input id="newPasswordConfirm" name="newPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repite la nueva contraseña" minlength="4" required>
-                          <button type="button" class="password-toggle" data-password-target="newPasswordConfirm" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
-                      </div>
-                      <small id="changePasswordMatch" class="password-match-message"></small>
-                  </div>
-                  <div id="changePasswordMessage" class="access-message" aria-live="polite"></div>
-                  <button id="changePasswordSubmitButton" type="submit" class="access-primary-button">
-                      <span class="button-default-content">Cambiar contraseña</span>
-                      <span class="button-loading-content hidden">
-                          <span class="access-spinner"></span>
-                          Actualizando...
-                      </span>
-                  </button>
-                  <button type="button" class="access-secondary-button back-to-login">
-                      ← Volver al inicio de sesión
-                  </button>
-              </form>
-          </div>
-          <footer class="access-footer">
-              <span class="access-security-icon">🔐</span>
-              Acceso exclusivo para usuarios autorizados
-          </footer>
-      </div>
-    </section>
+                        <input id="registerUsername" name="registerUsername" type="text" autocomplete="off" placeholder="Ejemplo: jperez" minlength="3" required>
+                    </div>
+                    <small class="access-field-help">Utiliza al menos 3 caracteres.</small>
+                </div>
+                <div class="access-field">
+                    <label for="registerCommercial">Nombre completo</label>
+                    <div class="access-input-wrapper">
+                        <span class="access-input-icon">🪪</span>
+                        <input id="registerCommercial" name="registerCommercial" type="text" autocomplete="name" placeholder="Ejemplo: Juan Pérez" required>
+                    </div>
+                </div>
+                <div class="access-field">
+                    <label for="registerPassword">Contraseña</label>
+                    <div class="access-input-wrapper">
+                        <span class="access-input-icon">🔒</span>
+                        <input id="registerPassword" name="registerPassword" type="password" autocomplete="new-password" placeholder="Mínimo 4 caracteres" minlength="4" required>
+                        <button type="button" class="password-toggle" data-password-target="registerPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                    </div>
+                </div>
+                <div class="access-field">
+                    <label for="registerPasswordConfirm">Repetir contraseña</label>
+                    <div class="access-input-wrapper">
+                        <span class="access-input-icon">🔒</span>
+                        <input id="registerPasswordConfirm" name="registerPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repite la contraseña" minlength="4" required>
+                        <button type="button" class="password-toggle" data-password-target="registerPasswordConfirm" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                    </div>
+                    <small id="registerPasswordMatch" class="password-match-message"></small>
+                </div>
+                <div id="registerMessage" class="access-message" aria-live="polite"></div>
+                <button id="registerSubmitButton" type="submit" class="access-primary-button">
+                    <span class="button-default-content">Crear usuario</span>
+                    <span class="button-loading-content hidden">
+                        <span class="access-spinner"></span>
+                        Creando usuario...
+                    </span>
+                </button>
+                <button type="button" class="access-secondary-button back-to-login">← Volver al inicio de sesión</button>
+            </form>
+            <!-- ===================================== -->
+            <!-- CAMBIAR CONTRASEÑA                    -->
+            <!-- ===================================== -->
+            <form id="changePasswordForm" class="access-form hidden" autocomplete="off">
+                <div class="access-form-intro">
+                    <div class="access-form-icon">🔑</div>
+                    <h2>Cambiar contraseña</h2>
+                    <p>
+                        Introduce tu contraseña actual y establece una nueva.
+                    </p>
+                </div>
+                <div class="access-field">
+                    <label for="changePasswordUsername">Usuario</label>
+                    <div class="access-input-wrapper">
+                        <span class="access-input-icon">👤</span>
+                        <input id="changePasswordUsername" name="changePasswordUsername" type="text" autocomplete="username" placeholder="Introduce tu usuario" required>
+                    </div>
+                </div>
+                <div class="access-field">
+                    <label for="currentPassword">Contraseña actual</label>
+                    <div class="access-input-wrapper">
+                        <span class="access-input-icon">🔒</span>
+                        <input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" placeholder="Contraseña actual" required>
+                        <button type="button" class="password-toggle" data-password-target="currentPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                    </div>
+                </div>
+                <div class="access-field">
+                    <label for="newPassword">Nueva contraseña</label>
+                    <div class="access-input-wrapper">
+                        <span class="access-input-icon">🔒</span>
+                        <input id="newPassword" name="newPassword" type="password" autocomplete="new-password" placeholder="Mínimo 4 caracteres" minlength="4" required>
+                        <button type="button" class="password-toggle" data-password-target="newPassword" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                    </div>
+                </div>
+                <div class="access-field">
+                    <label for="newPasswordConfirm">Repetir nueva contraseña</label>
+                    <div class="access-input-wrapper">
+                        <span class="access-input-icon">🔒</span>
+                        <input id="newPasswordConfirm" name="newPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repite la nueva contraseña" minlength="4" required>
+                        <button type="button" class="password-toggle" data-password-target="newPasswordConfirm" aria-label="Mostrar contraseña" title="Mostrar contraseña">👁</button>
+                    </div>
+                    <small id="changePasswordMatch" class="password-match-message"></small>
+                </div>
+                <div id="changePasswordMessage" class="access-message" aria-live="polite"></div>
+                <button id="changePasswordSubmitButton" type="submit" class="access-primary-button">
+                    <span class="button-default-content">Cambiar contraseña</span>
+                    <span class="button-loading-content hidden">
+                        <span class="access-spinner"></span>
+                        Actualizando...
+                    </span>
+                </button>
+                <button type="button" class="access-secondary-button back-to-login">
+                    ← Volver al inicio de sesión
+                </button>
+            </form>
+        </div>
+        <footer class="access-footer">
+            <span class="access-security-icon">🔐</span>
+            Acceso exclusivo para usuarios autorizados
+        </footer>
+    </div>
   </section>
   <main id="app-container" class="app-shell hidden">
-    <nav class="main-navigation">
-      <button type="button" id="showCalculatorButton" class="navigation-button active">Nueva simulación</button>
-      <button type="button" id="showHistoryButton" class="navigation-button">Historial</button>
+    <header class="app-header">
+      <div class="app-brand">
+        <img src="./shinelogo.png" alt="Shine" class="header-logo">
+      </div>
+      <nav class="main-navigation">
+        <button id="showCalculatorButton" class="navigation-button active">Nueva simulación</button>
+        <button id="showHistoryButton" class="navigation-button">Historial</button>
+      </nav>
       <div id="userInfo" class="user-info hidden">
         <span class="user-avatar">👤</span>
         <div class="user-info-text">
-            <span class="user-info-label">Usuario</span>
-            <strong id="loggedUserName">—</strong>
-            <button id="logoutButton" type="button" class="logout-button" title="Cerrar sesión" aria-label="Cerrar sesión">
-              <span class="logout-button-icon">↪</span>
-              <span class="logout-button-text">Cerrar sesión</span>
-            </button>
+          <span class="user-info-label">Usuario</span>
+          <strong id="loggedUserName">—</strong>
         </div>
+        <button id="logoutButton" class="logout-button">↪</button>
       </div>
-    </nav>
+    </header>
     <section id="calculatorSection">
         <section class="hero">
           <div class="hero-content">
@@ -202,14 +202,19 @@
             <button class="hero-button" type="button" id="generateBudgetBtn">Generar presupuesto</button>
           </div>
         </section>
-        
         <div class="tabs">
           <div class="tabs-header">
-            <button type="button" class="tab-button " data-tab="microdata">Microdata</button>
-            <button type="button" class="tab-button active" data-tab="erp">ERP</button>
+              <button type="button" class="tab-button" data-tab="microdata">
+                  <span class="tab-button-icon">🖥</span>
+                  Microdata
+              </button>
+              <button type="button" class="tab-button active" data-tab="erp">
+                  <span class="tab-button-icon">📦</span>
+                  ERP
+              </button>
           </div>
           <div class="tab-container">
-            <div class="tab " id="microdata">
+            <div class="tab" id="microdata">
               <div class="tab-content">
                 <div class="calculator-layout">
                   <section class="calculator-card">

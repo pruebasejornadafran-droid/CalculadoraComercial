@@ -3095,6 +3095,40 @@ async function copySummary() {
 const tabButtons = document.querySelectorAll(".tab-button");
 const tabs = document.querySelectorAll(".tab");
 
+function initializeTabs() {
+  const tabButtons = document.querySelectorAll(".tab-button");
+  const tabs = document.querySelectorAll(".tab");
+
+  tabButtons.forEach(button => {
+      button.addEventListener("click", () => {
+          const selectedTabId = button.dataset.tab;
+
+          if (!selectedTabId) {
+              console.warn("El botón no tiene data-tab:", button);
+              return;
+          }
+
+          const selectedTab = document.getElementById(selectedTabId);
+
+          if (!selectedTab) {
+              console.warn(`No existe una pestaña con id="${selectedTabId}"`);
+              return;
+          }
+
+          tabButtons.forEach(tabButton => {
+              tabButton.classList.toggle("active", tabButton === button);
+              tabButton.setAttribute("aria-selected", tabButton === button ? "true" : "false");
+          });
+
+          tabs.forEach(tab => {
+              tab.classList.toggle("active", tab === selectedTab);
+          });
+      });
+  });
+}
+
+initializeTabs();
+
 tabButtons.forEach(button => {
   button.addEventListener("click", () => {
     const selectedTabId = button.dataset.tab;
