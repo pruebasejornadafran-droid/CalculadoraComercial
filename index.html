@@ -216,112 +216,165 @@
           <div class="tab-container">
             <div class="tab" id="microdata">
               <div class="tab-content">
-                <div class="calculator-layout">
-                  <section class="calculator-card">
-                    <div class="derecha">
-                        <button id="infoButton" class="info-button">Particularidades</button>
+                <section class="microdata-calculator">
+                  <div class="microdata-header">
+                    <div>
+                      <p class="eyebrow">Aplicación</p>
+                      <h2 class="microdata-title">Cegid Microdata</h2>
+                      <p class="microdata-subtitle">Configura la aplicación, el volumen y la modalidad de contratación.</p>
                     </div>
-                    <div class="grid two">
-                      <label class="field">
-                        <span>Aplicación</span>
-                        <select id="appSelect"></select>
-                      </label>
-
-                      <label class="field" id="planField">
-                        <span>Plan</span>
-                        <select id="planSelect"></select>
-                      </label>
-                    </div>
-
-                    <div class="grid two">
-                      <label class="field">
-                        <span id="quantityLabel">Cantidad</span>
-                        <input id="quantityInput" type="number" min="1" step="1" value="5" />
-                        <select id="selectBuzones" style="display: none;"></select>
-                      </label>
-
-                      <label class="field" id="billingField">
-                        <span>Facturación</span>
-                        <select id="billingSelect">
-                          <option value="annual" selected>Anual</option>
-                          <option value="monthly">Mensual</option>
-                        </select>
-                      </label>
-                    </div>
-                    <div class="grid two">
-                    <label id="extraUsersLabel" class="field hidden">
-                        <span id="extraUsers">Usuarios extra</span>
-                        <input id="usersInput" type="number" min="0" step="1" value="0" />
-                      </label>
-                      <label id="extraMdl" class="field2 hidden">
-                        <span id="extraModule"><label class="field" id="modulo"></label><input id="addModl" type="checkbox"/></span>
-                          <div class="hidden" id="usersCertiFExtra">
-                            <div class="doble">Usuarios Extra:<input type="checkbox" class="peque" id="userExtra"/></div>
-                            <input class="hidden" id="usersCFExtra" type="number" min="" step="1" value="0" />
+                    <button id="infoButton" class="info-button" type="button">Particularidades</button>
+                  </div>
+                  <div class="microdata-layout">
+                    <div class="microdata-main">
+                      <section class="microdata-config-card">
+                        <div class="grid two">
+                          <label class="field">
+                            <span>Aplicación</span>
+                            <select id="appSelect"></select>
+                          </label>
+                          <label class="field" id="planField">
+                            <span>Plan</span>
+                            <select id="planSelect"></select>
+                          </label>
+                        </div>
+                        <div class="grid two">
+                          <label class="field">
+                            <span id="quantityLabel">Cantidad</span>
+                            <input id="quantityInput" type="number" min="1" step="1" value="5" />
+                            <select id="selectBuzones" style="display:none;"></select>
+                          </label>
+                          <label class="field" id="billingField">
+                            <span>Facturación</span>
+                            <select id="billingSelect">
+                              <option value="annual" selected>Anual</option>
+                              <option value="monthly">Mensual</option>
+                            </select>
+                          </label>
+                        </div>
+                        <div class="grid two microdata-options-grid">
+                          <label id="extraUsersLabel" class="field hidden">
+                            <span id="extraUsers">Usuarios extra</span>
+                            <input id="usersInput" type="number" min="0" step="1" value="0" />
+                          </label>
+                          <div id="extraMdl" class="microdata-extra-card hidden">
+                            <label id="extraModule" class="microdata-check-row" for="addModl">
+                              <span id="modulo">Módulo adicional</span>
+                              <input id="addModl" type="checkbox" />
+                            </label>
+                            <div class="hidden" id="usersCertiFExtra">
+                              <label class="microdata-check-row" for="userExtra">
+                                <span>Usuarios extra</span>
+                                <input class="peque" id="userExtra" type="checkbox" />
+                              </label>
+                              <input class="hidden" id="usersCFExtra" type="number" min="0" step="1" value="0" />
+                            </div>
+                            <div class="hidden" id="moduleGestExtra">
+                              <select id="gestModules"></select>
+                            </div>
                           </div>
-                          <div class="hidden" id="moduleGestExtra">
-                            <select id="gestModules"></select>
+                        </div>
+                        <div class="notice" id="noticeBox"></div>
+                        <div class="microdata-builder-actions">
+                          <button type="button" id="addMicrodataItemButton" class="microdata-add-button"><span>＋</span>Añadir al presupuesto</button>
+                          <button type="button" id="cancelMicrodataEditButton" class="microdata-cancel-edit hidden">Cancelar edición</button>
+                        </div>
+                      </section>
+                      <section class="microdata-budget-card">
+                        <div class="microdata-budget-header">
+                          <div>
+                            <p class="eyebrow">Presupuesto actual</p>
+                            <h3>Aplicaciones añadidas</h3>
+                            <p>Añade todos los programas que formarán parte del presupuesto.</p>
                           </div>
-                      </label>        
-                      
-                    </div>
-                    <div class="notice" id="noticeBox"></div>
+                          <span id="microdataItemCount" class="microdata-item-count">0 aplicaciones</span>
+                        </div>
 
-                    <section class="result-card">
-                      <div>
-                        <p class="result-label">Resultado estimado</p>
-                        <h2 id="mainResult">0,00 €</h2>
-                        <p id="resultSubtitle">Selecciona una tarifa para calcular.</p>
+                        <div id="microdataEmptyState" class="microdata-empty-state">
+                          <strong>No has añadido ninguna aplicación</strong>
+                          <span>Configura un producto y pulsa “Añadir al presupuesto”.</span>
+                        </div>
+
+                        <div id="microdataBudgetTableWrapper" class="microdata-budget-table-wrapper hidden">
+                          <div id="microdataBudgetItems" class="microdata-budget-items"></div>
+                        </div>
+
+                        <div class="microdata-budget-totals" aria-live="polite">
+                          <div class="microdata-total-chip">
+                            <span>Licencias</span>
+                            <strong id="microdataTotalLicense">0,00 €</strong>
+                          </div>
+                          <div class="microdata-total-chip">
+                            <span>Mantenimiento</span>
+                            <strong id="microdataTotalMaintenance">0,00 €</strong>
+                          </div>
+                          <div class="microdata-total-chip">
+                            <span>Cuotas mensuales</span>
+                            <strong id="microdataTotalMonthlyFee">0,00 €</strong>
+                          </div>
+                          <div class="microdata-total-chip">
+                            <span>Cuotas anuales</span>
+                            <strong id="microdataTotalAnnualFee">0,00 €</strong>
+                          </div>
+                        </div>
+                      </section>
+
+                      <div class="form-group form-group-full">
+                        <label for="microdataBudgetNotes">Notas adicionales</label>
+                        <textarea id="microdataBudgetNotes" rows="4" placeholder="Añade observaciones, condiciones especiales o información relevante para el presupuesto"></textarea>
                       </div>
-                    </section>
-                      
-                    <section class="breakdown">
-                      <div class="row"><span>App</span><strong id="summaryApp">-</strong></div>
-                      <div class="row"><span>Plan / tarifa</span><strong id="summaryPlan">-</strong></div>
-                      <div class="row"><span>Mantenimiento</span><strong id="summaryMant">-</strong></div>
-                      <div class="row"><span id="summaryQuantityLabel">Cantidad</span><strong id="summaryQuantity">-</strong></div>
-                      <div class="row"><span>Precio mensual</span><strong id="summaryMonthly">-</strong></div>
-                      <div class="row"><span>Precio anual</span><strong id="summaryAnnual">-</strong></div>
-                    </section>
-                  </section>
-                  <aside class="variable-panel">
-                    <div class="accordion hidden" id="trfVrb">
-                      <div class="accordion-item hidden" id="gestFiscal">
-                        <button class="accordion-header">Calcula y compara tarifa variable</button>
-                        <div class="accordion-content" >
-                          <section class="tabla">
-                            <div class="row"><span>Empresas en Módulos</span></div>
-                            <div class="row"><input id="empMdl" type="number" min="0" step="1" value="0"/></div>
 
-                            <div class="row"><span>Empresas Directa y Simplificada</span></div>
-                            <div class="row"><input id="empDrct" type="number" min="0" step="1" value="0"/></div>
+                      <section class="microdata-result-card">
+                        <div>
+                          <span>Total inicial</span>
+                          <strong id="mainResult">0,00 €</strong>
+                        </div>
+                        <div>
+                          <span>Cuota mensual</span>
+                          <strong id="summaryMonthly">0,00 €</strong>
+                        </div>
+                        <div>
+                          <span>Coste anual equivalente</span>
+                          <strong id="summaryAnnual">0,00 €</strong>
+                        </div>
+                        <strong id="microdataTotal" class="hidden">0,00 €</strong>
+                      </section>
+                    </div>
 
-                            <div class="row"><span>Empresas Sociedades</span></div>
-                            <div class="row"><input id="empScds" type="number" min="0" step="1" value="0"/></div>
-
-                            <div class="total-title">Total</div>
-                            <div id="ttlFiscal" class="total-value">0,00 €</div>
-                          </section>
+                    <aside class="microdata-side-panel">
+                      <div class="accordion hidden" id="trfVrb">
+                        <div class="accordion-item hidden" id="gestFiscal">
+                          <button class="accordion-header" type="button">Calcula y compara tarifa variable</button>
+                          <div class="accordion-content">
+                            <section class="tabla">
+                              <div class="row"><span>Empresas en Módulos</span></div>
+                              <div class="row"><input id="empMdl" type="number" min="0" step="1" value="0" /></div>
+                              <div class="row"><span>Empresas Directa y Simplificada</span></div>
+                              <div class="row"><input id="empDrct" type="number" min="0" step="1" value="0" /></div>
+                              <div class="row"><span>Empresas Sociedades</span></div>
+                              <div class="row"><input id="empScds" type="number" min="0" step="1" value="0" /></div>
+                              <div class="total-title">Total</div>
+                              <div id="ttlFiscal" class="total-value">0,00 €</div>
+                            </section>
+                          </div>
+                        </div>
+                        <div class="accordion-item hidden" id="gestLaboral">
+                          <button class="accordion-header" type="button">Calcula y compara tarifa variable</button>
+                          <div class="accordion-content">
+                            <section class="tabla">
+                              <div class="label">Por empresa</div>
+                              <input id="porEmp" type="number" min="0" step="1" value="0" />
+                              <div class="label">Por trabajador</div>
+                              <input id="porTbj" type="number" min="0" step="1" value="0" />
+                              <div class="total-title">Total</div>
+                              <div id="ttlLaboral" class="total-value">35,00 €</div>
+                            </section>
+                          </div>
                         </div>
                       </div>
-                      <div class="accordion-item hidden" id="gestLaboral">
-                        <button class="accordion-header">Calcula y compara tarifa variable</button>
-                        <div class="accordion-content">
-                          <section class="tabla">
-                            <div class="label">Por empresa</div>
-                            <input id="porEmp" type="number" min="0" step="1" value="0">
-
-                            <div class="label">Por trabajador</div>
-                            <input id="porTbj" type="number" min="0" step="1" value="0">
-
-                            <div class="total-title">Total</div>
-                            <div id="ttlLaboral" class="total-value">35,00 €</div>
-                          </section>
-                        </div>
-                      </div>
-                    </div>
-                  </aside>
-                </div>
+                    </aside>
+                  </div>
+                </section>
               </div>
             </div>
             <div class="tab active" id="erp">
@@ -381,6 +434,17 @@
                               <strong id="erpMaxUsers">-</strong>
                             </div>
                           </div>
+                          <div id="erpExtraUsersBlock" class="erp-extra-users-block hidden">
+                          <div class="erp-extra-users-info">
+                            <strong>Usuarios adicionales</strong>
+                            <span id="erpExtraUsersDescription">Añade usuarios adicionales al plan.</span>
+                          </div>
+                          <div class="erp-extra-users-controls">
+                            <label for="erpExtraUsersInput">Nº de usuarios adicionales</label>
+                            <input type="number" id="erpExtraUsersInput" min="0" step="1" value="0">
+                            <span id="erpExtraUsersPrice">0,00 €/mes</span>
+                          </div>
+                        </div>
                         </section>
                       <section class="erp-table-card">
                         <div class="erp-table-title">

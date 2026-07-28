@@ -1,4 +1,13 @@
-const apps = {
+/* ==================================================
+   PRESUPUESTO MICRODATA
+================================================== */
+
+let microdataBudgetItems = [];
+
+let microdataEditingItemId = null;
+let currentMicrodataPreview = null;
+
+let apps = {
   ejornada: {
     name: "ejornada",
     quantityLabel: "Nº de trabajadores",
@@ -373,7 +382,7 @@ const apps = {
   }
 };
 
-const erpPlans = {
+let erpPlans = {
   despacho: {
     name: "ERP Despacho",
     plans: {
@@ -647,7 +656,7 @@ const erpPlans = {
   }
 };
 
-const erpExtras = {
+let erpExtras = {
     phoneSupport: {
         name: "Soporte telefónico",
         price: 29.95,
@@ -793,13 +802,6 @@ const els = {
   noticeBox: document.getElementById("noticeBox"),
   mainResult: document.getElementById("mainResult"),
   resultSubtitle: document.getElementById("resultSubtitle"),
-  summaryApp: document.getElementById("summaryApp"),
-  summaryPlan: document.getElementById("summaryPlan"),
-  summaryMant: document.getElementById("summaryMant"),
-  summaryQuantityLabel: document.getElementById("summaryQuantityLabel"),
-  summaryQuantity: document.getElementById("summaryQuantity"),
-  summaryMonthly: document.getElementById("summaryMonthly"),
-  summaryAnnual: document.getElementById("summaryAnnual"),
   copyButton: document.getElementById("copyButton"),
   extraUsersInput: document.getElementById("usersInput"),
   selectBuzones: document.getElementById("selectBuzones"),
@@ -828,6 +830,23 @@ const els = {
   erpBaseDiscountType: document.getElementById("erpBaseDiscountType"),
   erpBaseDiscountValue: document.getElementById("erpBaseDiscountValue"),
   erpBaseFinalPrice: document.getElementById("erpBaseFinalPrice"),
+  erpExtraUsersBlock: document.getElementById("erpExtraUsersBlock"),
+  erpExtraUsersDescription: document.getElementById("erpExtraUsersDescription"),
+  erpExtraUsersInput: document.getElementById("erpExtraUsersInput"),
+  erpExtraUsersPrice: document.getElementById("erpExtraUsersPrice"),
+  addMicrodataItemButton: document.getElementById("addMicrodataItemButton"),
+cancelMicrodataEditButton: document.getElementById("cancelMicrodataEditButton"),
+microdataBudgetItems: document.getElementById("microdataBudgetItems"),
+microdataEmptyState: document.getElementById("microdataEmptyState"),
+microdataBudgetTableWrapper: document.getElementById("microdataBudgetTableWrapper"),
+microdataItemCount: document.getElementById("microdataItemCount"),
+microdataTotalLicense: document.getElementById("microdataTotalLicense"),
+microdataTotalMaintenance: document.getElementById("microdataTotalMaintenance"),
+microdataTotalMonthlyFee: document.getElementById("microdataTotalMonthlyFee"),
+microdataTotalAnnualFee: document.getElementById("microdataTotalAnnualFee"),
+microdataTotal: document.getElementById("microdataTotal"),
+summaryMonthly: document.getElementById("summaryMonthly"),
+summaryAnnual: document.getElementById("summaryAnnual"),
 };
 
 
@@ -852,6 +871,7 @@ const historyMessage = document.getElementById("historyMessage");
 const budgetDetailModal = document.getElementById("budgetDetailModal");
 const closeBudgetDetailModal = document.getElementById("closeBudgetDetailModal");
 const budgetNotes = document.getElementById("budgetNotes");
+const budgetNotesMicrodata = document.getElementById("microdataBudgetNotes");
 const loginScreen = document.getElementById("loginScreen");
 const appContainer = document.getElementById("app-container");
 const loginForm = document.getElementById("loginForm");
@@ -873,8 +893,38 @@ const newPasswordConfirm = document.getElementById("newPasswordConfirm");
 const changePasswordMatch = document.getElementById("changePasswordMatch");
 const logoutButton = document.getElementById("logoutButton");
 
-let currentSession = null;
+async function loadSimpleCatalog() {
+    if (!currentSession?.token) {
+        throw new Error("Debes iniciar sesión para cargar el catálogo.");
+    }
 
+    const response = await jsonpRequest("getSimpleCatalog", { token: currentSession.token });
+
+    if (!response?.success || !response?.apps) {
+        throw new Error(response?.message || "No se pudo cargar el catálogo.");
+    }
+
+    Object.assign(apps, response.apps);
+}
+
+async function loadErpCatalog() {
+  if (!currentSession?.token) {
+    throw new Error("Debes iniciar sesión para cargar el catálogo ERP.");
+  }
+
+  const response = await jsonpRequest("getErpCatalog",{ token:currentSession.token });
+
+  if (!response?.success || !response?.plans || !response?.extras) {
+    throw new Error(response?.message || "No se pudo cargar el catálogo ERP.");
+  }
+
+  erpPlans = response.plans;
+  erpExtras = response.extras;
+  console.log("Planes ERP cargados:", erpPlans);
+  console.log("Extras ERP cargados:", erpExtras);
+}
+
+let currentSession = null;
 
 function saveSession(sessionData) {
   currentSession = sessionData;
@@ -882,22 +932,26 @@ function saveSession(sessionData) {
 }
 
 function restoreSession() {
-  const storedSession = sessionStorage.getItem("budgetSession");
-  if (!storedSession) {
-    return false;
-  }
-  try {
-    currentSession = JSON.parse(storedSession);
-    if (!currentSession?.token || !currentSession?.user) {
-      throw new Error("La sesión almacenada no es válida.");
+    const storedSession = sessionStorage.getItem("budgetSession");
+
+    if (!storedSession) {
+        return false;
     }
-    showApplication();
-    return true;
-  } catch (error) {
-    sessionStorage.removeItem("budgetSession");
-    currentSession = null;
-    return false;
-  }
+
+    try {
+        currentSession = JSON.parse(storedSession);
+
+        if (!currentSession?.token || !currentSession?.user) {
+            throw new Error("La sesión almacenada no es válida.");
+        }
+
+        return true;
+
+    } catch (error) {
+      currentSession = null;
+      sessionStorage.removeItem("budgetSession");
+      return false;
+    }
 }
 
 function showApplication() {
@@ -1181,10 +1235,9 @@ loginForm.addEventListener("submit", async event => {
       }
 
       saveSession(response);
-
       loginForm.reset();
 
-      setAccessMessage(loginMessage, "", "info");
+      await initializeApplicationData();
 
       showApplication();
 
@@ -1379,7 +1432,7 @@ function jsonpRequest(action, parameters = {}) {
                     "Apps Script no ha respondido en 15 segundos."
                 )
             );
-        }, 15000);
+        }, 30000);
 
         window[callbackName] = function (result) {
             clearTimeout(timeoutId);
@@ -1422,6 +1475,28 @@ function jsonpRequest(action, parameters = {}) {
 
         document.body.appendChild(script);
     });
+}
+
+async function loadApplicationCatalog() {
+  if (!currentSession?.token) {
+    throw new Error("Debes iniciar sesión para cargar el catálogo.");
+  }
+
+  const response = await jsonpRequest("getApplicationCatalog", { token: currentSession.token });
+
+  if (!response?.success || !response?.apps || !response?.plans || !response?.extras) {
+    throw new Error(response?.message || "No se pudo cargar el catálogo.");
+  }
+
+  Object.assign(apps, response.apps);
+  erpPlans = response.plans;
+  erpExtras = response.extras;
+
+  console.log(
+    response.fromCache
+      ? "Catálogo cargado desde caché."
+      : "Catálogo cargado desde Google Sheets."
+  );
 }
 
 function getBudgetValue(budget, field) {
@@ -2094,15 +2169,346 @@ function selectedBilling(app) {
   return (app.billingOptions || [])[els.billingSelect.selectedIndex] || (app.billingOptions || [])[0];
 }
 
-function valueToMonthlyAnnual(value, period, quantity = 1, mantenimiento) {
-  const qty = Math.max(1, quantity || 1);
-  const multiplied = value * qty;
+function valueToMonthlyAnnual(value = 0, period = "annual", quantity = 1) {
+  const safeValue = Number(value) || 0;
+  const safeQuantity = Math.max(1, Number(quantity) || 1);
+  const total = safeValue * safeQuantity;
 
-  if (period === "monthly") return { monthly: multiplied, annual: multiplied * 12, main: multiplied, maintenance: mantenimiento / 12 };
-  if (period === "annual") return { monthly: multiplied / 12, annual: multiplied, main: multiplied, maintenance: mantenimiento };
-  if (period === "unitMonthly") return { monthly: value * qty, annual: value * qty * 12, main: value };
-  if (period === "unit") return { monthly: 0, annual: value * qty, main: value * qty };
-  return { monthly: 0, annual: multiplied, main: multiplied };
+  switch (period) {
+    case "monthly":
+      return { monthly: total, annual: total * 12, main: total};
+    case "annual":
+      return { monthly: total / 12, annual: total, main: total};
+    case "unitMonthly":
+      return { monthly: total, annual: total * 12, main: total};
+    case "unit":
+      return { monthly: 0, annual: total, main: total};
+    default:
+      return { monthly: 0, annual: total, main: total};
+  }
+}
+
+function getNumericValue(value) {
+  const parsed = Number(value);
+
+  return Number.isFinite(parsed)
+    ? parsed
+    : 0;
+}
+
+function getMicrodataModeCode(billingOption) {
+  const value = billingOption?.value || "";
+
+  if (value === "cloud") {
+    return "C";
+  }
+
+  if (value === "saas" || billingOption?.period === "monthly" || billingOption?.period === "unitMonthly") {
+    return "S";
+  }
+
+  return "O";
+}
+
+function getMicrodataPeriodCode(billingOption) {
+  const period = billingOption?.period || "";
+
+  if (period === "monthly" || period === "unitMonthly") {
+    return "M";
+  }
+
+  return "A";
+}
+
+function buildMicrodataEconomicAmounts({ source, billingOption, quantity = 1}) {
+  const field = billingOption?.field || "";
+  const period = billingOption?.period || "annual";
+  const safeQuantity = Math.max(1, Number(quantity) || 1);
+  const price = getNumericValue(source?.price);
+  const maintenance = getNumericValue(source?.maintenance);
+  const selectedValue = getNumericValue(source?.[field]);
+  let licenseAmount = 0;
+  let maintenanceAmount = 0;
+  let monthlyFeeAmount = 0;
+  /*
+   * COMPRA / LICENCIA
+   *
+   * Solo se utiliza price como licencia.
+   * El mantenimiento se guarda aparte.
+   */
+  if (field === "price") {
+    licenseAmount = price * safeQuantity;
+    maintenanceAmount = maintenance * safeQuantity;
+  }
+  /*
+   * MANTENIMIENTO
+   *
+   * El valor seleccionado es exclusivamente
+   * mantenimiento. No se coloca como licencia.
+   */
+  else if (field === "maintenance" ||field === "maintenanceMsConta") {
+    maintenanceAmount = selectedValue * safeQuantity;
+  }
+  /*
+   * SaaS o cuotas mensuales
+   */
+  else if (period === "monthly" || period === "unitMonthly" || field === "saas" || field === "saasMsConta" || field === "monthly") {
+    monthlyFeeAmount = selectedValue * safeQuantity;
+  }
+  /*
+   * Importes anuales distintos de licencia,
+   * por ejemplo eFirma o pago por uso.
+   */
+  else if (period === "annual") {
+    monthlyFeeAmount = selectedValue * safeQuantity;
+  }
+  /*
+   * Importe unitario por volumen.
+   */
+  else if (period === "unit") {
+    maintenanceAmount = selectedValue * safeQuantity;
+  }
+  return {
+    licenseAmount,
+    maintenanceAmount,
+    monthlyFeeAmount
+  };
+}
+
+function createMicrodataItemId() {
+  return (
+    "md-" +
+    Date.now() +
+    "-" +
+    Math.random()
+      .toString(36)
+      .slice(2, 8)
+  );
+}
+
+function getSelectedMicrodataSource(app, planName, quantity) {
+  if (!app) {
+    return null;
+  }
+
+  if (Array.isArray(app.items)) {
+    return (
+      app.items.find(
+        item => item.plan === planName
+      ) || null
+    );
+  }
+
+  if (Array.isArray(app.tiers)) {
+    if (app.mode === "capacityPlan" || app.mode === "modules") {
+      return (
+        app.tiers.find(
+          tier => tier.plan === planName
+        ) || null
+      );
+    }
+
+    if (app.mode === "rangeBand") {
+      return (
+        app.tiers.find(
+          tier =>
+            quantity >= tier.min &&
+            quantity <= tier.max
+        ) || null
+      );
+    }
+
+    const tierKey = app.tierKey;
+
+    if (tierKey) {
+      return (
+        app.tiers.find(
+          tier =>
+            Number(quantity) <=
+            Number(tier[tierKey])
+        ) ||
+        app.tiers[app.tiers.length - 1] ||
+        null
+      );
+    }
+  }
+
+  return null;
+}
+
+function applyMicrodataDiscount(original, type = "none", value = 0) {
+  const safeOriginal = Math.max(0, Number(original) || 0);
+  const safeValue = Math.max(0, Number(value) || 0);
+  if (type === "percentage") return Math.max(0, safeOriginal * (1 - Math.min(safeValue, 100) / 100));
+  if (type === "fixed") return Math.max(0, safeOriginal - safeValue);
+  return safeOriginal;
+}
+
+function recalculateMicrodataItem(item) {
+  item.licenseFinal = applyMicrodataDiscount(item.licenseOriginal, item.licenseDiscountType, item.licenseDiscountValue);
+  item.maintenanceFinal = applyMicrodataDiscount(item.maintenanceOriginal, item.maintenanceDiscountType, item.maintenanceDiscountValue);
+  item.monthlyFeeFinal = applyMicrodataDiscount(item.monthlyFeeOriginal, item.monthlyFeeDiscountType, item.monthlyFeeDiscountValue);
+  return item;
+}
+
+function getMicrodataSelectionCalculation() {
+  const appKey = els.appSelect.value;
+  const app = apps[appKey];
+  if (!app) throw new Error("No se ha encontrado la aplicación seleccionada.");
+
+  const plan = els.planSelect.value || app.plans?.[0] || "";
+  const billing = selectedBilling(app);
+  if (!billing) throw new Error("No se ha encontrado la modalidad seleccionada.");
+
+  const quantity = Math.max(1, Number(els.quantityInput.value) || 1);
+  let license = 0;
+  let maintenance = 0;
+  let fee = 0;
+  let period = getMicrodataPeriodCode(billing);
+  let notice = "";
+  let detail = "";
+
+  if (app.mode === "workersNumber") {
+    const tier = app.tiers.find(t => quantity <= t[app.tierKey]) || app.tiers[app.tiers.length - 1];
+    const amount = calcularTrabajadores(tier, quantity, plan);
+    const isMonthlyPlan = /Mensual/i.test(plan);
+    fee = amount;
+    period = isMonthlyPlan ? "M" : "A";
+    detail = `${plan} · ${quantity.toLocaleString("es-ES")} trabajadores`;
+    notice = `Se ha usado el tramo de ${quantity > 100 ? quantity : formatNumber(tier[app.tierKey])} ${app.tierLabel}.`;
+  } else if (app.mode === "capacityPlan") {
+    const matching = app.tiers.filter(t => t.plan === plan);
+    const tier = matching.find(t => quantity <= t.docsYear) || matching[matching.length - 1];
+    if (!tier) throw new Error("No existe una tarifa para el plan seleccionado.");
+    const result = calcDocs(quantity, plan, billing.period, tier[billing.field], tier, tier.userExtra, Number(els.extraUsersInput?.value || 0));
+    fee = billing.period === "monthly" ? result.monthly : result.annual;
+    period = billing.period === "monthly" ? "M" : "A";
+    detail = `${plan} · ${quantity.toLocaleString("es-ES")} documentos/año`;
+    notice = `Capacidad seleccionada: ${tier.docsYear.toLocaleString("es-ES")} documentos/año.`;
+  } else if (app.mode === "rangeBand") {
+    const tier = app.tiers.find(t => quantity >= t.min && quantity <= t.max) || app.tiers[app.tiers.length - 1];
+    fee = (Number(tier[billing.field]) || 0) * (billing.period === "unitMonthly" ? quantity : 1);
+    period = billing.period === "unitMonthly" ? "M" : "A";
+    detail = `${plan} · ${quantity.toLocaleString("es-ES")} trabajadores`;
+    notice = `Se ha usado el tramo ${formatNumber(tier.min)}-${formatNumber(tier.max)} trabajadores.`;
+  } else if (app.mode === "closestBand") {
+    const tier = app.tiers.find(t => quantity <= t[app.tierKey]) || app.tiers[app.tiers.length - 1];
+    const selectedValue = Number(tier[billing.field] ?? tier[plan]) || 0;
+    if (billing.field === "maintenance" || billing.period === "unit") maintenance = selectedValue * (billing.period === "unit" ? quantity : 1);
+    else fee = selectedValue;
+    period = "A";
+    detail = `${plan} · ${quantity.toLocaleString("es-ES")} ${app.tierLabel || "unidades"}`;
+    notice = `Se ha usado el tramo de ${tier.label || formatNumber(tier[app.tierKey])} ${app.tierLabel}.`;
+  } else if (app.mode === "catalog" || app.mode === "modules") {
+    const source = (app.items || app.tiers || []).find(i => i.plan === plan) || (app.items || app.tiers || [])[0];
+    if (!source) throw new Error("No se ha encontrado la tarifa seleccionada.");
+    const selectedValue = Number(source[billing.field]);
+    if (!Number.isFinite(selectedValue)) throw new Error("Esta modalidad no está disponible para la tarifa seleccionada.");
+    if (billing.field === "price") {
+      license = selectedValue * quantity;
+      maintenance = (Number(source.maintenance) || 0) * quantity;
+    } else if (billing.field === "maintenance" || billing.field === "maintenanceMsConta") {
+      maintenance = selectedValue * quantity;
+    } else {
+      fee = selectedValue * quantity;
+      period = billing.period === "monthly" || billing.period === "unitMonthly" ? "M" : "A";
+    }
+    detail = `${plan}${quantity > 1 ? ` · ${quantity.toLocaleString("es-ES")} unidades` : ""}`;
+    notice = `${billing.label} · ${plan}.`;
+  } else if (app.mode === "msnotifica") {
+    const tier = app.tiers.find(t => quantity <= t.mailboxes) || app.tiers[app.tiers.length - 1];
+    const mailboxExtra = calcLicenciasExtra(quantity, tier.mailboxes, tier.mailboxExtra);
+    const extraUsers = Math.max(0, Number(els.extraUsersInput?.value) || 0);
+    const extraUsersAnnual = extraUsers * (Number(tier.userExtra) || 0);
+    const certifacil = apps.certifacil?.items?.[0] || {};
+    const certUsers = Math.max(0, Number(uExtra?.value) || 0);
+    const certExtra = certUsers * (Number(certifacil.userExtra) || 0);
+    if (billing.value === "compra") {
+      license = (Number(tier.price) || 0) + mailboxExtra + extraUsersAnnual + (addModl?.checked ? Number(certifacil.price) || 0 : 0) + certExtra;
+      maintenance = Number(tier.maintenance) || 0;
+      period = "A";
+    } else {
+      fee = (Number(tier.saas) || 0) + extraUsersAnnual / 12 + mailboxExtra;
+      period = "M";
+    }
+    detail = `${quantity.toLocaleString("es-ES")} buzones${extraUsers ? ` · ${extraUsers} usuarios extra` : ""}`;
+    notice = `Se ha usado el tramo de ${tier.mailboxes} buzones.`;
+  } else if (app.mode === "msgest") {
+    const tier = app.tiers.find(t => quantity <= t[app.tierKey]) || app.tiers[app.tiers.length - 1];
+    const selectedValue = Number(tier[billing.field]) || 0;
+    if (billing.field === "price") {
+      license = selectedValue;
+      maintenance = Number(tier.maintenance) || 0;
+    } else if (billing.field === "maintenanceMsConta") {
+      maintenance = selectedValue;
+    } else {
+      fee = selectedValue;
+      period = "M";
+    }
+    if (addModl?.checked) {
+      const moduleResult = addModulosGest(quantity);
+      if (period === "M") fee += Number(moduleResult.monthly) || 0;
+      else {
+        license += Number(moduleResult.main) || Number(moduleResult.annual) || 0;
+        maintenance += Number(moduleResult.mante) || 0;
+      }
+    }
+    detail = `${quantity.toLocaleString("es-ES")} licencias${addModl?.checked ? ` · ${els.selectMdlGest.value}` : ""}`;
+    notice = `Se ha usado el tramo de ${formatNumber(tier[app.tierKey])} ${app.tierLabel}.`;
+  } else {
+    throw new Error("El tipo de cálculo de esta aplicación todavía no está soportado.");
+  }
+
+  return {
+    appKey, application: app.name, plan, billing: billing.value, billingLabel: billing.label,
+    quantity, quantityLabel: app.quantityLabel || "Cantidad", mode: getMicrodataModeCode(billing), period,
+    licenseOriginal: license, maintenanceOriginal: maintenance, monthlyFeeOriginal: fee,
+    notice, detail,
+    configuration: {
+      extraUsers: Number(els.extraUsersInput?.value) || 0,
+      addModule: Boolean(addModl?.checked),
+      module: els.selectMdlGest?.value || "",
+      certExtraUsers: Number(uExtra?.value) || 0
+    }
+  };
+}
+
+function buildCurrentMicrodataItem() {
+  const calculation = currentMicrodataPreview || getMicrodataSelectionCalculation();
+  const previous = microdataEditingItemId ? microdataBudgetItems.find(item => item.id === microdataEditingItemId) : null;
+  return recalculateMicrodataItem({
+    ...calculation,
+    id: microdataEditingItemId || createMicrodataItemId(),
+    licenseDiscountType: previous?.licenseDiscountType || "none",
+    licenseDiscountValue: previous?.licenseDiscountValue || 0,
+    maintenanceDiscountType: previous?.maintenanceDiscountType || "none",
+    maintenanceDiscountValue: previous?.maintenanceDiscountValue || 0,
+    monthlyFeeDiscountType: previous?.monthlyFeeDiscountType || "none",
+    monthlyFeeDiscountValue: previous?.monthlyFeeDiscountValue || 0,
+    licenseFinal: calculation.licenseOriginal,
+    maintenanceFinal: calculation.maintenanceOriginal,
+    monthlyFeeFinal: calculation.monthlyFeeOriginal
+  });
+}
+
+function resetMicrodataEditMode() {
+  microdataEditingItemId = null;
+  if (els.addMicrodataItemButton) els.addMicrodataItemButton.innerHTML = "<span>＋</span>Añadir al presupuesto";
+  els.cancelMicrodataEditButton?.classList.add("hidden");
+}
+
+function addCurrentMicrodataItem() {
+  try {
+    const item = buildCurrentMicrodataItem();
+    const index = microdataBudgetItems.findIndex(current => current.id === item.id);
+    if (index >= 0) microdataBudgetItems[index] = item;
+    else microdataBudgetItems.push(item);
+    resetMicrodataEditMode();
+    renderMicrodataBudget();
+  } catch (error) {
+    console.error(error);
+    alert(error.message);
+  }
 }
 
 function init() {
@@ -2131,6 +2537,10 @@ function init() {
   els.empDrct.addEventListener("change", calcularTrfVariable);
   els.empScds.addEventListener("change", calcularTrfVariable);
   if (els.copyButton) els.copyButton.addEventListener("click", copySummary);
+  els.addMicrodataItemButton?.addEventListener("click", addCurrentMicrodataItem);
+  els.cancelMicrodataEditButton?.addEventListener("click", resetMicrodataEditMode);
+  els.microdataBudgetItems?.addEventListener("click", handleMicrodataBudgetClick);
+  els.microdataBudgetItems?.addEventListener("change", handleMicrodataBudgetChange);
 
   refreshPlans();
   calculate();
@@ -2152,6 +2562,18 @@ function initErp() {
 
     calculateErpTotal();
   });
+
+  els.erpExtraUsersInput.addEventListener("input", () => {
+  const max = Number(els.erpExtraUsersInput.max || 0);
+  let value = Math.max(0, Number(els.erpExtraUsersInput.value || 0));
+
+  if (max && value > max) {
+    value = max;
+    els.erpExtraUsersInput.value = max;
+  }
+
+  calculateErpTotal();
+});
 
   els.erpBaseDiscountValue.addEventListener("input", () => {
     calculateErpTotal();
@@ -2182,34 +2604,25 @@ function createErpFeatureValue(value, featureName) {
   const wrapper = document.createElement("div");
   wrapper.className = "erp-feature-value";
 
-  const feature =
-    typeof value === "object"
-      ? value
-      : { status: value };
+  const feature = typeof value === "object" ? value : { status: value };
 
   if (feature.status === "optional" && feature.extraKey) {
     const extra = erpExtras[feature.extraKey];
-
     const label = document.createElement("label");
     label.className = "erp-extra-toggle";
-
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.className = "erp-extra-checkbox";
     checkbox.dataset.extraKey = feature.extraKey;
-
     const text = document.createElement("span");
     text.textContent = `${extra.name} · ${formatErpExtraPrice(extra)}`;
-
     label.append(checkbox, text);
     wrapper.appendChild(label);
-
     return wrapper;
   }
 
   const status = document.createElement("i");
   status.className = "status";
-
   const text = document.createElement("span");
 
   switch (feature.status) {
@@ -2217,17 +2630,14 @@ function createErpFeatureValue(value, featureName) {
       status.classList.add("included");
       text.textContent = "Incluido";
       break;
-
     case "optional":
       status.classList.add("optional");
       text.textContent = "Opcional";
       break;
-
     case "unavailable":
       status.classList.add("unavailable");
       text.textContent = "No disponible";
       break;
-
     default:
       text.textContent = feature.status;
       wrapper.appendChild(text);
@@ -2237,6 +2647,47 @@ function createErpFeatureValue(value, featureName) {
   wrapper.append(status, text);
 
   return wrapper;
+}
+
+function configureErpExtraUsers(plan) {
+  const includedUsers = Number(plan.users || 0);
+  const extraUserPrice = Number(plan.extraUserPrice || 0);
+  const maxUsers = plan.maxUsers;
+
+  els.erpExtraUsersInput.value = 0;
+  els.erpExtraUsersPrice.textContent = euros(0);
+
+  if (!extraUserPrice) {
+    els.erpExtraUsersBlock.classList.add("hidden");
+    return;
+  }
+
+  els.erpExtraUsersBlock.classList.remove("hidden");
+
+  const isUnlimited =
+    String(maxUsers).toLowerCase() === "ilimitado";
+
+  if (isUnlimited) {
+    els.erpExtraUsersInput.max = 50;
+
+    els.erpExtraUsersDescription.textContent =
+      `El plan incluye ${includedUsers} usuario${includedUsers === 1 ? "" : "s"}. ` +
+      `Cada usuario adicional cuesta ${euros(extraUserPrice)}/mes.`;
+  } else {
+    const numericMaxUsers = Number(maxUsers || includedUsers);
+
+    const maximumExtraUsers = Math.max(
+      0,
+      numericMaxUsers - includedUsers
+    );
+
+    els.erpExtraUsersInput.max = maximumExtraUsers;
+
+    els.erpExtraUsersDescription.textContent =
+      `El plan incluye ${includedUsers} usuario${includedUsers === 1 ? "" : "s"} ` +
+      `y permite un máximo de ${numericMaxUsers}. ` +
+      `Cada usuario adicional cuesta ${euros(extraUserPrice)}/mes.`;
+  }
 }
 
 function renderErpPlan() {
@@ -2249,6 +2700,8 @@ function renderErpPlan() {
   if (!plan) {
     return;
   }
+
+  configureErpExtraUsers(plan);
 
   els.erpBasePrice.textContent = euros(plan.price);
   els.erpIncludedUsers.textContent = plan.users;
@@ -2407,6 +2860,152 @@ function renderErpExtras(plan) {
   });
 }
 
+function renderMicrodataBudget() {
+  if (!els.microdataBudgetItems || !els.microdataEmptyState || !els.microdataBudgetTableWrapper) return;
+  const hasItems = microdataBudgetItems.length > 0;
+  els.microdataEmptyState.classList.toggle("hidden", hasItems);
+  els.microdataBudgetTableWrapper.classList.toggle("hidden", !hasItems);
+  if (els.microdataItemCount) {
+    const count = microdataBudgetItems.length;
+    els.microdataItemCount.textContent = `${count} ${count === 1 ? "aplicación" : "aplicaciones"}`;
+  }
+  els.microdataBudgetItems.innerHTML = microdataBudgetItems.map(renderMicrodataBudgetItem).join("");
+  updateMicrodataBudgetTotals();
+}
+
+function renderMicrodataBudgetItem(item) {
+  const quantityText = item.quantity > 1 ? `${item.quantityLabel}: ${item.quantity.toLocaleString("es-ES")}` : "";
+  return `
+    <article class="microdata-result-row" data-item-id="${escapeHtml(item.id)}">
+      <div class="microdata-item-main">
+        <div class="microdata-item-identity">
+          <h4 data-field="application">${escapeHtml(item.application)}</h4>
+          <span class="microdata-item-plan" data-field="plan">${escapeHtml(item.plan || "Sin plan")}</span>
+          <div class="microdata-item-meta">
+            <span class="microdata-item-badge">${escapeHtml(item.billingLabel)}</span>
+            <span class="microdata-item-badge microdata-period-badge">${item.period === "M" ? "Mensual" : "Anual"}</span>
+            ${quantityText ? `<span class="microdata-item-quantity">${escapeHtml(quantityText)}</span>` : ""}
+          </div>
+          ${item.detail ? `<small class="microdata-item-detail">${escapeHtml(item.detail)}</small>` : ""}
+        </div>
+        <div class="microdata-item-actions">
+          <button type="button" class="microdata-item-action" data-action="edit" title="Editar" aria-label="Editar ${escapeHtml(item.application)}">✎</button>
+          <button type="button" class="microdata-item-action delete" data-action="delete" title="Eliminar" aria-label="Eliminar ${escapeHtml(item.application)}">×</button>
+        </div>
+      </div>
+      <div class="microdata-item-values">
+        ${renderMicrodataAmount(item, "license", "Licencia")}
+        ${renderMicrodataAmount(item, "maintenance", "Mantenimiento")}
+        ${renderMicrodataAmount(item, "monthlyFee", item.period === "M" ? "Cuota mensual" : "Cuota anual")}
+      </div>
+    </article>`;
+}
+
+function renderMicrodataAmount(item, key, label) {
+  const original = Number(item[`${key}Original`]) || 0;
+  const finalValue = Number(item[`${key}Final`]) || 0;
+  const type = item[`${key}DiscountType`] || "none";
+  const discountValue = Number(item[`${key}DiscountValue`]) || 0;
+  const disabled = original <= 0;
+  return `
+    <div class="microdata-item-value ${disabled ? "is-empty" : ""}">
+      <div class="microdata-amount-heading">
+        <span>${escapeHtml(label)}</span>
+        <strong>${disabled ? "—" : euros(finalValue)}</strong>
+      </div>
+      ${disabled ? "" : `
+        <div class="microdata-discount-controls">
+          <span class="microdata-original-price">Original: ${euros(original)}</span>
+          <select data-discount-key="${key}" data-discount-part="type" aria-label="Tipo de descuento para ${escapeHtml(label)}">
+            <option value="none" ${type === "none" ? "selected" : ""}>Sin descuento</option>
+            <option value="percentage" ${type === "percentage" ? "selected" : ""}>%</option>
+            <option value="fixed" ${type === "fixed" ? "selected" : ""}>€</option>
+          </select>
+          <input type="number" min="0" step="0.01" value="${discountValue}" data-discount-key="${key}" data-discount-part="value" ${type === "none" ? "disabled" : ""} aria-label="Valor del descuento para ${escapeHtml(label)}">
+        </div>`}
+    </div>`;
+}
+
+function handleMicrodataBudgetClick(event) {
+  const actionButton = event.target.closest("[data-action]");
+  if (!actionButton) return;
+  const row = actionButton.closest("[data-item-id]");
+  const id = row?.dataset.itemId;
+  if (!id) return;
+  if (actionButton.dataset.action === "delete") {
+    microdataBudgetItems = microdataBudgetItems.filter(item => item.id !== id);
+    if (microdataEditingItemId === id) resetMicrodataEditMode();
+    renderMicrodataBudget();
+    return;
+  }
+  if (actionButton.dataset.action === "edit") editMicrodataItem(id);
+}
+
+function handleMicrodataBudgetChange(event) {
+  const control = event.target.closest("[data-discount-key]");
+  if (!control) return;
+  const row = control.closest("[data-item-id]");
+  const item = microdataBudgetItems.find(current => current.id === row?.dataset.itemId);
+  if (!item) return;
+  const key = control.dataset.discountKey;
+  const part = control.dataset.discountPart;
+  if (part === "type") {
+    item[`${key}DiscountType`] = control.value;
+    if (control.value === "none") item[`${key}DiscountValue`] = 0;
+  } else {
+    item[`${key}DiscountValue`] = Math.max(0, Number(control.value) || 0);
+  }
+  recalculateMicrodataItem(item);
+  renderMicrodataBudget();
+}
+
+function editMicrodataItem(id) {
+  const item = microdataBudgetItems.find(current => current.id === id);
+  if (!item) return;
+  microdataEditingItemId = id;
+  els.appSelect.value = item.appKey;
+  refreshPlans();
+  els.planSelect.value = item.plan;
+  const app = apps[item.appKey];
+  const billingIndex = (app.billingOptions || []).findIndex(option => option.value === item.billing);
+  if (billingIndex >= 0) els.billingSelect.selectedIndex = billingIndex;
+  els.quantityInput.value = item.quantity;
+  updateExtraFields();
+  if (els.extraUsersInput) els.extraUsersInput.value = item.configuration?.extraUsers || 0;
+  if (addModl) addModl.checked = Boolean(item.configuration?.addModule);
+  if (els.selectMdlGest && item.configuration?.module) els.selectMdlGest.value = item.configuration.module;
+  if (uExtra) uExtra.value = item.configuration?.certExtraUsers || 0;
+  calculate();
+  if (els.addMicrodataItemButton) els.addMicrodataItemButton.textContent = "Guardar cambios";
+  els.cancelMicrodataEditButton?.classList.remove("hidden");
+  els.appSelect.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function updateMicrodataBudgetTotals() {
+  const totals = microdataBudgetItems.reduce((acc, item) => {
+    acc.license += Number(item.licenseFinal) || 0;
+    acc.maintenance += Number(item.maintenanceFinal) || 0;
+    if (item.period === "M") acc.monthlyFee += Number(item.monthlyFeeFinal) || 0;
+    else acc.annualFee += Number(item.monthlyFeeFinal) || 0;
+    return acc;
+  }, { license: 0, maintenance: 0, monthlyFee: 0, annualFee: 0 });
+
+  const initial = totals.license + totals.maintenance + totals.annualFee;
+  const annualEquivalent = initial + totals.monthlyFee * 12;
+  if (els.microdataTotalLicense) els.microdataTotalLicense.textContent = euros(totals.license);
+  if (els.microdataTotalMaintenance) els.microdataTotalMaintenance.textContent = euros(totals.maintenance);
+  if (els.microdataTotalMonthlyFee) els.microdataTotalMonthlyFee.textContent = euros(totals.monthlyFee);
+  if (els.microdataTotalAnnualFee) els.microdataTotalAnnualFee.textContent = euros(totals.annualFee);
+  if (els.microdataTotal) els.microdataTotal.textContent = euros(totals.monthlyFee + totals.annualFee);
+  if (els.mainResult) els.mainResult.textContent = euros(initial);
+  if (els.summaryMonthly) els.summaryMonthly.textContent = euros(totals.monthlyFee);
+  if (els.summaryAnnual) els.summaryAnnual.textContent = euros(annualEquivalent);
+}
+
+function escapeHtml(value = "") {
+  return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+}
+
 function calculateErpTotal() {
 
   const familyKey = els.erpFamilySelect.value;
@@ -2417,6 +3016,10 @@ function calculateErpTotal() {
     return;
   }
 
+  const extraUsers = Math.max(0, Number(els.erpExtraUsersInput.value || 0));
+  const extraUserPrice = Number(plan.extraUserPrice || 0);
+  const extraUsersMonthly = extraUsers * extraUserPrice;
+  const extraUsersAnnual = extraUsersMonthly * 12;
   const baseDiscountType = els.erpBaseDiscountType.value;
   const baseDiscountValue = Number(
     els.erpBaseDiscountValue.value || 0
@@ -2430,8 +3033,8 @@ function calculateErpTotal() {
 
   const baseAnnual = baseMonthly * 12;
 
-  let extrasMonthly = 0;
-  let extrasAnnual = 0;
+  let extrasMonthly = extraUsersMonthly;
+  let extrasAnnual = extraUsersAnnual;
 
   document.querySelectorAll(".erp-extra-row").forEach(row => {
     const checkbox = row.querySelector(".erp-extra-checkbox");
@@ -2496,6 +3099,31 @@ function calculateErpTotal() {
   els.erpSummaryExtras.textContent = euros(extrasMonthly);
   els.erpTotal.textContent = euros(totalMonthly);
   els.erpAnnualTotal.textContent = euros(totalAnnual);
+  els.erpExtraUsersPrice.textContent = `${euros(extraUsersMonthly)}/mes`;
+}
+
+function getErpExtraUsersData() {
+  const familyKey = els.erpFamilySelect.value;
+  const planKey = els.erpPlanSelect.value;
+
+  const plan = erpPlans[familyKey]?.plans?.[planKey];
+
+  if (!plan) {
+    return {
+      quantity: 0,
+      unitPrice: 0,
+      monthlyCost: 0
+    };
+  }
+
+  const quantity = Math.max(0, Number(els.erpExtraUsersInput.value || 0));
+  const unitPrice = Number(plan.extraUserPrice || 0);
+
+  return {
+    quantity,
+    unitPrice,
+    monthlyCost: quantity * unitPrice
+  };
 }
 
 function applyDiscount(price, type, value) {
@@ -2536,7 +3164,6 @@ function refreshPlans() {
   updateExtraFields();
 
   els.quantityLabel.textContent = app.quantityLabel;
-  els.summaryQuantityLabel.textContent = app.quantityLabel;
   els.billingField.style.display = (app.billingOptions || []).length > 1 ? "block" : "none";
   els.quantityInput.value = app.mode === "capacityPlan" ? 360 : 1;
 }
@@ -2854,209 +3481,20 @@ function calcularTrfVariable () {
 
 function calculate() {
   updateExtraFields();
-  const app = apps[els.appSelect.value];
-  const plan = els.planSelect.value;
-  const billing = selectedBilling(app);
-  cambiaPreciosPorTarifa(plan, els.appSelect.value, billing.period);
-  const quantity = Math.max(1, Number(els.quantityInput.value || 1));
-  const nBuzones = Number(els.selectBuzones.value || 0);
-  const mdlGest = els.selectMdlGest.value;
-  let mant = 0;
-  let monthly = 0;
-  let annual = 0;
-  let main = 0;
-  let subtitle = "";
-  let notice = "";
-
-  if (app.mode === "workersNumber") {
-    const tierKey = app.tierKey;
-    const tier = app.tiers.find(t => quantity <= t[tierKey]) || app.tiers[app.tiers.length - 1];
-    main = calcularTrabajadores(tier, quantity, plan);
-    annual = plan === "Módulo Fichajes" || plan === "Fichajes + Ausencias" ? main : main * 12;
-    monthly = plan === "Módulo Fichajes Mensual" || plan === "Fichajes + Ausencias Mensual" ? main : main / 12;
-    const tierText = tier.label || formatNumber(tier[tierKey]);
-    subtitle = `${billing.label} · tramo hasta ${quantity>100 ? quantity : tierText} ${app.tierLabel}.`;
-    notice = quantity > tier[tierKey] && Number.isFinite(tier[tierKey])
-      ? `La tabla llega hasta ${formatNumber(tier[tierKey])} ${app.tierLabel}. Revisa manualmente importes superiores.`
-      : `Se ha usado el tramo de ${tierText} ${app.tierLabel}.`;
-  }
-
-  if (app.mode === "closestBand") {
-    const tierKey = app.tierKey;
-    const tier = app.tiers.find(t => quantity <= t[tierKey]) || app.tiers[app.tiers.length - 1];
-    const value = tier[billing.field] ?? tier[plan];
-    const mantenimiento = tier["maintenance"];
-    const result = valueToMonthlyAnnual(value, billing.period, billing.period === "unit" ? quantity : 1, mantenimiento);
-    monthly = result.monthly;
-    annual = result.annual;
-    main = result.main;
-    mant = result.maintenance;
-    const tierText = tier.label || formatNumber(tier[tierKey]);
-    subtitle = `${billing.label} ${value} · tramo hasta ${tierText} ${app.tierLabel}.`;
-    notice = quantity > tier[tierKey] && Number.isFinite(tier[tierKey])
-      ? `La tabla llega hasta ${formatNumber(tier[tierKey])} ${app.tierLabel}. Revisa manualmente importes superiores.`
-      : `Se ha usado el tramo de ${tierText} ${app.tierLabel}.`;
-  }
-
-  if (app.mode === "capacityPlan") {
-    const candidates = app.tiers.filter(t => t.plan === plan && quantity > 5000  <= t.docsYear);
-    const tier = candidates[0] || app.tiers.filter(t => t.plan === plan).slice(-1)[0];
-    const value = tier[billing.field];
-    const result = calcDocs(quantity, plan, billing.period, value, tier, tier.userExtra, Number(els.extraUsersInput?.value || 0));
-    monthly = result.monthly;
-    annual = result.annual;
-    main = result.main;
-    subtitle = `${tier.docsYear.toLocaleString("es-ES")} documentos/año · ${tier.users} usuarios · ${tier.smsYear.toLocaleString("es-ES")} SMS/año.`;
-    notice = quantity > tier.docsYear
-      ? `El plan seleccionado no cubre ${quantity.toLocaleString("es-ES")} documentos/año. Revisa una tarifa superior o personalizada.`
-      : `Se ha seleccionado la capacidad mínima que cubre ${quantity.toLocaleString("es-ES")} documentos/año.`;
-  }
-
-  if (app.mode === "rangeBand") {
-    const tier = app.tiers.find(t => quantity >= t.min && quantity <= t.max) || app.tiers[app.tiers.length - 1];
-    const value = tier[billing.field];
-    const mantenimiento = tier["maintenance"];
-    const result = valueToMonthlyAnnual(value, billing.period, quantity, mantenimiento);
-    monthly = result.monthly;
-    annual = result.annual;
-    main = result.main;
-    mant = result.maintenance;
-    subtitle = `${billing.label} · tramo ${formatNumber(tier.min)}-${formatNumber(tier.max)} trabajadores.`;
-    notice = quantity > tier.max
-      ? `La tabla llega hasta ${formatNumber(tier.max)} trabajadores. Revisa manualmente importes superiores.`
-      : `Se ha usado el tramo ${formatNumber(tier.min)}-${formatNumber(tier.max)} trabajadores.`;
-  }
-
-  if (app.mode === "catalog") {
-    const item = app.items.find(i => i.plan === plan) || app.items[0];
-    const value = item[billing.field];
-    const mantenimiento = item["maintenance"];
-
-    if (value === undefined) {
-      monthly = 0;
-      annual = 0;
-      main = 0;
-      subtitle = `${billing.label} no disponible para esta tarifa.`;
-      notice = `Esta combinación no tiene importe en la tabla original.`;
-    } else {
-      const result = valueToMonthlyAnnual(value, billing.period, quantity, mantenimiento);
-      monthly = result.monthly;
-      annual = result.annual;
-      main = result.main + result.maintenance;
-      mant = result.maintenance;
-      subtitle = `${billing.label} · ${plan}.`;
-      notice = billing.period === "monthly"
-        ? `Se ha calculado multiplicando la cuota mensual por la cantidad indicada.`
-        : `Se ha calculado multiplicando el importe por la cantidad indicada.`;
+  try {
+    currentMicrodataPreview = getMicrodataSelectionCalculation();
+    if (els.noticeBox) {
+      els.noticeBox.textContent = currentMicrodataPreview.notice || "";
+      els.noticeBox.classList.toggle("visible", Boolean(currentMicrodataPreview.notice));
+    }
+  } catch (error) {
+    currentMicrodataPreview = null;
+    if (els.noticeBox) {
+      els.noticeBox.textContent = error.message;
+      els.noticeBox.classList.add("visible");
     }
   }
-
-  if (app.mode === "msnotifica") {
-    const tier = app.tiers.find(t => quantity <= t.mailboxes) || app.tiers[app.tiers.length - 1];
-    const certFacil = apps["certifacil"].items[0];
-    const billingMode = els.billingSelect.value;
-    mant = tier.maintenance || 0;
-    const mailboxTier = calcLicenciasExtra(
-        quantity,
-        tier.mailboxes,
-        tier.mailboxExtra
-    );
-    const extraUsers = Number(els.extraUsersInput?.value || 0);
-    const extraUsersAnnual = extraUsers * (tier.userExtra || 0);
-    const extraUsersMonthly = extraUsersAnnual / 12;
-    const extraCertUser = Number(uExtra.value);
-    let usExtra = 0;
-    let usCrtExtra = 0;
-
-    if (extraUsers !== 0){
-      usExtra = calcExtraUsers (extraUsers, tier);
-      annual += usExtra;
-    }
-    if (addModl.checked){
-      annual += certFacil.price;
-    }
-    if (extraCertUser !== 0) {
-      usCrtExtra = calcExtraUsers(extraCertUser, certFacil);
-      annual += usCrtExtra;
-    }
-    if (billingMode === "compra") {
-      mant = tier.maintenance || 0;
-      annual += tier.price + mant + mailboxTier;
-      monthly = annual / 12;
-      main = annual;
-      subtitle = `Compra · licencia ${euros(tier.price)} + mantenimiento ${euros(mant)}.`;
-      if (extraUsers !== 0) {
-        subtitle += ` + usuario extra ${euros(usExtra)}`;
-      }
-      if (mailboxTier !== 0) {
-        subtitle += `  + buzones extra ${euros(mailboxTier)}`;
-      }
-      if (addModl.checked){
-        subtitle += ` + certifácil ${euros(certFacil.price)}`;
-      }
-      if (extraCertUser !== 0) {
-        subtitle += ` + usuarios extra certifácil ${euros(usCrtExtra)}`;
-      }
-    }
-    if (billingMode === "saas") {
-      monthly = tier.saas + extraUsersMonthly + mailboxTier;
-      annual = monthly * 12;
-      main = monthly;
-
-      subtitle = `SaaS · cuota mensual ${euros(tier.saas)}.`;
-    }
-    notice = `Se ha usado el tramo de ${tier.mailboxes} buzones.`;
-  }
-
-  if (app.mode === "msgest") {
-    const tierKey = app.tierKey;
-    const tier = app.tiers.find(t => quantity <= t[tierKey]) || app.tiers[app.tiers.length - 1];
-    const value = tier[billing.field] ?? tier[plan];
-    const mantenimiento = billing.field === "price" ? tier["maintenance"] : tier["maintenanceMsConta"];
-    const result = valueToMonthlyAnnual(value, billing.period, billing.period === "unit" ? quantity : 1, mantenimiento);
-    let modExtra = {
-      monthly: 0,
-      annual: 0,
-      main: 0,
-      mante: 0
-    };
-    if (addModl.checked) {
-      modExtra = addModulosGest(quantity);
-      monthly += modExtra.monthly;
-      annual += modExtra.annual;
-      main += modExtra.main;
-      mant += modExtra.mante || 0;
-    }
-    monthly += result.monthly;
-    annual += result.annual;
-    main += result.main + tier.maintenance;
-    mant += result.maintenance;
-    const tierText = tier.label || formatNumber(tier[tierKey]);
-    if (modExtra.main === 0) {
-      subtitle = `${billing.label} · ${tierText} ${app.tierLabel} seleccionadas.`;
-    } else {
-      subtitle = `${billing.label} · ${tierText} ${app.tierLabel} seleccionadas + ${els.selectMdlGest.value} · Precio: ${modExtra.annual} + Mantenimiento: ${modExtra.mante}.`;
-    }
-    notice = quantity > tier[tierKey] && Number.isFinite(tier[tierKey])
-      ? `La tabla llega hasta ${formatNumber(tier[tierKey])} ${app.tierLabel}. Revisa manualmente importes superiores.`
-      : `Se ha usado el tramo de ${tierText} ${app.tierLabel}.`;
-  }
-
-  els.noticeBox.textContent = notice;
-  els.noticeBox.classList.toggle("visible", Boolean(notice));
-  els.mainResult.textContent = euros(main);
-  els.resultSubtitle.textContent = subtitle;
-  els.summaryApp.textContent = app.name;
-  els.summaryPlan.textContent = plan;
-  if (mant > 0) {
-      els.summaryMant.textContent = euros(mant);
-      els.summaryMant.parentElement.classList.remove("hidden");
-  } else {
-      els.summaryMant.parentElement.classList.add("hidden");
-  }
-  els.summaryQuantity.textContent = quantity.toLocaleString("es-ES");
-  els.summaryMonthly.textContent = monthly ? euros(monthly) : "-";
-  els.summaryAnnual.textContent = annual ? euros(annual) : "-";
+  updateMicrodataBudgetTotals();
 }
 
 document.querySelectorAll(".accordion-header").forEach(button => {
@@ -3160,6 +3598,11 @@ generateBudgetBtn.addEventListener("click", async event => {
   event.preventDefault();
   event.stopPropagation();
 
+  if (getActiveBudgetType() === "microdata" && microdataBudgetItems.length === 0) {
+    alert("Añade al menos una aplicación al presupuesto antes de generar el documento.");
+    return;
+  }
+
   clientModal.classList.remove("hidden");
 });
 
@@ -3241,8 +3684,7 @@ async function generateBudgetDocument(budgetData) {
             ? "templates/presupuesto-erp.docx"
             : "templates/presupuesto-microdata.docx";
 
-    const content =
-        await loadDocxTemplate(templatePath);
+    const content = await loadDocxTemplate(templatePath);
 
     const zip = new PizZip(content);
 
@@ -3273,112 +3715,132 @@ function buildBudgetData() {
 }
 
 function buildErpBudgetData() {
-    const familySelect = document.getElementById("erpFamilySelect");
+  const familySelect = document.getElementById("erpFamilySelect");
+  const planSelect = document.getElementById("erpPlanSelect");
+  const extras = buildErpExtrasData();
+  const erpExtraUsers = getErpExtraUsersData();
+  const manualNotes = budgetNotes?.value?.trim() || "";
+  const extraDetails = buildErpExtraDetails();
+  const finalNotes = [manualNotes, extraDetails].filter(Boolean).join("\n\n");
 
-    const planSelect = document.getElementById("erpPlanSelect");
-
-    const extras = buildErpExtrasData();
-
-    return {
-        numPresupuesto: createBudgetNumber(),
-        fecha: formatBudgetDate(new Date()),
-
-        solucion:
-            familySelect?.selectedOptions?.[0]
-                ?.textContent?.trim() || "",
-
-        plan:
-            planSelect?.selectedOptions?.[0]
-                ?.textContent?.trim() || "",
-
-        precioBase: getElementText("erpBasePrice"),
-
-        descuentoBase: formatDiscount(
-            document.getElementById(
-                "erpBaseDiscountType"
-            )?.value || "none",
-            document.getElementById(
-                "erpBaseDiscountValue"
-            )?.value || 0
-        ),
-
-        precioBaseFinal:
-            getElementText("erpBaseFinalPrice"),
-
-        extras,
-
-        tieneExtras: extras.length > 0,
-
-        totalMensual:
-            getElementText("erpTotal"),
-
-        totalAnual:
-            getElementText("erpAnnualTotal"),
-
-        notasAdicionales: budgetNotes.value.trim(),
-    };
+  return {
+      numPresupuesto: createBudgetNumber(),
+      fecha: formatBudgetDate(new Date()),
+      solucion: familySelect?.selectedOptions?.[0] ?.textContent?.trim() || "",
+      plan: planSelect?.selectedOptions?.[0] ?.textContent?.trim() || "",
+      precioBase: getElementText("erpBasePrice"),
+      descuentoBase: formatDiscount(document.getElementById("erpBaseDiscountType")?.value || "none",document.getElementById("erpBaseDiscountValue")?.value || 0),
+      precioBaseFinal: getElementText("erpBaseFinalPrice"),
+      extras,
+      tieneExtras: extras.length > 0,
+      totalMensual: getElementText("erpTotal"),
+      totalAnual: getElementText("erpAnnualTotal"),
+      notasAdicionales: finalNotes,
+      usuariosAdicionales: erpExtraUsers.quantity,
+      costeUsuariosAdicionales: erpExtraUsers.monthlyCost
+  };
 }
 
 function buildErpExtrasData() {
     const extras = [];
-
     document
-        .querySelectorAll(
-            "#erpExtrasList .erp-extra-row"
-        )
-        .forEach(row => {
-            const checkbox = row.querySelector(
-                ".erp-extra-checkbox"
-            );
+      .querySelectorAll("#erpExtrasList .erp-extra-row")
+      .forEach(row => {
+        const checkbox = row.querySelector(".erp-extra-checkbox");
 
-            if (!checkbox?.checked) {
-                return;
-            }
+        if (!checkbox?.checked) {
+            return;
+        }
 
-            const extraKey = row.dataset.extraKey;
-            const extra = erpExtras[extraKey];
+        const extraKey = row.dataset.extraKey;
+        const extra = erpExtras[extraKey];
+        const discountType = row.querySelector(".erp-extra-discount-type")?.value || "none";
+        const discountValue = row.querySelector(".erp-extra-discount-value")?.value || 0;
 
-            const discountType =
-                row.querySelector(
-                    ".erp-extra-discount-type"
-                )?.value || "none";
+        extras.push({
+          nombre:
+              row.querySelector(".erp-extra-description strong")?.textContent?.trim() || extra?.name || "",
+          precioOriginal:
+              row.querySelector(".erp-extra-original-price")?.textContent?.trim() || "",
+          descuento: formatDiscount(discountType, discountValue),
+          precioFinal:
+              row.querySelector(".erp-extra-final-price")?.textContent?.trim() || "",
+          periodicidad:
+              extra?.period === "annual"
+                  ? "Anual"
+                  : "Mensual"
+      });
+    });
 
-            const discountValue =
-                row.querySelector(
-                    ".erp-extra-discount-value"
-                )?.value || 0;
+    const extraUsersData = getErpExtraUsersData();
 
-            extras.push({
-                nombre:
-                    row.querySelector(
-                        ".erp-extra-description strong"
-                    )?.textContent?.trim() ||
-                    extra?.name ||
-                    "",
+    if (extraUsersData.quantity > 0) {
+      const usersLabel = extraUsersData.quantity === 1 ? "1 usuario adicional" : `${extraUsersData.quantity} usuarios adicionales`;
 
-                precioOriginal:
-                    row.querySelector(
-                        ".erp-extra-original-price"
-                    )?.textContent?.trim() || "",
-
-                descuento: formatDiscount(
-                    discountType,
-                    discountValue
-                ),
-
-                precioFinal:
-                    row.querySelector(
-                        ".erp-extra-final-price"
-                    )?.textContent?.trim() || "",
-
-                periodicidad:
-                    extra?.period === "annual"
-                        ? "Anual"
-                        : "Mensual"
-            });
-        });
+      extras.push({
+        nombre: usersLabel,
+        precioOriginal: `${euros(extraUsersData.unitPrice)}/mes`,
+        descuento: "",
+        precioFinal: `${euros(extraUsersData.monthlyCost)}/mes`,
+        periodicidad: "Mensual"
+      });
+    }
 
     return extras;
+}
+
+function buildErpExtraDetails() {
+  const details = [];
+
+  document
+    .querySelectorAll("#erpExtrasList .erp-extra-row")
+    .forEach(row => {
+      const checkbox = row.querySelector(".erp-extra-checkbox");
+
+      if (!checkbox?.checked) {
+        return;
+      }
+
+      const extraKey = row.dataset.extraKey;
+      const extra = erpExtras[extraKey];
+
+      if (!extra) {
+        return;
+      }
+      /*
+       * Los extras fijos ya se entienden por su nombre.
+       * Aquí detallamos especialmente los extras por tramos.
+       */
+      if (extra.type === "tier") {
+        const tierSelect = row.querySelector(".erp-extra-tier-select");
+        const selectedValue = Number(tierSelect?.value || 0);
+        const selectedTier = extra.tiers?.find(tier => Number(tier.value) === selectedValue);
+
+        if (!selectedTier) {
+          return;
+        }
+
+        const formattedQuantity = Number(selectedTier.value).toLocaleString("es-ES");
+        const tierLabel = extra.tierLabel || "";
+
+        details.push(`${extra.name} hasta ${formattedQuantity} ${tierLabel}`.trim());
+      }
+    });
+
+  const extraUsers = getErpExtraUsersData();
+
+  if (extraUsers.quantity > 0) {
+    details.push(extraUsers.quantity === 1 ? "1 usuario adicional" : `${extraUsers.quantity} usuarios adicionales`);
+  }
+
+  if (details.length === 0) {
+    return "";
+  }
+
+  return [
+    "Detalle de extras:",
+    ...details.map(detail => `- ${detail}`)
+  ].join("\n");
 }
 
 function addErpExtraLines(lineas) {
@@ -3398,64 +3860,27 @@ function addErpExtraLines(lineas) {
         const extraData = erpExtras[extraKey];
 
         if (!extraData) {
-            console.warn(
-                "No se encuentra el extra en erpExtras:",
-                extraKey
-            );
-
+            console.warn("No se encuentra el extra en erpExtras:", extraKey);
             return;
         }
 
-        const extraName =
-            row.querySelector(
-                ".erp-extra-description strong"
-            )?.textContent?.trim() ||
-            extraData.name ||
-            extraKey;
-
-        const originalPrice =
-            row.querySelector(
-                ".erp-extra-original-price"
-            )?.textContent?.trim() ||
-            formatErpExtraPrice(extraData);
-
-        const discountType =
-            row.querySelector(
-                ".erp-extra-discount-type"
-            )?.value || "none";
-
-        const discountValue =
-            row.querySelector(
-                ".erp-extra-discount-value"
-            )?.value || "0";
-
-        const finalPrice =
-            row.querySelector(
-                ".erp-extra-final-price"
-            )?.textContent?.trim() ||
-            originalPrice;
-
-        const periodicidad =
-            extraData.period === "annual"
-                ? "A"
-                : "M";
+        const extraName = row.querySelector(".erp-extra-description strong")?.textContent?.trim() || extraData.name || extraKey;
+        const originalPrice = row.querySelector(".erp-extra-original-price")?.textContent?.trim() || formatErpExtraPrice(extraData);
+        const discountType = row.querySelector(".erp-extra-discount-type")?.value || "none";
+        const discountValue = row.querySelector(".erp-extra-discount-value")?.value || "0";
+        const finalPrice = row.querySelector(".erp-extra-final-price")?.textContent?.trim() || originalPrice;
+        const periodicidad = extraData.period === "annual" ? "A" : "M";
 
         lineas.push({
             aplicacion: extraName,
             modalidad: "S",
-
             licenciaImporte: "",
             licenciaDto: "",
             licenciaTotal: "",
-
             mantenimientoFecha: "",
             mantenimientoImporte: originalPrice,
-            mantenimientoDto: formatDiscount(
-                discountType,
-                discountValue
-            ),
+            mantenimientoDto: formatDiscount(discountType, discountValue),
             mantenimientoTotal: finalPrice,
-
             periodicidad,
             cuota: finalPrice
         });
@@ -3506,101 +3931,377 @@ function getSelectedTierPrice(row) {
   );
 }
 
+
+function getMicrodataModalityCode(billingValue, billingPeriod) {
+  if (billingValue === "cloud") {
+    return "C";
+  }
+
+  if (
+    billingValue === "saas" ||
+    billingValue === "monthly" ||
+    billingPeriod === "monthly" ||
+    billingPeriod === "unitMonthly"
+  ) {
+    return "S";
+  }
+
+  return "O";
+}
+
+function getMicrodataPeriodCode(billingPeriod) {
+  if (billingPeriod === "monthly" || billingPeriod === "unitMonthly") {
+    return "M";
+  }
+
+  return "A";
+}
+
+function setMicrodataPreviewValue(id, value) {
+  const element = document.getElementById(id);
+
+  if (element) {
+    element.textContent = value ?? "";
+  }
+}
+
+function updateMicrodataBudgetPreview({
+  app,
+  plan,
+  billing,
+  quantity,
+  maintenance,
+  monthly,
+  annual,
+  main
+}) {
+  const billingValue = els.billingSelect?.value || "";
+  const billingPeriod = billing?.period || "annual";
+  const modality = getMicrodataModalityCode(billingValue, billingPeriod);
+  const period = getMicrodataPeriodCode(billingPeriod);
+  const isMonthly = period === "M";
+
+  const maintenanceAmount = Number(maintenance || 0);
+  const annualAmount = Number(annual || 0);
+  const monthlyAmount = Number(monthly || 0);
+  const licenseAmount = isMonthly
+    ? 0
+    : Math.max(0, annualAmount - maintenanceAmount);
+  const feeAmount = isMonthly
+    ? (monthlyAmount || Number(main || 0))
+    : 0;
+
+  setMicrodataPreviewValue("summaryApp", app?.name || "-");
+  setMicrodataPreviewValue("summaryPlan", plan || "-");
+  setMicrodataPreviewValue("microdataSummaryMode", modality);
+  setMicrodataPreviewValue(
+    "summaryQuantity",
+    Number(quantity || 0).toLocaleString("es-ES")
+  );
+
+  setMicrodataPreviewValue(
+    "microdataLicenseOriginal",
+    licenseAmount > 0 ? euros(licenseAmount) : ""
+  );
+  setMicrodataPreviewValue("microdataLicenseDiscount", "");
+  setMicrodataPreviewValue(
+    "microdataLicenseTotal",
+    licenseAmount > 0 ? euros(licenseAmount) : "-"
+  );
+
+  setMicrodataPreviewValue(
+    "microdataMaintenanceOriginal",
+    maintenanceAmount > 0 ? euros(maintenanceAmount) : ""
+  );
+  setMicrodataPreviewValue("microdataMaintenanceDiscount", "");
+  setMicrodataPreviewValue(
+    "summaryMant",
+    maintenanceAmount > 0 ? euros(maintenanceAmount) : "-"
+  );
+
+  setMicrodataPreviewValue("microdataPeriod", period);
+  setMicrodataPreviewValue(
+    "microdataFeeTotal",
+    feeAmount > 0 ? euros(feeAmount) : "-"
+  );
+
+  setMicrodataPreviewValue(
+    "microdataTotalLicense",
+    licenseAmount > 0 ? euros(licenseAmount) : "0,00 €"
+  );
+  setMicrodataPreviewValue(
+    "microdataTotalMaintenance",
+    maintenanceAmount > 0 ? euros(maintenanceAmount) : "0,00 €"
+  );
+  setMicrodataPreviewValue(
+    "microdataTotal",
+    feeAmount > 0 ? euros(feeAmount) : "0,00 €"
+  );
+}
+
+function buildMicrodataLineDetail({aplicacion, modalidad, periodicidad}) {
+  const parts = [aplicacion];
+
+  if (modalidad && modalidad !== "S") {
+    parts.push(`Modalidad: ${modalidad}`);
+  }
+
+  if (periodicidad) {
+    parts.push(`Periodicidad: ${periodicidad}`);
+  }
+
+  return parts.join(" · ");
+}
+
+function buildMicrodataAutomaticNotes(lineas) {
+  const details = lineas
+    .map(line => line.detalle)
+    .filter(Boolean);
+
+  if (details.length === 0) {
+    return "";
+  }
+
+  return [
+    "Detalle de productos:",
+    ...details.map(detail => `- ${detail}`)
+  ].join("\n");
+}
+
+function getSelectedOptionText(elementId) {
+  const select = document.getElementById(elementId);
+
+  if (!select || select.selectedIndex < 0) {
+    return "";
+  }
+
+  return (
+    select.options[select.selectedIndex]
+      ?.textContent
+      ?.trim() || ""
+  );
+}
+
+function isElementVisible(elementId) {
+  const element = document.getElementById(elementId);
+
+  if (!element) {
+    return false;
+  }
+
+  return (
+    !element.classList.contains("hidden") &&
+    element.offsetParent !== null
+  );
+}
+
+function getPositiveNumber(elementId) {
+  const element = document.getElementById(elementId);
+  const value = Number(element?.value || 0);
+
+  return Number.isFinite(value) && value > 0
+    ? value
+    : 0;
+}
+
+function buildMicrodataDetails() {
+  const details = [];
+  const application = getSelectedOptionText("appSelect");
+  const plan = getSelectedOptionText("planSelect");
+  const quantityLabel = document
+      .getElementById("quantityLabel")
+      ?.textContent
+      ?.trim() || "Cantidad";
+  const quantityInput = document.getElementById("quantityInput");
+  const mailboxSelect = document.getElementById("selectBuzones");
+  const billing = getSelectedOptionText("billingSelect");
+  /*
+   * Producto y plan
+   */
+  if (application) {
+    details.push(
+      plan && plan !== "-"
+        ? `${application} · ${plan}`
+        : application
+    );
+  }
+  /*
+   * Cantidad principal.
+   *
+   * Algunos productos usan quantityInput y otros selectBuzones.
+   */
+  let quantity = "";
+
+  if (mailboxSelect && mailboxSelect.style.display !== "none") {
+    quantity = getSelectedOptionText("selectBuzones");
+  } else if (quantityInput) {
+    quantity = quantityInput.value?.trim() || "";
+  }
+
+  if (quantity) {
+    details.push(`${quantityLabel}: ${quantity}`);
+  }
+  /*
+   * Periodicidad o facturación
+   */
+  if (billing && isElementVisible("billingField")) {
+    details.push(`Facturación: ${billing}`);
+  }
+  /*
+   * Usuarios extra generales
+   */
+  if (isElementVisible("extraUsersLabel")) {
+    const extraUsers = getPositiveNumber("usersInput");
+
+    if (extraUsers > 0) {
+      details.push(
+        extraUsers === 1
+          ? "1 usuario adicional"
+          : `${extraUsers} usuarios adicionales`
+      );
+    }
+  }
+  /*
+   * Módulo extra principal
+   */
+  const addModule = document.getElementById("addModl");
+
+  if (addModule?.checked && isElementVisible("extraMdl")) {
+    const moduleLabel = document
+        .getElementById("modulo")
+        ?.textContent
+        ?.trim() || "";
+
+    details.push(
+      moduleLabel
+        ? `Módulo adicional: ${moduleLabel}`
+        : "Módulo adicional incluido"
+    );
+  }
+  /*
+   * Usuarios extra de CertiF
+   */
+  const certifExtraCheckbox = document.getElementById("userExtra");
+
+  if (certifExtraCheckbox?.checked && isElementVisible("usersCertiFExtra")) {
+    const certifUsers = getPositiveNumber("usersCFExtra");
+
+    if (certifUsers > 0) {
+      details.push(
+        certifUsers === 1
+          ? "CertiF: 1 usuario adicional"
+          : `CertiF: ${certifUsers} usuarios adicionales`
+      );
+    } else {
+      details.push(
+        "CertiF con usuarios adicionales"
+      );
+    }
+  }
+  /*
+   * Módulo seleccionado para Gestión
+   */
+  if (isElementVisible("moduleGestExtra")) {
+    const managementModule = getSelectedOptionText("gestModules");
+
+    if (managementModule) {
+      details.push(`Módulo de Gestión: ${managementModule}`);
+    }
+  }
+  /*
+   * Tarifa variable de Gestión Fiscal
+   */
+  if (isElementVisible("gestFiscal")) {
+    const moduleCompanies = getPositiveNumber("empMdl");
+    const directCompanies = getPositiveNumber("empDrct");
+    const corporateCompanies = getPositiveNumber("empScds");
+
+    if (moduleCompanies > 0) {
+      details.push(`Fiscal · Empresas en módulos: ${moduleCompanies}`);
+    }
+
+    if (directCompanies > 0) {
+      details.push(`Fiscal · Empresas en directa y simplificada: ${directCompanies}`);
+    }
+
+    if (corporateCompanies > 0) {
+      details.push(`Fiscal · Empresas en sociedades: ${corporateCompanies}`);
+    }
+  }
+  /*
+   * Tarifa variable de Gestión Laboral
+   */
+  if (isElementVisible("gestLaboral")) {
+    const companies = getPositiveNumber("porEmp");
+    const workers = getPositiveNumber("porTbj");
+
+    if (companies > 0) {
+      details.push(`Laboral · Empresas: ${companies}`);
+    }
+
+    if (workers > 0) {
+      details.push(`Laboral · Trabajadores: ${workers}`);
+    }
+  }
+
+  return details;
+}
+
+function buildMicrodataAutomaticNotes(details) {
+  if (!Array.isArray(details) || details.length === 0) {
+    return "";
+  }
+
+  return [
+    "Detalle de la configuración:",
+    ...details.map(detail => `- ${detail}`)
+  ].join("\n");
+}
+
+function formatMicrodataDiscount(type, value) {
+  const safeValue = Number(value) || 0;
+  if (!safeValue || type === "none") return "";
+  return type === "percentage" ? `${safeValue}%` : euros(safeValue);
+}
+
 function buildMicrodataBudgetData() {
-  const lineas = [];
+  const lineas = microdataBudgetItems.map(item => ({
+    aplicacion: item.application,
+    modalidad: item.mode || "O",
+    licenciaImporte: item.licenseOriginal > 0 ? euros(item.licenseOriginal) : "",
+    licenciaDto: formatMicrodataDiscount(item.licenseDiscountType, item.licenseDiscountValue),
+    licenciaTotal: item.licenseFinal > 0 ? euros(item.licenseFinal) : "",
+    mantenimientoFecha: "",
+    mantenimientoImporte: item.maintenanceOriginal > 0 ? euros(item.maintenanceOriginal) : "",
+    mantenimientoDto: formatMicrodataDiscount(item.maintenanceDiscountType, item.maintenanceDiscountValue),
+    mantenimientoTotal: item.maintenanceFinal > 0 ? euros(item.maintenanceFinal) : "",
+    periodicidad: item.period || "A",
+    cuota: item.monthlyFeeFinal > 0 ? euros(item.monthlyFeeFinal) : ""
+  }));
 
-  document
-    .querySelectorAll(
-      "#microdataTab .microdata-result-row"
-    )
-    .forEach(row => {
-      const aplicacion =
-        row.querySelector('[data-field="application"]')
-          ?.textContent?.trim() || "";
+  const totals = microdataBudgetItems.reduce((acc, item) => {
+    acc.license += Number(item.licenseFinal) || 0;
+    acc.maintenance += Number(item.maintenanceFinal) || 0;
+    acc.fee += Number(item.monthlyFeeFinal) || 0;
+    return acc;
+  }, { license: 0, maintenance: 0, fee: 0 });
 
-      const modalidad =
-        row.querySelector('[data-field="mode"]')
-          ?.textContent?.trim() || "S";
-
-      const licenciaImporte =
-        row.querySelector('[data-field="license-original"]')
-          ?.textContent?.trim() || "";
-
-      const licenciaDto =
-        row.querySelector('[data-field="license-discount"]')
-          ?.textContent?.trim() || "";
-
-      const licenciaTotal =
-        row.querySelector('[data-field="license-final"]')
-          ?.textContent?.trim() || "";
-
-      const mantenimientoImporte =
-        row.querySelector(
-          '[data-field="maintenance-original"]'
-        )?.textContent?.trim() || "";
-
-      const mantenimientoDto =
-        row.querySelector(
-          '[data-field="maintenance-discount"]'
-        )?.textContent?.trim() || "";
-
-      const mantenimientoTotal =
-        row.querySelector(
-          '[data-field="maintenance-final"]'
-        )?.textContent?.trim() || "";
-
-      const periodicidad =
-        row.querySelector('[data-field="period"]')
-          ?.textContent?.trim() || "";
-
-      const cuota =
-        row.querySelector('[data-field="fee"]')
-          ?.textContent?.trim() || "";
-
-      if (!aplicacion) return;
-
-      lineas.push({
-        aplicacion,
-        modalidad,
-        licenciaImporte,
-        licenciaDto,
-        licenciaTotal,
-        mantenimientoFecha: "",
-        mantenimientoImporte,
-        mantenimientoDto,
-        mantenimientoTotal,
-        periodicidad,
-        cuota
-      });
-    });
-
-  const totalLicencia =
-    document.getElementById("microdataTotalLicense")
-      ?.textContent?.trim() || "";
-
-  const totalMantenimiento =
-    document.getElementById("microdataTotalMaintenance")
-      ?.textContent?.trim() || "";
-
-  const totalCuota =
-    document.getElementById("microdataTotal")
-      ?.textContent?.trim() || "";
+  const details = microdataBudgetItems.map(item => `${item.application} · ${item.plan} · ${item.detail || item.billingLabel}`);
+  const manualNotes = document.getElementById("microdataBudgetNotes")?.value?.trim() || "";
+  const automaticNotes = buildMicrodataAutomaticNotes(details);
+  const finalNotes = [manualNotes, automaticNotes].filter(Boolean).join("\n\n");
 
   return {
     numPresupuesto: createBudgetNumber(),
     fecha: formatBudgetDate(new Date()),
-
     lineas,
-
-    totalLicencia,
-    totalMantenimiento,
-    totalCuota,
-
-    notas: "",
-    infoServicios: lineas
-      .map(line => line.aplicacion)
-      .filter(Boolean)
-      .join("\n")
+    totalLicencia: euros(totals.license),
+    totalMantenimiento: euros(totals.maintenance),
+    totalCuota: euros(totals.fee),
+    notas: finalNotes,
+    notasAdicionales: finalNotes,
+    detalles: details,
+    infoServicios: lineas.map(line => line.aplicacion).filter(Boolean).join("\n")
   };
 }
 
@@ -3693,9 +4394,43 @@ function getDocxErrorMessage(error) {
   );
 }
 
-if (!restoreSession()) {
-    showLogin();
+let applicationInitialized = false;
+
+async function initializeApplicationData() {
+  if (applicationInitialized) {
+    return;
+  }
+
+  try {
+    await loadApplicationCatalog();
+
+    init();
+    initErp();
+    applicationInitialized = true;
+  } catch (error) {
+    console.error("No se ha podido cargar el catálogo:", error);
+    setAccessMessage(loginMessage, "La sesión es correcta, pero no se pudo cargar el catálogo.", "error");
+    clearLocalSession();
+    throw error;
+  }
 }
 
-init();
-initErp();
+async function startApplication() {
+    const hasSession = restoreSession();
+
+    if (!hasSession) {
+        showLogin();
+        return;
+    }
+
+    try {
+        await initializeApplicationData();
+        showApplication();
+
+    } catch (error) {
+        console.error(error);
+        clearLocalSession();
+    }
+}
+
+startApplication();

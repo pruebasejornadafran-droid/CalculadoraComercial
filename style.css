@@ -2647,3 +2647,640 @@ button {
         display: none;
     }
 }
+
+/* Usuarios Extra ERP */
+
+.erp-extra-users-block {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  margin: 24px 0;
+  padding: 20px;
+  background: #f8fafc;
+  border: 1px solid #dbe3ec;
+  border-radius: 14px;
+}
+
+.erp-extra-users-block.hidden {
+  display: none;
+}
+
+.erp-extra-users-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.erp-extra-users-info strong {
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.erp-extra-users-info span {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.erp-extra-users-controls {
+  display: grid;
+  grid-template-columns: auto 90px auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.erp-extra-users-controls label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+#erpExtraUsersInput {
+  width: 90px;
+  padding: 10px 12px;
+  font: inherit;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+}
+
+#erpExtraUsersInput:focus {
+  outline: none;
+  border-color: #64748b;
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.15);
+}
+
+#erpExtraUsersPrice {
+  min-width: 110px;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+
+  color: #0f172a;
+}
+
+@media (max-width: 800px) {
+  .erp-extra-users-block {
+    grid-template-columns: 1fr;
+  }
+
+  .erp-extra-users-controls {
+    grid-template-columns: 1fr;
+  }
+
+  #erpExtraUsersInput {
+    width: 100%;
+  }
+
+  #erpExtraUsersPrice {
+    text-align: left;
+  }
+}
+/* ==================================================
+   MICRODATA - DISEÑO UNIFICADO CON ERP
+================================================== */
+.microdata-calculator {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.microdata-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.microdata-title {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: -0.03em;
+}
+
+.microdata-subtitle {
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+
+.microdata-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(300px, 0.75fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.microdata-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.microdata-side-panel {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+.microdata-config-card,
+.microdata-table-card {
+  overflow: hidden;
+  border: 1px solid #d9e2ef;
+  border-radius: 20px;
+  background: #fff;
+}
+
+.microdata-config-card {
+  padding: 20px;
+}
+
+.microdata-options-grid {
+  align-items: start;
+  margin-bottom: 0;
+}
+
+.microdata-extra-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100%;
+  padding: 14px 16px;
+  border: 1px solid #d9e2ef;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+.microdata-check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-weight: 700;
+}
+
+.microdata-check-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.microdata-table-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 20px;
+  background: var(--text);
+  color: #fff;
+}
+
+.microdata-table-title h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.microdata-table-title span {
+  max-width: 65%;
+  color: rgba(255,255,255,.78);
+  font-size: 12px;
+  text-align: right;
+}
+
+.microdata-price-table-wrap {
+  overflow-x: auto;
+}
+
+.microdata-price-table {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+}
+
+.microdata-price-table th,
+.microdata-price-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5eaf1;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.microdata-price-table th {
+  color: #64748b;
+  background: #f8fafc;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.microdata-price-table td {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.microdata-result-card {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #111827;
+  color: #fff;
+}
+
+.microdata-result-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-right: 1px solid rgba(255,255,255,.13);
+}
+
+.microdata-result-card > div:last-of-type {
+  border-right: 0;
+}
+
+.microdata-result-card span {
+  color: rgba(255,255,255,.68);
+}
+
+.microdata-result-card strong {
+  font-size: 24px;
+}
+
+#microdataBudgetNotes {
+  width: 100%;
+  min-height: 110px;
+  padding: 12px 14px;
+  border: 1px solid #d7e0db;
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+#microdataBudgetNotes:focus {
+  outline: none;
+  border-color: #38775a;
+  box-shadow: 0 0 0 3px rgba(56,119,90,.12);
+}
+
+@media (max-width: 1050px) {
+  .microdata-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .microdata-side-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .microdata-header,
+  .microdata-table-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .microdata-table-title span {
+    max-width: none;
+    text-align: left;
+  }
+
+  .microdata-totals,
+  .microdata-result-card {
+    grid-template-columns: 1fr;
+  }
+
+  .microdata-totals > div,
+  .microdata-result-card > div {
+    border-right: 0;
+    border-bottom: 1px solid #d9e2ef;
+  }
+}
+
+/* ==================================================
+   MICRODATA - PRESUPUESTO
+================================================== */
+
+.microdata-budget-card{
+    background:#fff;
+    border:1px solid var(--border-color);
+    border-radius:16px;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.microdata-budget-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+}
+
+.microdata-budget-header h3{
+    margin:4px 0;
+}
+
+.microdata-item-count{
+    background:#eef5ff;
+    color:var(--primary-color);
+    padding:8px 14px;
+    border-radius:999px;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+.microdata-empty-state{
+    border:2px dashed #d9e3f2;
+    border-radius:12px;
+    padding:40px;
+    text-align:center;
+    color:#667085;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.microdata-budget-table-wrapper{
+  border:none;
+  border-radius:0;
+  overflow:visible;
+}
+
+.microdata-budget-items{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.microdata-item-main{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+}
+
+.microdata-item-identity{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.microdata-item-plan{
+  color:#667085;
+  font-size:.9rem;
+}
+
+.microdata-item-meta{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.microdata-item-badge{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#eef5ff;
+  color:var(--primary-color);
+  font-size:.78rem;
+  font-weight:600;
+}
+
+.microdata-item-quantity{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#f4f6f8;
+  color:#475467;
+  font-size:.78rem;
+  font-weight:500;
+}
+
+.microdata-item-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-shrink:0;
+}
+
+.microdata-item-action{
+  width:36px;
+  height:36px;
+  border:1px solid var(--border-color);
+  border-radius:9px;
+  background:#fff;
+  color:#475467;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:
+    background .2s ease,
+    border-color .2s ease,
+    color .2s ease;
+}
+
+.microdata-item-action:hover{
+  background:#f4f7fb;
+  border-color:#c8d7eb;
+  color:var(--primary-color);
+}
+
+.microdata-item-action.delete:hover{
+  background:#fff1f1;
+  border-color:#f5baba;
+  color:#c62828;
+}
+
+.microdata-item-values{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:12px;
+  padding-top:14px;
+  border-top:1px solid #edf1f7;
+}
+
+.microdata-item-value{
+  min-width:0;
+  padding:12px 14px;
+  border-radius:10px;
+  background:#f8fafc;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.microdata-item-value span{
+  color:#667085;
+  font-size:.8rem;
+}
+
+.microdata-item-value strong{
+  color:var(--text-color);
+  font-size:1rem;
+  overflow-wrap:anywhere;
+}
+
+.microdata-item-value.is-empty strong{
+  color:#98a2b3;
+  font-weight:500;
+}
+
+.microdata-item-discount{
+  margin-top:4px;
+  color:#667085;
+  font-size:.76rem;
+}
+
+@media (max-width:780px){
+
+  .microdata-item-main{
+    flex-direction:column;
+  }
+
+  .microdata-item-actions{
+    align-self:flex-end;
+  }
+
+  .microdata-item-values{
+    grid-template-columns:1fr;
+  }
+}
+
+.microdata-budget-table-head{
+    display:grid;
+    grid-template-columns:
+        2fr
+        1fr
+        1fr
+        1fr
+        1fr
+        110px;
+
+    background:#f8fafc;
+    font-weight:600;
+    padding:14px 18px;
+    border-bottom:1px solid var(--border-color);
+}
+
+.microdata-budget-table-head span{
+    display:flex;
+    align-items:center;
+}
+
+.microdata-result-row{
+  background:#ffffff;
+  border:1px solid var(--border-color);
+  border-radius:14px;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease;
+}
+
+.microdata-result-row:hover{
+  border-color:#c8d7eb;
+  box-shadow:0 8px 24px rgba(30, 64, 104, .08);
+  transform:translateY(-1px);
+}
+
+.microdata-result-row:last-child{
+    border-bottom:none;
+}
+
+.microdata-row-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+}
+
+.microdata-row-actions button{
+    width:34px;
+    height:34px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#f3f6fb;
+    transition:.2s;
+}
+
+.microdata-row-actions button:hover{
+    background:#dfe9f8;
+}
+
+.microdata-totals{
+    display:flex;
+    justify-content:flex-end;
+    gap:18px;
+    flex-wrap:wrap;
+}
+
+.microdata-totals>div{
+    min-width:180px;
+    padding:16px;
+    background:#f8fafc;
+    border:1px solid var(--border-color);
+    border-radius:12px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.microdata-totals strong{
+    font-size:1.2rem;
+    color:var(--primary-color);
+}
+
+.microdata-totals > div:last-child {
+  border-right: 0;
+}
+
+.microdata-totals span,
+.microdata-result-card span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* ==================================================
+   MICRODATA V2 - CONSTRUCTOR DE PRESUPUESTOS
+================================================== */
+.microdata-budget-card{background:#fff;border:1px solid #d9e2df;border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:18px}
+.microdata-budget-header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.microdata-budget-header h3{margin:3px 0 6px;font-size:20px}.microdata-budget-header p:last-child{margin:0;color:#64748b}
+.microdata-item-count{padding:8px 13px;border-radius:999px;background:#edf4ef;color:var(--text);font-size:13px;font-weight:800;white-space:nowrap}
+.microdata-empty-state{padding:38px 20px;border:2px dashed #d7e0db;border-radius:16px;text-align:center;color:#64748b;display:flex;flex-direction:column;gap:7px}
+.microdata-empty-state strong{color:var(--text)}
+.microdata-budget-table-wrapper{border:0!important;overflow:visible!important}.microdata-budget-items{display:flex;flex-direction:column;gap:14px}
+.microdata-result-row{display:flex!important;flex-direction:column!important;gap:16px!important;padding:18px!important;border:1px solid #d9e2df!important;border-radius:16px!important;background:#fff!important;transition:border-color .2s,box-shadow .2s,transform .2s}
+.microdata-result-row:hover{border-color:#9eb9aa!important;box-shadow:0 10px 28px rgba(6,77,48,.08);transform:translateY(-1px)}
+.microdata-item-main{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}.microdata-item-identity{display:flex;flex-direction:column;gap:5px;min-width:0}.microdata-item-identity h4{margin:0;color:var(--text);font-size:18px}.microdata-item-plan{color:#475569;font-weight:650}.microdata-item-detail{color:#64748b;margin-top:3px}.microdata-item-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}.microdata-item-badge,.microdata-item-quantity{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:750}.microdata-item-badge{background:#edf4ef;color:var(--text)}.microdata-period-badge{background:#fff8cf}.microdata-item-quantity{background:#f1f5f9;color:#475569}
+.microdata-item-actions{display:flex;gap:8px}.microdata-item-action{display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid #d9e2df;border-radius:10px;background:#fff;color:var(--text);font-size:18px}.microdata-item-action:hover{background:#edf4ef}.microdata-item-action.delete:hover{background:#fff0f0;border-color:#efb5b5;color:#a02222}
+.microdata-item-values{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;padding-top:14px;border-top:1px solid #e7ece9}.microdata-item-value{padding:14px;border-radius:13px;background:#f8faf9;display:flex;flex-direction:column;gap:10px}.microdata-item-value.is-empty{opacity:.65}.microdata-amount-heading{display:flex;justify-content:space-between;align-items:center;gap:10px}.microdata-amount-heading span{color:#64748b;font-size:13px;font-weight:700}.microdata-amount-heading strong{color:var(--text);font-size:17px}.microdata-discount-controls{display:grid;grid-template-columns:1fr 108px 86px;gap:8px;align-items:center}.microdata-original-price{color:#64748b;font-size:12px}.microdata-discount-controls select,.microdata-discount-controls input{min-width:0;padding:8px 9px;border-radius:9px;font-size:12px}
+.microdata-budget-totals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding-top:4px}.microdata-total-chip{padding:14px;border:1px solid #d9e2df;border-radius:14px;background:#f8faf9;display:flex;flex-direction:column;gap:5px}.microdata-total-chip span{color:#64748b;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}.microdata-total-chip strong{color:var(--text);font-size:18px}
+.microdata-builder-actions{display:flex;gap:10px;align-items:center}.microdata-add-button{background:var(--text);color:#fff;border-radius:14px;padding:13px 18px}.microdata-cancel-edit{border:1px solid #d9e2df;border-radius:14px;background:#fff;color:var(--text)}
+#microdataBudgetNotes{width:100%;min-height:110px;padding:12px 14px;font:inherit;line-height:1.5;resize:vertical;border:1px solid #d7e0db;border-radius:10px;background:#fff}
+.microdata-result-card{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:hidden;border-radius:20px;background:#0e4e29;color:#fff}.microdata-result-card>div{display:flex;flex-direction:column;gap:7px;padding:18px 20px;border-right:1px solid rgba(255,255,255,.15)}.microdata-result-card>div:last-of-type{border-right:0}.microdata-result-card span{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.72)}.microdata-result-card strong{font-size:24px}
+@media(max-width:980px){.microdata-budget-totals{grid-template-columns:repeat(2,minmax(0,1fr))}.microdata-item-values{grid-template-columns:1fr!important}.microdata-discount-controls{grid-template-columns:1fr 110px 90px}}
+@media(max-width:640px){.microdata-budget-header,.microdata-item-main{flex-direction:column}.microdata-item-actions{align-self:flex-end}.microdata-budget-totals,.microdata-result-card{grid-template-columns:1fr}.microdata-result-card>div{border-right:0;border-bottom:1px solid rgba(255,255,255,.15)}.microdata-result-card>div:last-of-type{border-bottom:0}.microdata-discount-controls{grid-template-columns:1fr}.microdata-builder-actions{flex-direction:column;align-items:stretch}}
