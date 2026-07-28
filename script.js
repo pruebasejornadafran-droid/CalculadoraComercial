@@ -5,6 +5,7 @@
 let microdataBudgetItems = [];
 
 let microdataEditingItemId = null;
+let microdataOpenItemId = null;
 let currentMicrodataPreview = null;
 
 let apps = {
@@ -2503,6 +2504,7 @@ function addCurrentMicrodataItem() {
     const index = microdataBudgetItems.findIndex(current => current.id === item.id);
     if (index >= 0) microdataBudgetItems[index] = item;
     else microdataBudgetItems.push(item);
+    microdataOpenItemId = item.id;
     resetMicrodataEditMode();
     renderMicrodataBudget();
   } catch (error) {
@@ -2862,41 +2864,80 @@ function renderErpExtras(plan) {
 
 function renderMicrodataBudget() {
   if (!els.microdataBudgetItems || !els.microdataEmptyState || !els.microdataBudgetTableWrapper) return;
+
   const hasItems = microdataBudgetItems.length > 0;
+
+  if (microdataOpenItemId && !microdataBudgetItems.some(item => item.id === microdataOpenItemId)) {
+    microdataOpenItemId = null;
+  }
+
   els.microdataEmptyState.classList.toggle("hidden", hasItems);
   els.microdataBudgetTableWrapper.classList.toggle("hidden", !hasItems);
+
   if (els.microdataItemCount) {
     const count = microdataBudgetItems.length;
     els.microdataItemCount.textContent = `${count} ${count === 1 ? "aplicación" : "aplicaciones"}`;
   }
+
   els.microdataBudgetItems.innerHTML = microdataBudgetItems.map(renderMicrodataBudgetItem).join("");
   updateMicrodataBudgetTotals();
 }
 
+function getMicrodataItemSummary(item) {
+  const license = Number(item.licenseFinal) || 0;
+  const maintenance = Number(item.maintenanceFinal) || 0;
+  const fee = Number(item.monthlyFeeFinal) || 0;
+  const parts = [];
+
+  if (license > 0) parts.push(euros(license));
+  if (maintenance > 0) parts.push(`${euros(maintenance)} mant.`);
+  if (fee > 0) parts.push(`${euros(fee)}/${item.period === "M" ? "mes" : "año"}`);
+
+  return parts.length ? parts.join(" + ") : "Sin importe";
+}
+
 function renderMicrodataBudgetItem(item) {
-  const quantityText = item.quantity > 1 ? `${item.quantityLabel}: ${item.quantity.toLocaleString("es-ES")}` : "";
+  const isOpen = microdataOpenItemId === item.id;
+  const quantityText = Number(item.quantity) > 0
+    ? `${item.quantityLabel}: ${Number(item.quantity).toLocaleString("es-ES")}`
+    : "";
+
   return `
-    <article class="microdata-result-row" data-item-id="${escapeHtml(item.id)}">
-      <div class="microdata-item-main">
-        <div class="microdata-item-identity">
-          <h4 data-field="application">${escapeHtml(item.application)}</h4>
-          <span class="microdata-item-plan" data-field="plan">${escapeHtml(item.plan || "Sin plan")}</span>
-          <div class="microdata-item-meta">
+    <article class="microdata-result-row microdata-accordion-item ${isOpen ? "is-open" : ""}" data-item-id="${escapeHtml(item.id)}">
+      <button
+        type="button"
+        class="microdata-accordion-trigger"
+        data-action="toggle"
+        aria-expanded="${isOpen}"
+        aria-controls="microdata-panel-${escapeHtml(item.id)}"
+      >
+        <span class="microdata-accordion-chevron" aria-hidden="true">›</span>
+        <span class="microdata-accordion-summary">
+          <strong data-field="application">${escapeHtml(item.application)}</strong>
+          <small>${escapeHtml(item.plan || "Sin plan")}${quantityText ? ` · ${escapeHtml(quantityText)}` : ""}</small>
+        </span>
+        <span class="microdata-accordion-price">${escapeHtml(getMicrodataItemSummary(item))}</span>
+      </button>
+
+      <div id="microdata-panel-${escapeHtml(item.id)}" class="microdata-accordion-panel" ${isOpen ? "" : "hidden"}>
+        <div class="microdata-accordion-details">
+          <div class="microdata-accordion-meta">
             <span class="microdata-item-badge">${escapeHtml(item.billingLabel)}</span>
             <span class="microdata-item-badge microdata-period-badge">${item.period === "M" ? "Mensual" : "Anual"}</span>
-            ${quantityText ? `<span class="microdata-item-quantity">${escapeHtml(quantityText)}</span>` : ""}
           </div>
-          ${item.detail ? `<small class="microdata-item-detail">${escapeHtml(item.detail)}</small>` : ""}
+          ${item.detail ? `<p class="microdata-item-detail">${escapeHtml(item.detail)}</p>` : ""}
         </div>
-        <div class="microdata-item-actions">
-          <button type="button" class="microdata-item-action" data-action="edit" title="Editar" aria-label="Editar ${escapeHtml(item.application)}">✎</button>
-          <button type="button" class="microdata-item-action delete" data-action="delete" title="Eliminar" aria-label="Eliminar ${escapeHtml(item.application)}">×</button>
+
+        <div class="microdata-item-values">
+          ${renderMicrodataAmount(item, "license", "Licencia")}
+          ${renderMicrodataAmount(item, "maintenance", "Mantenimiento")}
+          ${renderMicrodataAmount(item, "monthlyFee", item.period === "M" ? "Cuota mensual" : "Cuota anual")}
         </div>
-      </div>
-      <div class="microdata-item-values">
-        ${renderMicrodataAmount(item, "license", "Licencia")}
-        ${renderMicrodataAmount(item, "maintenance", "Mantenimiento")}
-        ${renderMicrodataAmount(item, "monthlyFee", item.period === "M" ? "Cuota mensual" : "Cuota anual")}
+
+        <div class="microdata-accordion-actions">
+          <button type="button" class="microdata-item-action microdata-edit-action" data-action="edit">✎ Editar</button>
+          <button type="button" class="microdata-item-action delete" data-action="delete">X Eliminar</button>
+        </div>
       </div>
     </article>`;
 }
@@ -2907,6 +2948,7 @@ function renderMicrodataAmount(item, key, label) {
   const type = item[`${key}DiscountType`] || "none";
   const discountValue = Number(item[`${key}DiscountValue`]) || 0;
   const disabled = original <= 0;
+
   return `
     <div class="microdata-item-value ${disabled ? "is-empty" : ""}">
       <div class="microdata-amount-heading">
@@ -2915,13 +2957,21 @@ function renderMicrodataAmount(item, key, label) {
       </div>
       ${disabled ? "" : `
         <div class="microdata-discount-controls">
-          <span class="microdata-original-price">Original: ${euros(original)}</span>
-          <select data-discount-key="${key}" data-discount-part="type" aria-label="Tipo de descuento para ${escapeHtml(label)}">
-            <option value="none" ${type === "none" ? "selected" : ""}>Sin descuento</option>
-            <option value="percentage" ${type === "percentage" ? "selected" : ""}>%</option>
-            <option value="fixed" ${type === "fixed" ? "selected" : ""}>€</option>
-          </select>
-          <input type="number" min="0" step="0.01" value="${discountValue}" data-discount-key="${key}" data-discount-part="value" ${type === "none" ? "disabled" : ""} aria-label="Valor del descuento para ${escapeHtml(label)}">
+          <small class="microdata-original-price">Precio original: ${euros(original)}</small>
+          <div class="microdata-discount-fields">
+            <label class="microdata-discount-field">
+              <span>Descuento</span>
+              <select data-discount-key="${key}" data-discount-part="type" aria-label="Tipo de descuento para ${escapeHtml(label)}">
+                <option value="none" ${type === "none" ? "selected" : ""}>Sin descuento</option>
+                <option value="percentage" ${type === "percentage" ? "selected" : ""}>Porcentaje</option>
+                <option value="fixed" ${type === "fixed" ? "selected" : ""}>Importe fijo</option>
+              </select>
+            </label>
+            <label class="microdata-discount-field microdata-discount-value-field ${type === "none" ? "is-disabled" : ""}">
+              <span>Valor</span>
+              <input type="number" min="0" step="0.01" value="${discountValue}" data-discount-key="${key}" data-discount-part="value" ${type === "none" ? "disabled" : ""} aria-label="Valor del descuento para ${escapeHtml(label)}">
+            </label>
+          </div>
         </div>`}
     </div>`;
 }
@@ -2929,32 +2979,52 @@ function renderMicrodataAmount(item, key, label) {
 function handleMicrodataBudgetClick(event) {
   const actionButton = event.target.closest("[data-action]");
   if (!actionButton) return;
+
   const row = actionButton.closest("[data-item-id]");
   const id = row?.dataset.itemId;
   if (!id) return;
-  if (actionButton.dataset.action === "delete") {
-    microdataBudgetItems = microdataBudgetItems.filter(item => item.id !== id);
-    if (microdataEditingItemId === id) resetMicrodataEditMode();
+
+  const action = actionButton.dataset.action;
+
+  if (action === "toggle") {
+    microdataOpenItemId = microdataOpenItemId === id ? null : id;
     renderMicrodataBudget();
     return;
   }
-  if (actionButton.dataset.action === "edit") editMicrodataItem(id);
+
+  if (action === "delete") {
+    microdataBudgetItems = microdataBudgetItems.filter(item => item.id !== id);
+    if (microdataEditingItemId === id) resetMicrodataEditMode();
+    if (microdataOpenItemId === id) microdataOpenItemId = null;
+    renderMicrodataBudget();
+    return;
+  }
+
+  if (action === "edit") {
+    microdataOpenItemId = id;
+    editMicrodataItem(id);
+  }
 }
 
 function handleMicrodataBudgetChange(event) {
   const control = event.target.closest("[data-discount-key]");
   if (!control) return;
+
   const row = control.closest("[data-item-id]");
   const item = microdataBudgetItems.find(current => current.id === row?.dataset.itemId);
   if (!item) return;
+
   const key = control.dataset.discountKey;
   const part = control.dataset.discountPart;
+
   if (part === "type") {
     item[`${key}DiscountType`] = control.value;
     if (control.value === "none") item[`${key}DiscountValue`] = 0;
   } else {
     item[`${key}DiscountValue`] = Math.max(0, Number(control.value) || 0);
   }
+
+  microdataOpenItemId = item.id;
   recalculateMicrodataItem(item);
   renderMicrodataBudget();
 }
@@ -2962,20 +3032,27 @@ function handleMicrodataBudgetChange(event) {
 function editMicrodataItem(id) {
   const item = microdataBudgetItems.find(current => current.id === id);
   if (!item) return;
+
   microdataEditingItemId = id;
+  microdataOpenItemId = id;
   els.appSelect.value = item.appKey;
   refreshPlans();
   els.planSelect.value = item.plan;
+
   const app = apps[item.appKey];
   const billingIndex = (app.billingOptions || []).findIndex(option => option.value === item.billing);
   if (billingIndex >= 0) els.billingSelect.selectedIndex = billingIndex;
+
   els.quantityInput.value = item.quantity;
   updateExtraFields();
+
   if (els.extraUsersInput) els.extraUsersInput.value = item.configuration?.extraUsers || 0;
   if (addModl) addModl.checked = Boolean(item.configuration?.addModule);
   if (els.selectMdlGest && item.configuration?.module) els.selectMdlGest.value = item.configuration.module;
   if (uExtra) uExtra.value = item.configuration?.certExtraUsers || 0;
+
   calculate();
+
   if (els.addMicrodataItemButton) els.addMicrodataItemButton.textContent = "Guardar cambios";
   els.cancelMicrodataEditButton?.classList.remove("hidden");
   els.appSelect.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -2992,6 +3069,7 @@ function updateMicrodataBudgetTotals() {
 
   const initial = totals.license + totals.maintenance + totals.annualFee;
   const annualEquivalent = initial + totals.monthlyFee * 12;
+
   if (els.microdataTotalLicense) els.microdataTotalLicense.textContent = euros(totals.license);
   if (els.microdataTotalMaintenance) els.microdataTotalMaintenance.textContent = euros(totals.maintenance);
   if (els.microdataTotalMonthlyFee) els.microdataTotalMonthlyFee.textContent = euros(totals.monthlyFee);
@@ -3578,10 +3656,16 @@ tabButtons.forEach(button => {
     tabs.forEach(tab => {
       tab.classList.toggle("active", tab.id === selectedTabId);
     });
+
+    document.getElementById("generateBudgetBtn")?.classList.toggle(
+      "hidden",
+      selectedTabId === "microdata"
+    );
   });
 });
 
 const generateBudgetBtn = document.getElementById("generateBudgetBtn");
+const microdataGenerateBudgetBtn = document.getElementById("microdataGenerateBudgetBtn");
 const clientModal = document.getElementById("clientModal");
 const clientForm = document.getElementById("clientForm");
 const closeClientModal = document.getElementById("closeClientModal");
@@ -3589,6 +3673,7 @@ const cancelClientData = document.getElementById("cancelClientData");
 
 closeClientModal.addEventListener("click", closeClientDataModal);
 cancelClientData.addEventListener("click", closeClientDataModal);
+microdataGenerateBudgetBtn?.addEventListener("click", () => generateBudgetBtn.click());
 
 function closeClientDataModal() {
     clientModal.classList.add("hidden");

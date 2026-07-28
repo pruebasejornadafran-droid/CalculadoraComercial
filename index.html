@@ -225,8 +225,8 @@
                     </div>
                     <button id="infoButton" class="info-button" type="button">Particularidades</button>
                   </div>
-                  <div class="microdata-layout">
-                    <div class="microdata-main">
+                  <div class="microdata-layout microdata-workspace">
+                    <div class="microdata-main microdata-editor">
                       <section class="microdata-config-card">
                         <div class="grid two">
                           <label class="field">
@@ -276,72 +276,11 @@
                         </div>
                         <div class="notice" id="noticeBox"></div>
                         <div class="microdata-builder-actions">
-                          <button type="button" id="addMicrodataItemButton" class="microdata-add-button"><span>＋</span>Añadir al presupuesto</button>
+                          <button type="button" id="addMicrodataItemButton" class="microdata-add-button"><span>＋</span>Añadir aplicación</button>
                           <button type="button" id="cancelMicrodataEditButton" class="microdata-cancel-edit hidden">Cancelar edición</button>
                         </div>
                       </section>
-                      <section class="microdata-budget-card">
-                        <div class="microdata-budget-header">
-                          <div>
-                            <p class="eyebrow">Presupuesto actual</p>
-                            <h3>Aplicaciones añadidas</h3>
-                            <p>Añade todos los programas que formarán parte del presupuesto.</p>
-                          </div>
-                          <span id="microdataItemCount" class="microdata-item-count">0 aplicaciones</span>
-                        </div>
 
-                        <div id="microdataEmptyState" class="microdata-empty-state">
-                          <strong>No has añadido ninguna aplicación</strong>
-                          <span>Configura un producto y pulsa “Añadir al presupuesto”.</span>
-                        </div>
-
-                        <div id="microdataBudgetTableWrapper" class="microdata-budget-table-wrapper hidden">
-                          <div id="microdataBudgetItems" class="microdata-budget-items"></div>
-                        </div>
-
-                        <div class="microdata-budget-totals" aria-live="polite">
-                          <div class="microdata-total-chip">
-                            <span>Licencias</span>
-                            <strong id="microdataTotalLicense">0,00 €</strong>
-                          </div>
-                          <div class="microdata-total-chip">
-                            <span>Mantenimiento</span>
-                            <strong id="microdataTotalMaintenance">0,00 €</strong>
-                          </div>
-                          <div class="microdata-total-chip">
-                            <span>Cuotas mensuales</span>
-                            <strong id="microdataTotalMonthlyFee">0,00 €</strong>
-                          </div>
-                          <div class="microdata-total-chip">
-                            <span>Cuotas anuales</span>
-                            <strong id="microdataTotalAnnualFee">0,00 €</strong>
-                          </div>
-                        </div>
-                      </section>
-
-                      <div class="form-group form-group-full">
-                        <label for="microdataBudgetNotes">Notas adicionales</label>
-                        <textarea id="microdataBudgetNotes" rows="4" placeholder="Añade observaciones, condiciones especiales o información relevante para el presupuesto"></textarea>
-                      </div>
-
-                      <section class="microdata-result-card">
-                        <div>
-                          <span>Total inicial</span>
-                          <strong id="mainResult">0,00 €</strong>
-                        </div>
-                        <div>
-                          <span>Cuota mensual</span>
-                          <strong id="summaryMonthly">0,00 €</strong>
-                        </div>
-                        <div>
-                          <span>Coste anual equivalente</span>
-                          <strong id="summaryAnnual">0,00 €</strong>
-                        </div>
-                        <strong id="microdataTotal" class="hidden">0,00 €</strong>
-                      </section>
-                    </div>
-
-                    <aside class="microdata-side-panel">
                       <div class="accordion hidden" id="trfVrb">
                         <div class="accordion-item hidden" id="gestFiscal">
                           <button class="accordion-header" type="button">Calcula y compara tarifa variable</button>
@@ -372,6 +311,71 @@
                           </div>
                         </div>
                       </div>
+
+                      <div class="form-group form-group-full microdata-notes-card">
+                        <label for="microdataBudgetNotes">Notas adicionales</label>
+                        <textarea id="microdataBudgetNotes" rows="5" placeholder="Añade observaciones, condiciones especiales o información relevante para el presupuesto"></textarea>
+                      </div>
+                    </div>
+
+                    <aside class="microdata-side-panel microdata-budget-sidebar">
+                      <section class="microdata-budget-card">
+                        <div class="microdata-budget-header">
+                          <div>
+                            <p class="eyebrow">Configurador comercial</p>
+                            <h3>Presupuesto</h3>
+                          </div>
+                          <span id="microdataItemCount" class="microdata-item-count">0 aplicaciones</span>
+                        </div>
+
+                        <div id="microdataEmptyState" class="microdata-empty-state">
+                          <strong>No has añadido ninguna aplicación</strong>
+                          <span>Configura un producto y pulsa “Añadir aplicación”.</span>
+                        </div>
+
+                        <div id="microdataBudgetTableWrapper" class="microdata-budget-table-wrapper hidden">
+                          <div id="microdataBudgetItems" class="microdata-budget-items"></div>
+                        </div>
+
+                        <div class="microdata-budget-totals" aria-live="polite">
+                          <div class="microdata-total-chip">
+                            <span>Licencias</span>
+                            <strong id="microdataTotalLicense">0,00 €</strong>
+                          </div>
+                          <div class="microdata-total-chip">
+                            <span>Mantenimiento</span>
+                            <strong id="microdataTotalMaintenance">0,00 €</strong>
+                          </div>
+                          <div class="microdata-total-chip">
+                            <span>Cuotas mensuales</span>
+                            <strong id="microdataTotalMonthlyFee">0,00 €</strong>
+                          </div>
+                          <div class="microdata-total-chip">
+                            <span>Cuotas anuales</span>
+                            <strong id="microdataTotalAnnualFee">0,00 €</strong>
+                          </div>
+                        </div>
+
+                        <section class="microdata-result-card microdata-sidebar-summary">
+                          <div>
+                            <span>Total inicial</span>
+                            <strong id="mainResult">0,00 €</strong>
+                          </div>
+                          <div>
+                            <span>Cuota mensual</span>
+                            <strong id="summaryMonthly">0,00 €</strong>
+                          </div>
+                          <div>
+                            <span>Coste anual equivalente</span>
+                            <strong id="summaryAnnual">0,00 €</strong>
+                          </div>
+                          <strong id="microdataTotal" class="hidden">0,00 €</strong>
+                        </section>
+
+                        <button type="button" id="microdataGenerateBudgetBtn" class="microdata-generate-button">
+                          Generar presupuesto
+                        </button>
+                      </section>
                     </aside>
                   </div>
                 </section>
