@@ -8,791 +8,10 @@ let microdataEditingItemId = null;
 let microdataOpenItemId = null;
 let currentMicrodataPreview = null;
 
-let apps = {
-  ejornada: {
-    name: "ejornada",
-    quantityLabel: "Nº de trabajadores",
-    mode: "workersNumber",
-    tierKey: "workers",
-    tierLabel: "trabajadores",
-    billingOptions: [
-      { value: "annual", label: "Precio anual", field: "annual", period: "annual" }
-    ],
-    plans: ["Módulo Fichajes", "Fichajes + Ausencias", "Módulo Fichajes Mensual", "Fichajes + Ausencias Mensual"],
-    tiers: [
-      { workers: 5, "Módulo Fichajes": 195.00, "Fichajes + Ausencias": 255.00, "Módulo Fichajes Mensual": 19.00, "Fichajes + Ausencias Mensual": 24.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 10, "Módulo Fichajes": 240.00, "Fichajes + Ausencias": 315.00, "Módulo Fichajes Mensual": 22.00, "Fichajes + Ausencias Mensual": 29.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 15, "Módulo Fichajes": 288.00, "Fichajes + Ausencias": 378.00, "Módulo Fichajes Mensual": 27.00, "Fichajes + Ausencias Mensual": 35.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 20, "Módulo Fichajes": 336.00, "Fichajes + Ausencias": 441.00, "Módulo Fichajes Mensual": 31.00, "Fichajes + Ausencias Mensual": 41.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 25, "Módulo Fichajes": 384.00, "Fichajes + Ausencias": 504.00, "Módulo Fichajes Mensual": 36.00, "Fichajes + Ausencias Mensual": 46.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 30, "Módulo Fichajes": 408.00, "Fichajes + Ausencias": 535.50, "Módulo Fichajes Mensual": 38.00, "Fichajes + Ausencias Mensual": 49.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 35, "Módulo Fichajes": 432.00, "Fichajes + Ausencias": 567.00, "Módulo Fichajes Mensual": 40.00, "Fichajes + Ausencias Mensual": 52.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 40, "Módulo Fichajes": 456.00, "Fichajes + Ausencias": 598.50, "Módulo Fichajes Mensual": 42.00, "Fichajes + Ausencias Mensual": 55.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 45, "Módulo Fichajes": 480.00, "Fichajes + Ausencias": 630.00, "Módulo Fichajes Mensual": 44.00, "Fichajes + Ausencias Mensual": 58.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 50, "Módulo Fichajes": 504.00, "Fichajes + Ausencias": 660.00, "Módulo Fichajes Mensual": 46.00, "Fichajes + Ausencias Mensual": 61.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 60, "Módulo Fichajes": 604.80, "Fichajes + Ausencias": 792.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 70, "Módulo Fichajes": 705.60, "Fichajes + Ausencias": 924.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 80, "Módulo Fichajes": 806.40, "Fichajes + Ausencias": 1056.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 90, "Módulo Fichajes": 810.00, "Fichajes + Ausencias": 1080.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 0.00, workerExtraFA: 0.00 },
-      { workers: 100, "Módulo Fichajes": 900.00, "Fichajes + Ausencias": 1200.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 9.00, workerExtraFA: 12.00 },
-      { workers: 200, "Módulo Fichajes": 1680.00, "Fichajes + Ausencias": 2160.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 8.40, workerExtraFA: 10.80 },
-      { workers: 500, "Módulo Fichajes": 3900.00, "Fichajes + Ausencias": 5100.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 7.80, workerExtraFA: 10.20 },
-      { workers: 700, "Módulo Fichajes": 5040.00, "Fichajes + Ausencias": 6720.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 7.20, workerExtraFA: 9.60 },
-      { workers: 1000, "Módulo Fichajes": 6000.00, "Fichajes + Ausencias": 9000.00, "Módulo Fichajes Mensual": 0.00, "Fichajes + Ausencias Mensual": 0.00, workerExtraF: 6.00, workerExtraFA: 9.00 }
-    ]
-  },
+let apps = {};
+let erpPlans = {};
+let erpExtras = {};
 
-  msnotifica: {
-    name: "MsNotifica",
-    quantityLabel: "Nº de buzones",
-    mode: "msnotifica",
-    tierKey: "mailboxes",
-    tierLabel: "buzones",
-    billingOptions: [
-      { value: "compra", label: "Compra" },
-      { value: "saas", label: "SaaS" },
-      { value: "cloud", label: "Cloud" }
-    ],
-    plans: ["Tarifa"],
-    tiers: [
-      { mailboxes: 50, price: 518, maintenance: 441, userExtra: 66, saas: 40, mailboxExtra: 0.24 },
-      { mailboxes: 100, price: 842, maintenance: 537, userExtra: 80, saas: 50, mailboxExtra: 0.24 },
-      { mailboxes: 250, price: 842, maintenance: 1017, userExtra: 150, saas: 90, mailboxExtra: 0.24 },
-      { mailboxes: 500, price: 842, maintenance: 1377, userExtra: 191, saas: 120, mailboxExtra: 0.24 }
-    ]
-  },
-
-  efirma: {
-    name: "efirma GO",
-    quantityLabel: "Nº de documentos al año",
-    mode: "capacityPlan",
-    billingOptions: [
-      { value: "annual", label: "Anual", field: "annual", period: "annual" },
-      { value: "monthly", label: "Mensual", field: "monthly", period: "monthly" }
-    ],
-    plans: ["Personal", "Professional", "Business", "Business Plus", "Concertada"],
-    tiers: [
-      { plan: "Personal", docsYear: 60, users: 1, smsYear: 24, monthly: 10.80, annual: 108.00, extraDocs: 0.0, userExtra: 108.00 },
-      { plan: "Professional", docsYear: 360, users: 3, smsYear: 36, monthly: 22.80, annual: 228.00, extraDocs: 0.0, userExtra: 108.00 },
-      { plan: "Business", docsYear: 1200, users: 5, smsYear: 120, monthly: 34.80, annual: 348.00, extraDocs: 0.0, userExtra: 108.00 },
-      { plan: "Business Plus", docsYear: 3000, users: 8, smsYear: 300, monthly: 68.40, annual: 684.00, extraDocs: 0.0, userExtra: 108.00 },
-      { plan: "Concertada", docsYear: 5000, users: 10, smsYear: 500, monthly: 91.20, annual: 912.00, extraDocs: 0.1824, userExtra: 108.00 },
-      { plan: "Concertada", docsYear: 12500, users: 10, smsYear: 1250, monthly: 218.40, annual: 2184.00, extraDocs: 0.1747, userExtra: 108.00 },
-      { plan: "Concertada", docsYear: 25000, users: 10, smsYear: 2500, monthly: 414.00, annual: 4140.00, extraDocs: 0.1656, userExtra: 108.00 },
-      { plan: "Concertada", docsYear: 50000, users: 30, smsYear: 5000, monthly: 792.00, annual: 7920.00, extraDocs: 0.1584, userExtra: 108.00 },
-      { plan: "Concertada", docsYear: 100000, users: 30, smsYear: 10000, monthly: 1500.00, annual: 15000.00, extraDocs: 0.15, userExtra: 108.00}
-    ]
-  },
-
-  efirma_msnomina: {
-    name: "efirma GO para MsNómina",
-    quantityLabel: "Nº de trabajadores",
-    mode: "rangeBand",
-    plans: ["Coste anual"],
-    billingOptions: [
-      { value: "annual", label: "Coste anual", field: "annual", period: "annual" },
-      { value: "monthly", label: "Coste trabajador/mes", field: "workerMonth", period: "unitMonthly" }
-    ],
-    tiers: [
-      { min: 1, max: 10, workerMonth: 0.617, annual: 88.00 },
-      { min: 11, max: 25, workerMonth: 0.470, annual: 155.00 },
-      { min: 26, max: 50, workerMonth: 0.355, annual: 227.00 },
-      { min: 51, max: 100, workerMonth: 0.241, annual: 303.00 },
-      { min: 101, max: 250, workerMonth: 0.170, annual: 524.00 },
-      { min: 251, max: 500, workerMonth: 0.146, annual: 891.00 },
-      { min: 501, max: 1000, workerMonth: 0.089, annual: 1080.00 },
-      { min: 1001, max: 2000, workerMonth: 0.075, annual: 1823.00 }
-    ]
-  },
-
-  certifacil: {
-    name: "Certifácil",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["Activación licencia"],
-    billingOptions: [{ value: "price", label: "Compra", field: "price", period: "annual" }],
-    items: [
-      { plan: "Activación licencia", price: 50.00, userExtra: 5.00 }
-    ]
-  },
-
-  msnomina: {
-    name: "MsNómina",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["MsNomina PYME", "MsNomina PYME +", "MsNomina hasta 100 trab", "MsNomina", "MsNomina + S.E.A.", "MsNomina solo S.E.A.", "MsNomina gran empresa", "Informes Avanzados de MsNómina"],
-    billingOptions: [
-      { value: "price", label: "Compra", field: "price", period: "annual" },
-      { value: "saas", label: "SaaS 4 usuarios", field: "saas", period: "monthly" }
-    ],
-    items: [
-      { plan: "MsNomina PYME", price: 99.00, maintenance: 419.00 },
-      { plan: "MsNomina PYME +", price: 99.00, maintenance: 630.00 },
-      { plan: "MsNomina hasta 100 trab", price: 912.00, maintenance: 931.00, userExtra: 175.00, saas: 83.00 },
-      { plan: "MsNomina", price: 1392.00, maintenance: 1211.00, userExtra: 227.00, saas: 110.00 },
-      { plan: "MsNomina + S.E.A.", price: 1536.00, maintenance: 1434.00, userExtra: 269.00, saas: 129.00 },
-      { plan: "MsNomina solo S.E.A.", price: 768.00, maintenance: 734.00, userExtra: 138.00, saas: 66.00 },
-      { plan: "MsNomina gran empresa", price: 1872.00, maintenance: 1821.00, saas: 163.00 },
-      { plan: "Informes Avanzados de MsNómina", maintenance: 94.00 }
-    ]
-  },
-
-  mscontrata: {
-    name: "MsContrata",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["Con MsNómina + SEA y Empresas", "Asesor Nóminas 100 y MsNomina", "PYME y Tarifa pago por uso variable"],
-    billingOptions: [{ value: "maintenance", label: "Mant. 4 usuarios", field: "maintenance", period: "annual" }],
-    items: [
-      { plan: "Con MsNómina + SEA y Empresas", maintenance: 304.00 },
-      { plan: "Asesor Nóminas 100 y MsNomina", maintenance: 172.00 },
-      { plan: "PYME y Tarifa pago por uso variable", maintenance: 118.00 }
-    ]
-  },
-
-  msgest: {
-    name: "MsGest",
-    quantityLabel: "Nº de licencias",
-    mode: "msgest",
-    tierKey: "licenses",
-    tierLabel: "licencias",
-    billingOptions: [
-      { value: "price", label: "MsGest", field: "price", period: "annual" },
-      { value: "maintenanceMsConta", label: "MsGest + MsConta", field: "maintenanceMsConta", period: "annual" },
-      { value: "saas", label: "SaaS", field: "saas", period: "monthly" },
-      { value: "saasMsConta", label: "SaaS con MsConta", field: "saasMsConta", period: "monthly" }
-    ],
-    plans: ["Tarifa"],
-    tiers: [
-      { licenses: 1, Tarifa: 400.00, price: 400.00, maintenance: 512.00, maintenanceMsConta: 635.00, saas: 45.00, saasMsConta: 55.00 },
-      { licenses: 2, Tarifa: 760.00, price: 760.00, maintenance: 726.00, maintenanceMsConta: 832.00, saas: 65.00, saasMsConta: 74.00 },
-      { licenses: 3, Tarifa: 1084.00, price: 1084.00, maintenance: 823.00, maintenanceMsConta: 929.00, saas: 75.00, saasMsConta: 84.00 },
-      { licenses: 4, Tarifa: 1376.00, price: 1376.00, maintenance: 921.00, maintenanceMsConta: 1038.00, saas: 85.00, saasMsConta: 95.00 },
-      { licenses: 5, Tarifa: 1638.00, price: 1638.00, maintenance: 1021.00, maintenanceMsConta: 1160.00, saas: 95.00, saasMsConta: 107.00 },
-      { licenses: 6, Tarifa: 1874.00, price: 1874.00, maintenance: 1120.00, maintenanceMsConta: 1298.00, saas: 105.00, saasMsConta: 120.00 },
-      { licenses: 7, Tarifa: 2087.00, price: 2087.00, maintenance: 1218.00, maintenanceMsConta: 1456.00, saas: 115.00, saasMsConta: 134.00 },
-      { licenses: 8, Tarifa: 2278.00, price: 2278.00, maintenance: 1317.00, maintenanceMsConta: 1632.00, saas: 124.00, saasMsConta: 150.00 },
-      { licenses: 9, Tarifa: 2450.00, price: 2450.00, maintenance: 1415.00, maintenanceMsConta: 1836.00, saas: 133.00, saasMsConta: 168.00 },
-      { licenses: 10, Tarifa: 2605.00, price: 2605.00, maintenance: 1515.00, maintenanceMsConta: 2064.00, saas: 143.00, saasMsConta: 188.00 }
-    ]
-  },
-
-  msgest_soluziona: {
-    name: "MsGest Soluziona Básico",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["MsGest Soluziona Básico", "MsGest Sect. + Tesorería", "MsGest Sect. + MsConta", "Módulo Liquidaciones Fiscales"],
-    billingOptions: [
-      { value: "price", label: "Anual", field: "price", period: "annual" },
-      { value: "saas", label: "SaaS 1 usuario", field: "saas", period: "monthly" }
-    ],
-    items: [
-      { plan: "MsGest Soluziona Básico", price: 90.00, maintenance: 198.00, saas: 17.00 },
-      { plan: "MsGest Sect. + Tesorería", price: 340.00, maintenance: 316.00, saas: 28.00 },
-      { plan: "MsGest Sect. + MsConta", price: 580.00, maintenance: 397.00, saas: 37.00 },
-      { plan: "Módulo Liquidaciones Fiscales", price: 180.00, maintenance: 141.00, saas: 13.00 }
-    ]
-  },
-
-  msgest_modulos: {
-    name: "Módulos Activables MsGest",
-    quantityLabel: "Cantidad",
-    mode: "modules",
-    tierKey: "plan",
-    plans: ["Obras", "Trazabilidad", "Fabricación", "Tallas y Colores", "Medidas", "Series", "Envases Avanzado", "TPV", "Partes de Trabajo"],
-    billingOptions: [
-      { value: "price", label: "Anual", field: "price", period: "annual" },
-      { value: "saas", label: "SaaS", field: "saas", period: "monthly" }
-    ],
-    tiers: [
-      { plan: "Obras", price: 450.00, maintenance: 55.00, saas: 7.00 },
-      { plan: "Trazabilidad", price: 450.00, maintenance: 55.00, saas: 7.00 },
-      { plan: "Fabricación", price: 450.00, maintenance: 55.00, saas: 7.00 },
-      { plan: "Tallas y Colores", price: 300.00, maintenance: 37.00, saas: 5.00 },
-      { plan: "Medidas", price: 300.00, maintenance: 37.00, saas: 5.00 },
-      { plan: "Series", price: 250.00, maintenance: 31.00, saas: 4.00 },
-      { plan: "Envases Avanzado", price: 250.00, maintenance: 31.00, saas: 4.00 },
-      { plan: "TPV", price: 350.00, maintenance: 42.00, saas: 6.00 },
-      { plan: "Partes de Trabajo", price: 300.00, maintenance: 37.00, saas: 5.00 }
-    ]
-  },
-
-  msconta: {
-    name: "MsConta",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["MSregistro (Mseos)", "MSconta", "MSconta + Mspci", "Msconta + Mseos + Mspci Asesor", "Módulo Análisis de Balances", "MsSII"],
-    billingOptions: [
-      { value: "price", label: "Compra", field: "price", period: "annual" },
-      { value: "maintenance", label: "Mant. 5 usuarios", field: "maintenance", period: "annual" },
-      { value: "saas", label: "SaaS 5 usuarios", field: "saas", period: "monthly" }
-    ],
-    items: [
-      { plan: "MSregistro (Mseos)", price: 324.00, maintenance: 327.00, userExtra: 49.00, saas: 29.00 },
-      { plan: "MSconta", price: 540.00, maintenance: 360.00, userExtra: 54.00, saas: 33.00 },
-      { plan: "MSconta + Mspci", price: 648.00, maintenance: 501.00, userExtra: 75.00, saas: 46.00 },
-      { plan: "Msconta + Mseos + Mspci Asesor", price: 888.00, maintenance: 997.00, userExtra: 150.00, saas: 89.00 },
-      { plan: "Módulo Análisis de Balances", maintenance: 161.00 },
-      { plan: "MsSII", price: 324.00, maintenance: 452.00, saas: 40.00 }
-    ]
-  },
-
-  msmodelos: {
-    name: "MsModelos",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["MsModelos", "MsModelos + Imp Soc. + Ctas Anuales", "Impuesto Soc. + Ctas. Anuales"],
-    billingOptions: [
-      { value: "price", label: "Compra", field: "price", period: "annual" },
-      { value: "maintenance", label: "Mant. 5 usuarios", field: "maintenance", period: "annual" },
-      { value: "saas", label: "SaaS 5 usuarios", field: "saas", period: "monthly" }
-    ],
-    items: [
-      { plan: "MsModelos", price: 420.00, maintenance: 431.00, userExtra: 65.00, saas: 39.00 },
-      { plan: "MsModelos + Imp Soc. + Ctas Anuales", price: 900.00, maintenance: 778.00, userExtra: 117.00, saas: 70.00 },
-      { plan: "Impuesto Soc. + Ctas. Anuales", price: 660.00, maintenance: 607.00, userExtra: 91.00, saas: 55.00 }
-    ]
-  },
-
-  paquete_fiscal: {
-    name: "Paquete Fiscal",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["Mseos + Msmod + Mspci", "Paquete Fiscal Empresa Sin Sociedades", "Paquete Fiscal Empresa", "Paquete Fiscal 10 Sociedades", "Paquete Fiscal 30 Sociedades", "Paquete Fiscal 60 Sociedades", "Paquete Fiscal Ilimitado"],
-    billingOptions: [
-      { value: "price", label: "Compra", field: "price", period: "annual" },
-      { value: "maintenance", label: "Mant. 5 usuarios", field: "maintenance", period: "annual" },
-      { value: "saas", label: "SaaS 5 usuarios", field: "saas", period: "monthly" }
-    ],
-    items: [
-      { plan: "Mseos + Msmod + Mspci", price: 1038.00, maintenance: 618.00, userExtra: 93.00, saas: 58.00 },
-      { plan: "Paquete Fiscal Empresa Sin Sociedades", price: 864.00, maintenance: 655.00, userExtra: 98.00, saas: 60.00 },
-      { plan: "Paquete Fiscal Empresa", price: 864.00, maintenance: 797.00, userExtra: 120.00, saas: 72.00 },
-      { plan: "Paquete Fiscal 10 Sociedades", price: 1308.00, maintenance: 898.00, userExtra: 135.00, saas: 83.00 },
-      { plan: "Paquete Fiscal 30 Sociedades", price: 1536.00, maintenance: 1327.00, userExtra: 199.00, saas: 120.00 },
-      { plan: "Paquete Fiscal 60 Sociedades", price: 1536.00, maintenance: 1536.00, userExtra: 230.00, saas: 138.00 },
-      { plan: "Paquete Fiscal Ilimitado", price: 1788.00, maintenance: 1929.00, userExtra: 289.00, saas: 172.00 }
-    ]
-  },
-
-  msrenta: {
-    name: "MsRenta",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["MsRenta Multi"],
-    billingOptions: [{ value: "price", label: "Compra", field: "price", period: "annual" } ],
-    items: [{ plan: "MsRenta Multi", price: 740.00, maintenance: 584.00 }]
-  },
-
-  msscan_ocr: {
-    name: "MsScan OCR",
-    quantityLabel: "Nº de documentos",
-    mode: "closestBand",
-    tierKey: "documents",
-    tierLabel: "documentos",
-    billingOptions: [
-      { value: "perDoc", label: "Importe por documento", field: "perDoc", period: "unit" }
-    ],
-    plans: ["Tarifa"],
-    tiers: [
-      { documents: 5000, Tarifa: 450.00, perDoc: 0.09, maintenance: 450.00 },
-      { documents: 10000, Tarifa: 900.00, perDoc: 0.09, maintenance: 900.00 },
-      { documents: 15000, Tarifa: 1350.00, perDoc: 0.09, maintenance: 1350.00 },
-      { documents: 20000, Tarifa: 1400.00, perDoc: 0.07, maintenance: 1400.00 },
-      { documents: 30000, Tarifa: 2100.00, perDoc: 0.07, maintenance: 2100.00 },
-      { documents: 40000, Tarifa: 2400.00, perDoc: 0.06, maintenance: 2400.00 },
-      { documents: 50000, Tarifa: 2500.00, perDoc: 0.05, maintenance: 2500.00 },
-      { documents: 60000, Tarifa: 3000.00, perDoc: 0.05, maintenance: 3000.00 },
-      { documents: 70000, Tarifa: 3500.00, perDoc: 0.05, maintenance: 3500.00 },
-      { documents: Infinity, label: "Ilimitada", Tarifa: 3900.00, maintenance: 3900.00 }
-    ]
-  },
-
-  msbabelia: {
-    name: "MsBabelia",
-    quantityLabel: "Nº de documentos",
-    mode: "closestBand",
-    tierKey: "documents",
-    tierLabel: "documentos",
-    billingOptions: [
-      { value: "amount", label: "Importe", field: "amount", period: "annual" },
-      { value: "maintenance", label: "Mantenimiento por documento", field: "maintenance", period: "unit" }
-    ],
-    plans: ["Tarifa"],
-    tiers: [
-      { documents: 10000, Tarifa: 500.00, maintenance: 0.050, amount: 500.00 },
-      { documents: 25000, Tarifa: 675.00, maintenance: 0.045, amount: 675.00 },
-      { documents: 40000, Tarifa: 600.00, maintenance: 0.040, amount: 600.00 },
-      { documents: 50000, Tarifa: 350.00, maintenance: 0.035, amount: 350.00 }
-    ]
-  },
-
-  pago_uso_fiscal: {
-    name: "Tarifa pago por uso — Gestión Fiscal",
-    quantityLabel: "Nº de empresas",
-    tierKey: "plan",
-    mode: "catalog",
-    plans: ["Emp. Módulos", "Emp. Direct. N. y Simpl", "Empresa Sociedades"],
-    billingOptions: [{ value: "annual", label: "Precio anual", field: "annual", period: "annual" }],
-    items: [
-      { plan: "Emp. Módulos", annual: 12.00 },
-      { plan: "Emp. Direct. N. y Simpl", annual: 24.00 },
-      { plan: "Empresa Sociedades", annual: 36.00 }
-    ]
-  },
-
-  pago_uso_laboral: {
-    name: "Tarifa pago por uso — Gestión Laboral",
-    quantityLabel: "Cantidad",
-    tierKey: "plan",
-    mode: "catalog",
-    plans: ["Por Empresa", "Por Trabajador"],
-    billingOptions: [{ value: "monthly", label: "Precio mes", field: "monthly", period: "monthly" }],
-    items: [
-      { plan: "Por Empresa", monthly: 2.00 },
-      { plan: "Por Trabajador", monthly: 1.00 }
-    ]
-  },
-
-  msexpress_web: {
-    name: "MsExpress + Web",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["Con MsNotifica", "Con MsNomina"],
-    billingOptions: [
-      { value: "maintenance", label: "Mant. 3 usuarios", field: "maintenance", period: "annual" },
-      { value: "saas", label: "SaaS 5 usuarios", field: "saas", period: "monthly" }
-    ],
-    items: [
-      { plan: "Con MsNotifica", maintenance: 126.00, userExtra: 32.00, saas: 11.00 },
-      { plan: "Con MsNomina", maintenance: 256.00, userExtra: 64.00, saas: 21.00 }
-    ]
-  },
-
-  despachos_completos: {
-    name: "Despachos Completos",
-    quantityLabel: "Cantidad",
-    mode: "catalog",
-    plans: ["Despacho Ilimitado", "Despacho Avanzado", "Despacho Emergente"],
-    billingOptions: [{ value: "monthly", label: "Cuota mensual", field: "monthly", period: "monthly" }],
-    items: [
-      { plan: "Despacho Ilimitado", monthly: 399.00 },
-      { plan: "Despacho Avanzado", monthly: 299.00 },
-      { plan: "Despacho Emergente", monthly: 229.00 }
-    ]
-  }
-};
-
-let erpPlans = {
-  despacho: {
-    name: "ERP Despacho",
-    plans: {
-      esencial: {
-        name: "Esencial",
-        price: 159.95,
-        users: 1,
-        maxUsers: 2,
-        features: {
-          "Laboral": "included",
-          "Contabilidad": "included",
-          "Gestión del despacho": "included",
-          "Facturación": "included",
-          "Portal Asesor": "included",
-          "Gestión de expedientes": "optional",
-          "Renta": "optional",
-          "Profiture": "optional",
-          "DiezBank": "1",
-          "Portal del empleado": "optional",
-          "Convenios": "1",
-          "Scan (año)": "optional",
-          "Contasimple": "1",
-          "Soporte online": "included",
-          "Soporte telefónico": "optional",
-          "Soporte prioritario": "unavailable",
-          "Copia de seguridad online": "included",
-          "Socio de Adecla": "included",
-          "Seminarios": "optional",
-          "Contenido legal": "included",
-          "Seguro de responsabilidad civil": "optional",
-          "Gestor documental": "2 GB",
-          "Accountancy Network": "optional",
-          "Empresas conectadas": "50"
-        },
-        extras: [
-            "caseManagement",
-            "rent",
-            "diezScan",
-            "diezBank",
-            "profiture",
-            "employeePortal",
-            "phoneSupport",
-            "prioritySupport",
-            "seminars",
-            "civilLiability",
-            "accountancyNetwork"
-        ]
-      },
-
-      estandar: {
-        name: "Estándar",
-        price: 299.95,
-        users: 3,
-        maxUsers: "Ilimitado",
-        features: {
-          "Laboral": "included",
-          "Contabilidad": "included",
-          "Gestión del despacho": "included",
-          "Facturación": "included",
-          "Portal Asesor": "included",
-          "Gestión de expedientes": "included",
-          "Renta": "optional",
-          "Profiture": "optional",
-          "DiezBank": "5",
-          "Portal del empleado": "5",
-          "Convenios": "5",
-          "Scan (año)": "500 documentos",
-          "Contasimple": "3",
-          "Soporte online": "included",
-          "Soporte telefónico": "included",
-          "Soporte prioritario": "unavailable",
-          "Copia de seguridad online": "included",
-          "Socio de Adecla": "included",
-          "Seminarios": "included",
-          "Contenido legal": "included",
-          "Seguro de responsabilidad civil": "optional",
-          "Gestor documental": "5 GB",
-          "Accountancy Network": "optional",
-          "Empresas conectadas": "300"
-        },
-        extras: [
-          "rent",
-          "diezScan",
-          "diezBank",
-          "profiture",
-          "prioritySupport",
-          "civilLiability",
-          "accountancyNetwork"
-        ]
-      },
-
-      premium: {
-        name: "Premium",
-        price: 369.95,
-        users: 3,
-        maxUsers: "Ilimitado",
-        features: {
-          "Laboral": "included",
-          "Contabilidad": "included",
-          "Gestión del despacho": "included",
-          "Facturación": "included",
-          "Portal Asesor": "included",
-          "Gestión de expedientes": "included",
-          "Renta": "Ilimitado",
-          "Profiture": "included",
-          "DiezBank": "10",
-          "Portal del empleado": "10",
-          "Convenios": "10",
-          "Scan (año)": "1.000 documentos",
-          "Contasimple": "5",
-          "Soporte online": "included",
-          "Soporte telefónico": "included",
-          "Soporte prioritario": "included",
-          "Copia de seguridad online": "included",
-          "Socio de Adecla": "included",
-          "Seminarios": "included",
-          "Contenido legal": "included",
-          "Seguro de responsabilidad civil": "optional",
-          "Gestor documental": "10 GB",
-          "Accountancy Network": "optional",
-          "Empresas conectadas": "Ilimitado"
-        },
-        extras: [
-          "civilLiability",
-          "diezScan",
-          "diezBank",
-          "accountancyNetwork"
-        ]
-      }
-    }
-  },
-
-  fiscal: {
-    name: "ERP Despacho Fiscal",
-    plans: {
-      esencial: {
-        name: "Esencial",
-        price: 129.95,
-        users: 1,
-        maxUsers: 2,
-        features: {
-          "Laboral": "unavailable",
-          "Contabilidad": "included",
-          "Gestión del despacho": "included",
-          "Facturación": "included",
-          "Portal Asesor": "included",
-          "Gestión de expedientes": "optional",
-          "Renta": "optional",
-          "Profiture": "optional",
-          "DiezBank": "1",
-          "Portal del empleado": "unavailable",
-          "Convenios": "unavailable",
-          "Scan (año)": "optional",
-          "Contasimple": "1",
-          "Soporte online": "included",
-          "Soporte telefónico": "optional",
-          "Soporte prioritario": "unavailable",
-          "Copia de seguridad online": "included",
-          "Socio de Adecla": "included",
-          "Seminarios": "optional",
-          "Contenido legal": "optional",
-          "Seguro de responsabilidad civil": "optional",
-          "Gestor documental": "2 GB",
-          "Accountancy Network": "optional",
-          "Empresas conectadas": "50"
-        },
-        extras: [
-          "caseManagement",
-          "rent",
-          "diezScan",
-          "diezBank",
-          "profiture",
-          "phoneSupport",
-          "prioritySupport",
-          "seminars",
-          "legalContent",
-          "civilLiability",
-          "accountancyNetwork"
-        ]
-      },
-
-      estandar: {
-        name: "Estándar",
-        price: 209.95,
-        users: 3,
-        maxUsers: "Ilimitado",
-        features: {
-          "Laboral": "unavailable",
-          "Contabilidad": "included",
-          "Gestión del despacho": "included",
-          "Facturación": "included",
-          "Portal Asesor": "included",
-          "Gestión de expedientes": "included",
-          "Renta": "optional",
-          "Profiture": "optional",
-          "DiezBank": "5",
-          "Portal del empleado": "unavailable",
-          "Convenios": "unavailable",
-          "Scan (año)": "500",
-          "Contasimple": "3",
-          "Soporte online": "included",
-          "Soporte telefónico": "included",
-          "Soporte prioritario": "unavailable",
-          "Copia de seguridad online": "included",
-          "Socio de Adecla": "included",
-          "Seminarios": "included",
-          "Contenido legal": "included",
-          "Seguro de responsabilidad civil": "optional",
-          "Gestor documental": "5 GB",
-          "Accountancy Network": "optional",
-          "Empresas conectadas": "Ilimitado"
-        },
-        extras: [
-          "rent",
-          "diezScan",
-          "diezBank",
-          "profiture",
-          "prioritySupport",
-          "civilLiability",
-          "accountancyNetwork"
-        ]
-      }
-    }
-  },
-
-  laboral: {
-    name: "ERP Despacho Laboral",
-    plans: {
-      estandar: {
-        name: "Estándar",
-        price: 209.95,
-        users: 3,
-        maxUsers: "Ilimitado",
-        features: {
-          "Laboral": "included",
-          "Contabilidad": "unavailable",
-          "Gestión del despacho": "included",
-          "Facturación": "included",
-          "Portal Asesor": "included",
-          "Gestión de expedientes": "included",
-          "Renta": "optional",
-          "Profiture": "optional",
-          "DiezBank": "unavailable",
-          "Portal del empleado": "5",
-          "Convenios": "5",
-          "Scan (año)": "unavailable",
-          "Contasimple": "unavailable",
-          "Soporte online": "included",
-          "Soporte telefónico": "included",
-          "Soporte prioritario": "unavailable",
-          "Copia de seguridad online": "included",
-          "Socio de Adecla": "included",
-          "Seminarios": "included",
-          "Contenido legal": "included",
-          "Seguro de responsabilidad civil": "optional",
-          "Gestor documental": "5 GB",
-          "Accountancy Network": "optional",
-          "Empresas conectadas": "Ilimitado"
-        },
-        extras: [
-          "rent",
-          "diezScan",
-          "diezBank",
-          "profiture",
-          "prioritySupport",
-          "civilLiability",
-          "accountancyNetwork"
-        ]
-      }
-    }
-  }
-};
-
-let erpExtras = {
-    phoneSupport: {
-        name: "Soporte telefónico",
-        price: 29.95,
-        period: "monthly"
-    },
-
-    prioritySupport: {
-        name: "Soporte prioritario",
-        price: 59.95,
-        period: "monthly"
-    },
-
-    profiture: {
-        name: "Profiture",
-        price: 40,
-        period: "monthly"
-    },
-
-    caseManagement: {
-        name: "Gestión de expedientes",
-        price: 29.95,
-        period: "monthly"
-    },
-
-    rent: {
-        name: "Renta",
-        price: 540,
-        period: "annual"
-    },
-
-    employeePortal: {
-        name: "Portal del empleado",
-        price: 14,
-        period: "monthly"
-    },
-
-    diezScan: {
-      name: "DiezScan",
-      type: "tier",
-      period: "monthly",
-      tierLabel: "documentos/año",
-      tiers: [
-        {
-          value: 3000,
-          label: "3.000",
-          monthly: 50,
-          unitPrice: 0.20
-        },
-        {
-          value: 6500,
-          label: "6.500",
-          monthly: 100,
-          unitPrice: 0.18
-        },
-        {
-          value: 10000,
-          label: "10.000",
-          monthly: 150,
-          unitPrice: 0.18
-        },
-        {
-          value: 14000,
-          label: "14.000",
-          monthly: 200,
-          unitPrice: 0.17
-        },
-        {
-          value: 18000,
-          label: "18.000",
-          monthly: 250,
-          unitPrice: 0.17
-        },
-        {
-          value: 24000,
-          label: "24.000",
-          monthly: 300,
-          unitPrice: 0.15
-        },
-        {
-          value: 30000,
-          label: "30.000",
-          monthly: 350,
-          unitPrice: 0.14
-        }
-      ]
-    },
-
-    seminars: {
-        name: "Seminarios",
-        price: 21.95,
-        period: "monthly"
-    },
-
-    legalContent: {
-        name: "Contenido legal",
-        price: 19.95,
-        period: "monthly"
-    },
-
-    civilLiability: {
-        name: "Seguro responsabilidad civil",
-        price: 49.95,
-        period: "monthly"
-    },
-
-    diezBank: {
-      name: "DiezBank",
-      type: "tier",
-      period: "monthly",
-      tierLabel: "conexiones",
-      tiers: [
-        {
-          value: 10,
-          label: "10",
-          monthly: 25
-        },
-        {
-          value: 25,
-          label: "25",
-          monthly: 50
-        },
-        {
-          value: 50,
-          label: "50",
-          monthly: 75
-        }
-      ]
-    },
-
-    accountancyNetwork: {
-        name: "Red de Asesorías",
-        price: 26.95,
-        period: "monthly"
-    }
-};
 const els = {
   appSelect: document.getElementById("appSelect"),
   planSelect: document.getElementById("planSelect"),
@@ -836,18 +55,18 @@ const els = {
   erpExtraUsersInput: document.getElementById("erpExtraUsersInput"),
   erpExtraUsersPrice: document.getElementById("erpExtraUsersPrice"),
   addMicrodataItemButton: document.getElementById("addMicrodataItemButton"),
-cancelMicrodataEditButton: document.getElementById("cancelMicrodataEditButton"),
-microdataBudgetItems: document.getElementById("microdataBudgetItems"),
-microdataEmptyState: document.getElementById("microdataEmptyState"),
-microdataBudgetTableWrapper: document.getElementById("microdataBudgetTableWrapper"),
-microdataItemCount: document.getElementById("microdataItemCount"),
-microdataTotalLicense: document.getElementById("microdataTotalLicense"),
-microdataTotalMaintenance: document.getElementById("microdataTotalMaintenance"),
-microdataTotalMonthlyFee: document.getElementById("microdataTotalMonthlyFee"),
-microdataTotalAnnualFee: document.getElementById("microdataTotalAnnualFee"),
-microdataTotal: document.getElementById("microdataTotal"),
-summaryMonthly: document.getElementById("summaryMonthly"),
-summaryAnnual: document.getElementById("summaryAnnual"),
+  cancelMicrodataEditButton: document.getElementById("cancelMicrodataEditButton"),
+  microdataBudgetItems: document.getElementById("microdataBudgetItems"),
+  microdataEmptyState: document.getElementById("microdataEmptyState"),
+  microdataBudgetTableWrapper: document.getElementById("microdataBudgetTableWrapper"),
+  microdataItemCount: document.getElementById("microdataItemCount"),
+  microdataTotalLicense: document.getElementById("microdataTotalLicense"),
+  microdataTotalMaintenance: document.getElementById("microdataTotalMaintenance"),
+  microdataTotalMonthlyFee: document.getElementById("microdataTotalMonthlyFee"),
+  microdataTotalAnnualFee: document.getElementById("microdataTotalAnnualFee"),
+  microdataTotal: document.getElementById("microdataTotal"),
+  summaryMonthly: document.getElementById("summaryMonthly"),
+  summaryAnnual: document.getElementById("summaryAnnual"),
 };
 
 
@@ -905,7 +124,7 @@ async function loadSimpleCatalog() {
         throw new Error(response?.message || "No se pudo cargar el catálogo.");
     }
 
-    Object.assign(apps, response.apps);
+    apps = response.apps;
 }
 
 async function loadErpCatalog() {
@@ -1391,6 +610,27 @@ function updateLoggedUserIndicator() {
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVZBXBRiJ2TnMmoYyTf-GGc8q6bYGfakYph1oXveLO7met5nLxDLbSgGVHKI70_Ts/exec";
 
 let budgetHistory = [];
+let currentLoadedBudget = null;
+
+const BudgetManager = {
+    clone(value) {
+        return JSON.parse(JSON.stringify(value));
+    },
+
+    replaceMicrodataItems(items) {
+        microdataBudgetItems = this.clone(Array.isArray(items) ? items : []);
+        microdataEditingItemId = null;
+        microdataOpenItemId = microdataBudgetItems.find(
+            item => item.itemType !== "addon" && !item.parentItemId
+        )?.id || null;
+        resetMicrodataEditMode();
+        renderMicrodataBudget();
+    },
+
+    clearLoadedBudget() {
+        currentLoadedBudget = null;
+    }
+};
 
 function showCalculator() {
     calculatorSection.classList.remove("hidden");
@@ -1489,7 +729,7 @@ async function loadApplicationCatalog() {
     throw new Error(response?.message || "No se pudo cargar el catálogo.");
   }
 
-  Object.assign(apps, response.apps);
+  apps = response.apps;
   erpPlans = response.plans;
   erpExtras = response.extras;
 
@@ -1526,6 +766,9 @@ function setDetailText(id, value) {
 }
 
 function openBudgetDetail(budget) {
+    currentLoadedBudget = budget;
+    ensureBudgetDetailActions();
+    updateBudgetDetailActions(budget);
     setDetailText(
         "detailBudgetId",
         getBudgetValue(budget, "ID Presupuesto")
@@ -1614,9 +857,15 @@ function openBudgetDetail(budget) {
         getBudgetValue(budget, "Total Anual")
     );
 
+    const hasExtras = ["sí", "si", "true", "1"].includes(
+        String(budget["Tiene Extras"] || "")
+            .trim()
+            .toLocaleLowerCase("es")
+    );
+
     setDetailText(
         "detailExtras",
-        budget["Tiene Extras"]
+        hasExtras
             ? getBudgetValue(budget, "Extras Añadidos")
             : "Sin extras"
     );
@@ -1642,6 +891,342 @@ function openBudgetDetail(budget) {
     updateStatusStyle(statusElement);
 
     budgetDetailModal.classList.remove("hidden");
+}
+
+
+function ensureBudgetDetailActions() {
+    if (document.getElementById("budgetRecoveryActions")) {
+        return;
+    }
+
+    const modalPanel = budgetDetailModal?.querySelector(".budget-detail-modal");
+
+    if (!modalPanel) {
+        return;
+    }
+
+    const actions = document.createElement("div");
+    actions.id = "budgetRecoveryActions";
+    actions.style.display = "flex";
+    actions.style.flexWrap = "wrap";
+    actions.style.gap = "0.75rem";
+    actions.style.justifyContent = "flex-end";
+    actions.style.marginTop = "1rem";
+
+    actions.innerHTML = `
+        <button type="button" id="openSavedBudgetButton">📂 Abrir presupuesto</button>
+        <button type="button" id="duplicateSavedBudgetButton">📄 Duplicar</button>
+        <button type="button" id="deleteSavedBudgetButton">🗑 Eliminar</button>
+    `;
+
+    modalPanel.appendChild(actions);
+
+    document
+        .getElementById("openSavedBudgetButton")
+        ?.addEventListener("click", () => restoreSelectedBudget("open"));
+
+    document
+        .getElementById("duplicateSavedBudgetButton")
+        ?.addEventListener("click", () => restoreSelectedBudget("duplicate"));
+
+    document
+        .getElementById("deleteSavedBudgetButton")
+        ?.addEventListener("click", deleteSelectedBudget);
+}
+
+function updateBudgetDetailActions(budget) {
+    const hasSnapshot = Boolean(getBudgetSnapshot(budget, false));
+    const openButton = document.getElementById("openSavedBudgetButton");
+    const duplicateButton = document.getElementById("duplicateSavedBudgetButton");
+
+    if (openButton) {
+        openButton.disabled = !hasSnapshot;
+        openButton.title = hasSnapshot
+            ? "Carga el presupuesto en la calculadora"
+            : "Este presupuesto antiguo no contiene datos recuperables";
+    }
+
+    if (duplicateButton) {
+        duplicateButton.disabled = !hasSnapshot;
+        duplicateButton.title = hasSnapshot
+            ? "Carga una copia para crear un presupuesto nuevo"
+            : "Este presupuesto antiguo no contiene datos recuperables";
+    }
+}
+
+function getBudgetSnapshot(budget, throwOnError = true) {
+    const rawData = budget?.["Datos Presupuesto"];
+
+    if (!rawData) {
+        if (throwOnError) {
+            throw new Error(
+                "Este presupuesto es anterior al historial recuperable y no contiene los datos necesarios para abrirlo."
+            );
+        }
+
+        return null;
+    }
+
+    try {
+        const snapshot = typeof rawData === "string"
+            ? JSON.parse(rawData)
+            : rawData;
+
+        if (!snapshot || typeof snapshot !== "object") {
+            throw new Error("El contenido guardado no es válido.");
+        }
+
+        if (!snapshot.calculatorType) {
+            throw new Error("No se ha podido identificar el tipo de calculadora.");
+        }
+
+        return snapshot;
+    } catch (error) {
+        if (throwOnError) {
+            throw new Error(
+                "No se han podido interpretar los datos completos del presupuesto: " +
+                error.message
+            );
+        }
+
+        return null;
+    }
+}
+
+function activateBudgetTab(calculatorType) {
+    const button = Array.from(document.querySelectorAll(".tab-button"))
+        .find(currentButton => currentButton.dataset.tab === calculatorType);
+
+    if (!button) {
+        throw new Error(`No existe la pestaña de calculadora "${calculatorType}".`);
+    }
+
+    button.click();
+}
+
+function restoreClientFormData(customerData = {}) {
+    const fields = {
+        clientName: "clienteNombre",
+        clientTaxId: "clienteCif",
+        clientAddress: "clienteDireccion",
+        clientPostalCode: "clienteCodigoPostal",
+        clientCity: "clientePoblacion",
+        clientProvince: "provincia",
+        clientEmail: "clienteEmail",
+        clientPhone: "clienteTelefono",
+        clientRepresentative: "clienteContacto",
+        clientRepresentativeTaxId: "nifRepres"
+    };
+
+    Object.entries(fields).forEach(([elementId, propertyName]) => {
+        const element = document.getElementById(elementId);
+
+        if (element) {
+            element.value = customerData[propertyName] || "";
+        }
+    });
+}
+
+function restoreMicrodataSnapshot(snapshot) {
+    if (!Array.isArray(snapshot.items)) {
+        throw new Error("El presupuesto guardado no contiene líneas de Microdata.");
+    }
+
+    BudgetManager.replaceMicrodataItems(snapshot.items);
+
+    if (budgetNotesMicrodata) {
+        budgetNotesMicrodata.value = snapshot.editorState?.notes || "";
+    }
+}
+
+function restoreErpExtrasState(savedExtras = []) {
+    const states = Array.isArray(savedExtras) ? savedExtras : [];
+
+    document.querySelectorAll("#erpExtrasList .erp-extra-row").forEach(row => {
+        const state = states.find(item =>
+            item.extraKey === row.dataset.extraKey ||
+            item.nombre === row.querySelector(".erp-extra-description strong")?.textContent?.trim()
+        );
+
+        if (!state) {
+            return;
+        }
+
+        const checkbox = row.querySelector(".erp-extra-checkbox");
+        const tierSelect = row.querySelector(".erp-extra-tier-select");
+        const discountType = row.querySelector(".erp-extra-discount-type");
+        const discountValue = row.querySelector(".erp-extra-discount-value");
+
+        if (checkbox) {
+            checkbox.checked = state.checked !== false;
+            checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        if (tierSelect && state.tierValue !== undefined && state.tierValue !== "") {
+            tierSelect.value = String(state.tierValue);
+        }
+
+        if (discountType) {
+            discountType.value = state.discountType || "none";
+        }
+
+        if (discountValue) {
+            discountValue.value = Number(state.discountValue) || 0;
+        }
+    });
+}
+
+function restoreErpSnapshot(snapshot) {
+    const state = snapshot.erpState || {};
+
+    if (!erpPlans[state.familyKey]?.plans?.[state.planKey]) {
+        throw new Error(
+            "El plan ERP guardado ya no existe en el catálogo actual."
+        );
+    }
+
+    els.erpFamilySelect.value = state.familyKey;
+    refreshErpPlans();
+    els.erpPlanSelect.value = state.planKey;
+    renderErpPlan();
+
+    els.erpBaseDiscountType.value = state.baseDiscountType || "none";
+    els.erpBaseDiscountValue.value = Number(state.baseDiscountValue) || 0;
+    els.erpBaseDiscountValue.disabled = els.erpBaseDiscountType.value === "none";
+    els.erpExtraUsersInput.value = Number(state.extraUsers) || 0;
+
+    restoreErpExtrasState(state.extras);
+
+    if (budgetNotes) {
+        budgetNotes.value = state.notes || "";
+    }
+
+    calculateErpTotal();
+}
+
+function restoreBudgetSnapshot(snapshot) {
+    activateBudgetTab(snapshot.calculatorType);
+
+    if (snapshot.calculatorType === "microdata") {
+        restoreMicrodataSnapshot(snapshot);
+    } else if (snapshot.calculatorType === "erp") {
+        restoreErpSnapshot(snapshot);
+    } else {
+        throw new Error(
+            `El tipo de calculadora "${snapshot.calculatorType}" no está soportado.`
+        );
+    }
+
+    restoreClientFormData(snapshot.customerData || {});
+}
+
+async function restoreSelectedBudget(mode) {
+    try {
+        if (!currentLoadedBudget) {
+            throw new Error("No hay ningún presupuesto seleccionado.");
+        }
+
+        const snapshot = getBudgetSnapshot(currentLoadedBudget);
+        restoreBudgetSnapshot(snapshot);
+
+        currentLoadedBudget = {
+            ...currentLoadedBudget,
+            recoveryMode: mode,
+            sourceBudgetId: currentLoadedBudget["ID Presupuesto"] || ""
+        };
+
+        closeBudgetDetail();
+        showCalculator();
+
+        const actionText = mode === "duplicate"
+            ? "Copia cargada. Al generar se guardará con un número nuevo."
+            : "Presupuesto cargado. Los cambios se guardarán como una nueva versión al generar.";
+
+        alert(actionText);
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    }
+}
+
+async function deleteSelectedBudget() {
+    if (!currentLoadedBudget) {
+        return;
+    }
+
+    const budgetId = currentLoadedBudget["ID Presupuesto"];
+
+    if (!budgetId) {
+        alert("El presupuesto seleccionado no tiene identificador.");
+        return;
+    }
+
+    const confirmed = window.confirm(
+        `¿Eliminar definitivamente el presupuesto ${budgetId}? Esta acción no se puede deshacer.`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const deleteButton = document.getElementById("deleteSavedBudgetButton");
+
+    if (deleteButton) {
+        deleteButton.disabled = true;
+    }
+
+    try {
+        const response = await jsonpRequest("delete", {
+            token: currentSession.token,
+            id: budgetId
+        });
+
+        if (!response?.success) {
+            throw new Error(response?.message || "No se ha podido eliminar el presupuesto.");
+        }
+
+        budgetHistory = budgetHistory.filter(
+            budget => String(budget["ID Presupuesto"]) !== String(budgetId)
+        );
+
+        closeBudgetDetail();
+        currentLoadedBudget = null;
+        applyHistoryFilters();
+        setHistoryMessage(`Presupuesto ${budgetId} eliminado.`, "success");
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    } finally {
+        if (deleteButton) {
+            deleteButton.disabled = false;
+        }
+    }
+}
+
+function postBudgetAction(action, parameters = {}) {
+    if (!currentSession?.token) {
+        return Promise.reject(new Error("Debes iniciar sesión."));
+    }
+
+    return fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify({
+            action,
+            token: currentSession.token,
+            ...parameters
+        })
+    }).then(async response => {
+        const text = await response.text();
+
+        try {
+            return JSON.parse(text);
+        } catch (error) {
+            throw new Error("Apps Script no ha devuelto una respuesta válida.");
+        }
+    });
 }
 
 function closeBudgetDetail() {
@@ -2421,11 +2006,8 @@ function getMicrodataSelectionCalculation() {
     const mailboxExtra = calcLicenciasExtra(quantity, tier.mailboxes, tier.mailboxExtra);
     const extraUsers = Math.max(0, Number(els.extraUsersInput?.value) || 0);
     const extraUsersAnnual = extraUsers * (Number(tier.userExtra) || 0);
-    const certifacil = apps.certifacil?.items?.[0] || {};
-    const certUsers = Math.max(0, Number(uExtra?.value) || 0);
-    const certExtra = certUsers * (Number(certifacil.userExtra) || 0);
     if (billing.value === "compra") {
-      license = (Number(tier.price) || 0) + mailboxExtra + extraUsersAnnual + (addModl?.checked ? Number(certifacil.price) || 0 : 0) + certExtra;
+      license = (Number(tier.price) || 0) + mailboxExtra + extraUsersAnnual;
       maintenance = Number(tier.maintenance) || 0;
       period = "A";
     } else {
@@ -2446,15 +2028,7 @@ function getMicrodataSelectionCalculation() {
       fee = selectedValue;
       period = "M";
     }
-    if (addModl?.checked) {
-      const moduleResult = addModulosGest(quantity);
-      if (period === "M") fee += Number(moduleResult.monthly) || 0;
-      else {
-        license += Number(moduleResult.main) || Number(moduleResult.annual) || 0;
-        maintenance += Number(moduleResult.mante) || 0;
-      }
-    }
-    detail = `${quantity.toLocaleString("es-ES")} licencias${addModl?.checked ? ` · ${els.selectMdlGest.value}` : ""}`;
+    detail = `${quantity.toLocaleString("es-ES")} licencias`;
     notice = `Se ha usado el tramo de ${formatNumber(tier[app.tierKey])} ${app.tierLabel}.`;
   } else {
     throw new Error("El tipo de cálculo de esta aplicación todavía no está soportado.");
@@ -2476,10 +2050,16 @@ function getMicrodataSelectionCalculation() {
 
 function buildCurrentMicrodataItem() {
   const calculation = currentMicrodataPreview || getMicrodataSelectionCalculation();
-  const previous = microdataEditingItemId ? microdataBudgetItems.find(item => item.id === microdataEditingItemId) : null;
+  const previous = microdataEditingItemId
+    ? microdataBudgetItems.find(item => item.id === microdataEditingItemId)
+    : null;
+
   return recalculateMicrodataItem({
     ...calculation,
     id: microdataEditingItemId || createMicrodataItemId(),
+    itemType: "main",
+    parentItemId: null,
+    isBundledItem: false,
     licenseDiscountType: previous?.licenseDiscountType || "none",
     licenseDiscountValue: previous?.licenseDiscountValue || 0,
     maintenanceDiscountType: previous?.maintenanceDiscountType || "none",
@@ -2492,6 +2072,176 @@ function buildCurrentMicrodataItem() {
   });
 }
 
+function createMicrodataRelatedItem(mainItem, data) {
+  const previous = microdataBudgetItems.find(
+    item => item.id === data.id
+  );
+
+  return recalculateMicrodataItem({
+    itemType: "addon",
+    parentItemId: mainItem.id,
+    isBundledItem: true,
+    quantity: 1,
+    quantityLabel: "Cantidad",
+    mode: "O",
+    period: "A",
+    licenseOriginal: 0,
+    maintenanceOriginal: 0,
+    monthlyFeeOriginal: 0,
+    licenseDiscountType: previous?.licenseDiscountType || "none",
+    licenseDiscountValue: previous?.licenseDiscountValue || 0,
+    maintenanceDiscountType: previous?.maintenanceDiscountType || "none",
+    maintenanceDiscountValue: previous?.maintenanceDiscountValue || 0,
+    monthlyFeeDiscountType: previous?.monthlyFeeDiscountType || "none",
+    monthlyFeeDiscountValue: previous?.monthlyFeeDiscountValue || 0,
+    ...data
+  });
+}
+
+function buildMsNotificaRelatedItems(mainItem) {
+  if (!mainItem.configuration?.addModule) {
+    return [];
+  }
+
+  const certifacil = apps.certifacil?.items?.[0] || {};
+  const certUsers = Math.max(
+    0,
+    Number(mainItem.configuration?.certExtraUsers) || 0
+  );
+  const activationPrice = Number(certifacil.price) || 0;
+  const usersPrice = certUsers * (Number(certifacil.userExtra) || 0);
+  const certifacilTotal = activationPrice + usersPrice;
+
+  return [
+    createMicrodataRelatedItem(mainItem, {
+      id: `${mainItem.id}-certifacil`,
+      appKey: "certifacil",
+      application: "Certifácil",
+      plan: "Activación licencia",
+      billing: "price",
+      billingLabel: "Compra",
+      quantity: 1,
+      quantityLabel: "Licencia",
+      mode: "O",
+      period: "A",
+      detail:
+        certUsers > 0
+          ? `Activación · ${certUsers} ${
+              certUsers === 1
+                ? "usuario extra"
+                : "usuarios extra"
+            }`
+          : "Activación de licencia",
+      licenseOriginal: certifacilTotal,
+      maintenanceOriginal: 0,
+      monthlyFeeOriginal: 0
+    })
+  ];
+}
+
+function buildMsGestRelatedItems(mainItem) {
+  if (!mainItem.configuration?.addModule) {
+    return [];
+  }
+
+  const moduleName = mainItem.configuration?.module;
+  const modulesApp = apps.msgest_modulos;
+  const moduleTier = modulesApp?.tiers?.find(
+    tier => tier.plan === moduleName
+  );
+
+  if (!moduleTier) {
+    return [];
+  }
+
+  const licenses = Math.max(1, Number(mainItem.quantity) || 1);
+  const isMonthly = mainItem.period === "M";
+
+  const licenseOriginal = isMonthly
+    ? 0
+    : Number(moduleTier.price) || 0;
+
+  const maintenanceOriginal = isMonthly
+    ? 0
+    : (Number(moduleTier.maintenance) || 0) * licenses;
+
+  const monthlyFeeOriginal = isMonthly
+    ? Number(moduleTier.saas) || 0
+    : 0;
+
+  return [
+    createMicrodataRelatedItem(mainItem, {
+      id: `${mainItem.id}-msgest-module-${String(moduleName)
+        .toLocaleLowerCase("es")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")}`,
+      appKey: "msgest_modulos",
+      application: `Módulo ${moduleName}`,
+      plan: moduleName,
+      billing: isMonthly ? "saas" : "price",
+      billingLabel: isMonthly ? "SaaS" : "Anual",
+      quantity: licenses,
+      quantityLabel: "Licencias",
+      mode: isMonthly ? "S" : "O",
+      period: isMonthly ? "M" : "A",
+      detail: `${moduleName} · ${licenses.toLocaleString("es-ES")} ${
+        licenses === 1 ? "licencia" : "licencias"
+      }`,
+      licenseOriginal,
+      maintenanceOriginal,
+      monthlyFeeOriginal
+    })
+  ];
+}
+
+function buildMicrodataRelatedItems(mainItem) {
+  const relatedItemBuilders = {
+    msnotifica: buildMsNotificaRelatedItems,
+    msgest: buildMsGestRelatedItems
+  };
+
+  const builder = relatedItemBuilders[mainItem.appKey];
+
+  return builder
+    ? builder(mainItem)
+    : [];
+}
+
+function replaceMicrodataItemGroup(mainItem, relatedItems = []) {
+  const previousMainIndex = microdataBudgetItems.findIndex(
+    item => item.id === mainItem.id
+  );
+
+  microdataBudgetItems = microdataBudgetItems.filter(
+    item =>
+      item.id !== mainItem.id &&
+      item.parentItemId !== mainItem.id
+  );
+
+  const normalizedRelatedItems = relatedItems.map(item => ({
+    ...item,
+    itemType: "addon",
+    parentItemId: mainItem.id,
+    isBundledItem: true
+  }));
+
+  const group = [
+    {
+      ...mainItem,
+      itemType: "main",
+      parentItemId: null,
+      isBundledItem: false
+    },
+    ...normalizedRelatedItems
+  ];
+
+  const insertionIndex = previousMainIndex >= 0
+    ? Math.min(previousMainIndex, microdataBudgetItems.length)
+    : microdataBudgetItems.length;
+
+  microdataBudgetItems.splice(insertionIndex, 0, ...group);
+}
+
 function resetMicrodataEditMode() {
   microdataEditingItemId = null;
   if (els.addMicrodataItemButton) els.addMicrodataItemButton.innerHTML = "<span>＋</span>Añadir al presupuesto";
@@ -2500,13 +2250,15 @@ function resetMicrodataEditMode() {
 
 function addCurrentMicrodataItem() {
   try {
-    const item = buildCurrentMicrodataItem();
-    const index = microdataBudgetItems.findIndex(current => current.id === item.id);
-    if (index >= 0) microdataBudgetItems[index] = item;
-    else microdataBudgetItems.push(item);
-    microdataOpenItemId = item.id;
+    const mainItem = buildCurrentMicrodataItem();
+    const relatedItems = buildMicrodataRelatedItems(mainItem);
+
+    replaceMicrodataItemGroup(mainItem, relatedItems);
+
+    microdataOpenItemId = mainItem.id;
     resetMicrodataEditMode();
     renderMicrodataBudget();
+
   } catch (error) {
     console.error(error);
     alert(error.message);
@@ -2514,14 +2266,19 @@ function addCurrentMicrodataItem() {
 }
 
 function init() {
-  Object.entries(apps).forEach(([key, app]) => {
-    const option = document.createElement("option");
-    if (key !== "msgest_modulos" && key !== "pago_uso_fiscal" && key !== "pago_uso_laboral") {
+  els.appSelect.innerHTML = "";
+
+  Object.entries(apps)
+    .filter(([, app]) => (app.type || "main") === "main")
+    .sort(([, first], [, second]) =>
+      Number(first.order || 0) - Number(second.order || 0)
+    )
+    .forEach(([key, app]) => {
+      const option = document.createElement("option");
       option.value = key;
       option.textContent = app.name;
       els.appSelect.appendChild(option);
-    }
-  });
+    });
 
   els.appSelect.addEventListener("change", () => {
     refreshPlans();
@@ -2531,6 +2288,7 @@ function init() {
   els.planSelect.addEventListener("change", calculate);
   els.quantityInput.addEventListener("input", calculate);
   els.billingSelect.addEventListener("change", calculate);
+  els.extraUsersInput.addEventListener("input", calculate);
   els.extraUsersInput.addEventListener("change", calculate);
   els.selectBuzones.addEventListener("change", cambiarBuzonesMsNotifica);
   els.porEmp.addEventListener("change", calcularTrfVariable);
@@ -2543,6 +2301,13 @@ function init() {
   els.cancelMicrodataEditButton?.addEventListener("click", resetMicrodataEditMode);
   els.microdataBudgetItems?.addEventListener("click", handleMicrodataBudgetClick);
   els.microdataBudgetItems?.addEventListener("change", handleMicrodataBudgetChange);
+  addModl?.addEventListener("change", calculate);
+  usersExtra?.addEventListener("change", () => {
+    uExtra?.classList.toggle("hidden", !usersExtra.checked);
+    calculate();
+  });
+  uExtra?.addEventListener("input", calculate);
+  uExtra?.addEventListener("change", calculate);
 
   refreshPlans();
   calculate();
@@ -2875,8 +2640,17 @@ function renderMicrodataBudget() {
   els.microdataBudgetTableWrapper.classList.toggle("hidden", !hasItems);
 
   if (els.microdataItemCount) {
-    const count = microdataBudgetItems.length;
-    els.microdataItemCount.textContent = `${count} ${count === 1 ? "aplicación" : "aplicaciones"}`;
+    const mainCount = microdataBudgetItems.filter(
+      item => item.itemType !== "addon" && !item.parentItemId
+    ).length;
+    const addonCount = microdataBudgetItems.length - mainCount;
+
+    const mainText = `${mainCount} ${mainCount === 1 ? "aplicación" : "aplicaciones"}`;
+    const addonText = addonCount > 0
+      ? ` · ${addonCount} ${addonCount === 1 ? "complemento" : "complementos"}`
+      : "";
+
+    els.microdataItemCount.textContent = mainText + addonText;
   }
 
   els.microdataBudgetItems.innerHTML = microdataBudgetItems.map(renderMicrodataBudgetItem).join("");
@@ -2896,14 +2670,29 @@ function getMicrodataItemSummary(item) {
   return parts.length ? parts.join(" + ") : "Sin importe";
 }
 
+function getMicrodataParentItem(item) {
+  if (!item?.parentItemId) {
+    return null;
+  }
+
+  return microdataBudgetItems.find(
+    candidate => candidate.id === item.parentItemId
+  ) || null;
+}
+
 function renderMicrodataBudgetItem(item) {
   const isOpen = microdataOpenItemId === item.id;
+  const isAddon = item.itemType === "addon" || Boolean(item.parentItemId);
+  const parentItem = getMicrodataParentItem(item);
   const quantityText = Number(item.quantity) > 0
     ? `${item.quantityLabel}: ${Number(item.quantity).toLocaleString("es-ES")}`
     : "";
+  const relationshipText = isAddon && parentItem
+    ? `Complemento de ${parentItem.application}`
+    : "";
 
   return `
-    <article class="microdata-result-row microdata-accordion-item ${isOpen ? "is-open" : ""}" data-item-id="${escapeHtml(item.id)}">
+    <article class="microdata-result-row microdata-accordion-item ${isOpen ? "is-open" : ""} ${isAddon ? "is-addon" : "is-main-item"}" data-item-id="${escapeHtml(item.id)}"${isAddon ? ` data-parent-item-id="${escapeHtml(item.parentItemId)}"` : ""}>
       <button
         type="button"
         class="microdata-accordion-trigger"
@@ -2913,8 +2702,8 @@ function renderMicrodataBudgetItem(item) {
       >
         <span class="microdata-accordion-chevron" aria-hidden="true">›</span>
         <span class="microdata-accordion-summary">
-          <strong data-field="application">${escapeHtml(item.application)}</strong>
-          <small>${escapeHtml(item.plan || "Sin plan")}${quantityText ? ` · ${escapeHtml(quantityText)}` : ""}</small>
+          <strong data-field="application">${isAddon ? "↳ " : ""}${escapeHtml(item.application)}</strong>
+          <small>${relationshipText ? `${escapeHtml(relationshipText)} · ` : ""}${escapeHtml(item.plan || "Sin plan")}${quantityText ? ` · ${escapeHtml(quantityText)}` : ""}</small>
         </span>
         <span class="microdata-accordion-price">${escapeHtml(getMicrodataItemSummary(item))}</span>
       </button>
@@ -2922,6 +2711,7 @@ function renderMicrodataBudgetItem(item) {
       <div id="microdata-panel-${escapeHtml(item.id)}" class="microdata-accordion-panel" ${isOpen ? "" : "hidden"}>
         <div class="microdata-accordion-details">
           <div class="microdata-accordion-meta">
+            ${isAddon ? '<span class="microdata-item-badge microdata-addon-badge">Complemento</span>' : ""}
             <span class="microdata-item-badge">${escapeHtml(item.billingLabel)}</span>
             <span class="microdata-item-badge microdata-period-badge">${item.period === "M" ? "Mensual" : "Anual"}</span>
           </div>
@@ -2935,8 +2725,8 @@ function renderMicrodataBudgetItem(item) {
         </div>
 
         <div class="microdata-accordion-actions">
-          <button type="button" class="microdata-item-action microdata-edit-action" data-action="edit">✎ Editar</button>
-          <button type="button" class="microdata-item-action delete" data-action="delete">X Eliminar</button>
+          <button type="button" class="microdata-item-action microdata-edit-action" data-action="edit">${isAddon ? "✎ Configurar aplicación" : "✎ Editar"}</button>
+          ${isAddon ? "" : '<button type="button" class="microdata-item-action delete" data-action="delete">X Eliminar</button>'}
         </div>
       </div>
     </article>`;
@@ -2993,16 +2783,31 @@ function handleMicrodataBudgetClick(event) {
   }
 
   if (action === "delete") {
-    microdataBudgetItems = microdataBudgetItems.filter(item => item.id !== id);
-    if (microdataEditingItemId === id) resetMicrodataEditMode();
-    if (microdataOpenItemId === id) microdataOpenItemId = null;
+    const selectedItem = microdataBudgetItems.find(item => item.id === id);
+    const mainItemId = selectedItem?.parentItemId || id;
+
+    microdataBudgetItems = microdataBudgetItems.filter(
+      item => item.id !== mainItemId && item.parentItemId !== mainItemId
+    );
+
+    if (microdataEditingItemId === mainItemId) resetMicrodataEditMode();
+    if (
+      microdataOpenItemId === mainItemId ||
+      microdataBudgetItems.every(item => item.id !== microdataOpenItemId)
+    ) {
+      microdataOpenItemId = null;
+    }
+
     renderMicrodataBudget();
     return;
   }
 
   if (action === "edit") {
-    microdataOpenItemId = id;
-    editMicrodataItem(id);
+    const selectedItem = microdataBudgetItems.find(item => item.id === id);
+    const editableId = selectedItem?.parentItemId || id;
+
+    microdataOpenItemId = editableId;
+    editMicrodataItem(editableId);
   }
 }
 
@@ -3058,26 +2863,92 @@ function editMicrodataItem(id) {
   els.appSelect.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
-function updateMicrodataBudgetTotals() {
+function getMicrodataBudgetSummary() {
   const totals = microdataBudgetItems.reduce((acc, item) => {
-    acc.license += Number(item.licenseFinal) || 0;
-    acc.maintenance += Number(item.maintenanceFinal) || 0;
-    if (item.period === "M") acc.monthlyFee += Number(item.monthlyFeeFinal) || 0;
-    else acc.annualFee += Number(item.monthlyFeeFinal) || 0;
+    acc.licenseOriginal += Number(item.licenseOriginal) || 0;
+    acc.maintenanceOriginal += Number(item.maintenanceOriginal) || 0;
+    acc.licenseFinal += Number(item.licenseFinal) || 0;
+    acc.maintenanceFinal += Number(item.maintenanceFinal) || 0;
+
+    if (item.period === "M") {
+      acc.monthlyFeeOriginal += Number(item.monthlyFeeOriginal) || 0;
+      acc.monthlyFeeFinal += Number(item.monthlyFeeFinal) || 0;
+    } else {
+      acc.annualFeeOriginal += Number(item.monthlyFeeOriginal) || 0;
+      acc.annualFeeFinal += Number(item.monthlyFeeFinal) || 0;
+    }
+
     return acc;
-  }, { license: 0, maintenance: 0, monthlyFee: 0, annualFee: 0 });
+  }, {
+    licenseOriginal: 0,
+    maintenanceOriginal: 0,
+    monthlyFeeOriginal: 0,
+    annualFeeOriginal: 0,
+    licenseFinal: 0,
+    maintenanceFinal: 0,
+    monthlyFeeFinal: 0,
+    annualFeeFinal: 0
+  });
 
-  const initial = totals.license + totals.maintenance + totals.annualFee;
-  const annualEquivalent = initial + totals.monthlyFee * 12;
+  const mainItems = microdataBudgetItems.filter(
+    item => item.itemType !== "addon" && !item.parentItemId
+  );
 
-  if (els.microdataTotalLicense) els.microdataTotalLicense.textContent = euros(totals.license);
-  if (els.microdataTotalMaintenance) els.microdataTotalMaintenance.textContent = euros(totals.maintenance);
-  if (els.microdataTotalMonthlyFee) els.microdataTotalMonthlyFee.textContent = euros(totals.monthlyFee);
-  if (els.microdataTotalAnnualFee) els.microdataTotalAnnualFee.textContent = euros(totals.annualFee);
-  if (els.microdataTotal) els.microdataTotal.textContent = euros(totals.monthlyFee + totals.annualFee);
-  if (els.mainResult) els.mainResult.textContent = euros(initial);
-  if (els.summaryMonthly) els.summaryMonthly.textContent = euros(totals.monthlyFee);
-  if (els.summaryAnnual) els.summaryAnnual.textContent = euros(annualEquivalent);
+  const addonItems = microdataBudgetItems.filter(
+    item => item.itemType === "addon" || Boolean(item.parentItemId)
+  );
+
+  const uniqueValues = values => [...new Set(values.filter(Boolean))];
+  const applications = uniqueValues(mainItems.map(item => item.application));
+  const plans = uniqueValues(mainItems.map(item => item.plan));
+
+  const initialOriginal =
+    totals.licenseOriginal +
+    totals.maintenanceOriginal +
+    totals.annualFeeOriginal;
+
+  const initialFinal =
+    totals.licenseFinal +
+    totals.maintenanceFinal +
+    totals.annualFeeFinal;
+
+  const annualEquivalent =
+    initialFinal +
+    totals.monthlyFeeFinal * 12;
+
+  const discountCount = microdataBudgetItems.filter(item =>
+    (item.licenseDiscountType !== "none" && Number(item.licenseDiscountValue) > 0) ||
+    (item.maintenanceDiscountType !== "none" && Number(item.maintenanceDiscountValue) > 0) ||
+    (item.monthlyFeeDiscountType !== "none" && Number(item.monthlyFeeDiscountValue) > 0)
+  ).length;
+
+  return {
+    ...totals,
+    initialOriginal,
+    initialFinal,
+    annualEquivalent,
+    applications,
+    plans,
+    solutionLabel: applications.join(" + "),
+    planLabel: plans.join(" · "),
+    addonItems,
+    discountLabel: discountCount > 0
+      ? `${discountCount} ${discountCount === 1 ? "línea con descuento" : "líneas con descuento"}`
+      : ""
+  };
+}
+
+function updateMicrodataBudgetTotals() {
+  const summary = getMicrodataBudgetSummary();
+
+  if (els.microdataTotalLicense) els.microdataTotalLicense.textContent = euros(summary.licenseFinal);
+  if (els.microdataTotalMaintenance) els.microdataTotalMaintenance.textContent = euros(summary.maintenanceFinal);
+  if (els.microdataTotalMonthlyFee) els.microdataTotalMonthlyFee.textContent = euros(summary.monthlyFeeFinal);
+  if (els.microdataTotalAnnualFee) els.microdataTotalAnnualFee.textContent = euros(summary.annualFeeFinal);
+  if (els.microdataTotal) els.microdataTotal.textContent = euros(summary.monthlyFeeFinal + summary.annualFeeFinal);
+  if (els.mainResult) els.mainResult.textContent = euros(summary.initialFinal);
+  if (els.summaryMonthly) els.summaryMonthly.textContent = euros(summary.monthlyFeeFinal);
+  if (els.summaryAnnual) els.summaryAnnual.textContent = euros(summary.annualEquivalent);
 }
 
 function escapeHtml(value = "") {
@@ -3251,7 +3122,7 @@ function cargarSelectBuzones() {
   if (els.selectBuzones.options.length > 0) return;
   els.selectBuzones.innerHTML = "";
 
-  apps.msnotifica.tiers.forEach(tier => {
+  (apps.msnotifica?.tiers || []).forEach(tier => {
     const option = document.createElement("option");
     option.value = tier.mailboxes;
     option.textContent = tier.mailboxes === 500 ? "500 o más" : tier.mailboxes;
@@ -3266,7 +3137,7 @@ function cargarSelectModulos() {
   if (els.selectMdlGest.options.length > 0) return;
   els.selectMdlGest.innerHTML = "";
 
-  apps.msgest_modulos.tiers.forEach(tier => {
+  (apps.msgest_modulos?.tiers || []).forEach(tier => {
     const option = document.createElement("option");
     option.value = tier.plan;
     els.selectMdlGest.appendChild(option);
@@ -3701,10 +3572,17 @@ clientForm.addEventListener("submit", async event => {
             ...buildBudgetData(),
             ...clientData
         };
+
+        budgetData.datosPresupuesto = buildBudgetSnapshot(
+            budgetData,
+            clientData
+        );
+
         console.log("Datos del presupuesto:", budgetData);
         await saveBudgetRecord(budgetData);
         clientModal.classList.add("hidden");
         await generateBudgetDocument(budgetData);
+        BudgetManager.clearLoadedBudget();
     } catch (error) {
         console.error(error);
         alert(
@@ -3729,6 +3607,93 @@ function getClientData() {
         clienteContacto:document.getElementById("clientRepresentative").value.trim(),
         nifRepres:document.getElementById("clientRepresentativeTaxId").value.trim()
     };
+}
+
+function cloneBudgetSnapshotValue(value) {
+    return JSON.parse(JSON.stringify(value));
+}
+
+function buildBudgetSnapshot(budgetData, clientData) {
+    const calculatorType = getActiveBudgetType();
+
+    const snapshot = {
+        schemaVersion: 1,
+        calculatorType,
+        savedAt: new Date().toISOString(),
+        budgetNumber: budgetData.numPresupuesto || "",
+        sourceBudgetId: currentLoadedBudget?.sourceBudgetId || "",
+        recoveryMode: currentLoadedBudget?.recoveryMode || "new",
+        customerData: cloneBudgetSnapshotValue(clientData || {}),
+        documentData: cloneBudgetSnapshotValue({
+            ...budgetData,
+            datosPresupuesto: undefined
+        })
+    };
+
+    if (calculatorType === "microdata") {
+        snapshot.items = cloneBudgetSnapshotValue(
+            microdataBudgetItems
+        );
+
+        snapshot.editorState = {
+            notes:
+                document
+                    .getElementById("microdataBudgetNotes")
+                    ?.value || ""
+        };
+    } else {
+        snapshot.erpState = {
+            familyKey:
+                els.erpFamilySelect?.value || "",
+            planKey:
+                els.erpPlanSelect?.value || "",
+            baseDiscountType:
+                els.erpBaseDiscountType?.value || "none",
+            baseDiscountValue:
+                Number(els.erpBaseDiscountValue?.value) || 0,
+            extraUsers:
+                Number(els.erpExtraUsersInput?.value) || 0,
+            extras:
+                cloneBudgetSnapshotValue(
+                    captureErpEditorExtrasState()
+                ),
+            notes:
+                budgetNotes?.value || ""
+        };
+    }
+
+    return snapshot;
+}
+
+
+function captureErpEditorExtrasState() {
+    return Array.from(
+        document.querySelectorAll("#erpExtrasList .erp-extra-row")
+    )
+        .map(row => {
+            const checkbox = row.querySelector(".erp-extra-checkbox");
+
+            if (!checkbox?.checked) {
+                return null;
+            }
+
+            return {
+                extraKey: row.dataset.extraKey || "",
+                nombre:
+                    row.querySelector(".erp-extra-description strong")
+                        ?.textContent?.trim() || "",
+                checked: true,
+                tierValue:
+                    row.querySelector(".erp-extra-tier-select")?.value || "",
+                discountType:
+                    row.querySelector(".erp-extra-discount-type")?.value || "none",
+                discountValue:
+                    Number(
+                        row.querySelector(".erp-extra-discount-value")?.value
+                    ) || 0
+            };
+        })
+        .filter(Boolean);
 }
 
 function getElementText(id) {
@@ -4364,12 +4329,7 @@ function buildMicrodataBudgetData() {
     cuota: item.monthlyFeeFinal > 0 ? euros(item.monthlyFeeFinal) : ""
   }));
 
-  const totals = microdataBudgetItems.reduce((acc, item) => {
-    acc.license += Number(item.licenseFinal) || 0;
-    acc.maintenance += Number(item.maintenanceFinal) || 0;
-    acc.fee += Number(item.monthlyFeeFinal) || 0;
-    return acc;
-  }, { license: 0, maintenance: 0, fee: 0 });
+  const summary = getMicrodataBudgetSummary();
 
   const details = microdataBudgetItems.map(item => `${item.application} · ${item.plan} · ${item.detail || item.billingLabel}`);
   const manualNotes = document.getElementById("microdataBudgetNotes")?.value?.trim() || "";
@@ -4379,10 +4339,28 @@ function buildMicrodataBudgetData() {
   return {
     numPresupuesto: createBudgetNumber(),
     fecha: formatBudgetDate(new Date()),
+    solucion: summary.solutionLabel,
+    plan: summary.planLabel,
+    precioBase: euros(summary.initialOriginal),
+    descuentoBase: summary.discountLabel,
+    precioBaseFinal: euros(summary.initialFinal),
+    extras: summary.addonItems.map(item => ({
+      nombre: item.application,
+      precioFinal: item.period === "M"
+        ? `${euros(item.monthlyFeeFinal)}/mes`
+        : euros(
+            (Number(item.licenseFinal) || 0) +
+            (Number(item.maintenanceFinal) || 0) +
+            (Number(item.monthlyFeeFinal) || 0)
+          )
+    })),
+    tieneExtras: summary.addonItems.length > 0,
+    totalMensual: euros(summary.monthlyFeeFinal),
+    totalAnual: euros(summary.annualEquivalent),
     lineas,
-    totalLicencia: euros(totals.license),
-    totalMantenimiento: euros(totals.maintenance),
-    totalCuota: euros(totals.fee),
+    totalLicencia: euros(summary.licenseFinal),
+    totalMantenimiento: euros(summary.maintenanceFinal),
+    totalCuota: euros(summary.monthlyFeeFinal + summary.annualFeeFinal),
     notas: finalNotes,
     notasAdicionales: finalNotes,
     detalles: details,
