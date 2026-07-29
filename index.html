@@ -180,6 +180,7 @@
       <nav class="main-navigation" aria-label="Navegación principal">
         <button id="showDashboardButton" class="navigation-button active" data-view="dashboard">Dashboard</button>
         <button id="showCalculatorButton" class="navigation-button" data-view="calculator">Nueva simulación</button>
+        <button id="showCustomersButton" class="navigation-button" data-view="customers">Clientes</button>
         <button id="showHistoryButton" class="navigation-button" data-view="history">Historial</button>
         <button id="showStatisticsButton" class="navigation-button" data-view="statistics">Estadísticas</button>
         <button id="showAdminButton" class="navigation-button hidden" data-view="admin">Administración</button>
@@ -233,6 +234,54 @@
         </section>
       </div>
       <div id="dashboardMessage" class="portal-message" aria-live="polite"></div>
+    </section>
+
+
+    <section id="customersView" class="portal-page hidden">
+      <div class="portal-page-header">
+        <div>
+          <p class="eyebrow">Customer Hub</p>
+          <h1>Clientes</h1>
+          <p class="portal-subtitle">Consulta y gestiona la cartera comercial vinculada a los presupuestos.</p>
+        </div>
+        <div class="portal-header-actions">
+          <button id="newCustomerButton" class="portal-primary-button" type="button">＋ Nuevo cliente</button>
+          <button id="refreshCustomersButton" class="portal-secondary-button" type="button">Actualizar</button>
+        </div>
+      </div>
+
+      <section class="portal-card customers-toolbar-card">
+        <div class="customers-toolbar">
+          <label class="customers-search-field">
+            <span>Buscar clientes</span>
+            <input id="customerSearchInput" type="search" placeholder="Nombre, CIF, email, teléfono o comercial…" autocomplete="off">
+          </label>
+          <label id="customerCommercialFilterWrap" class="customers-filter-field hidden">
+            <span>Comercial</span>
+            <select id="customerCommercialFilter"><option value="">Todos los comerciales</option></select>
+          </label>
+          <label class="customers-filter-field">
+            <span>Estado</span>
+            <select id="customerStatusFilter"><option value="">Todos</option><option value="Activo">Activos</option><option value="Inactivo">Inactivos</option></select>
+          </label>
+        </div>
+      </section>
+
+      <div class="customers-layout">
+        <section class="portal-card customers-list-card">
+          <div class="portal-card-header"><div><h2>Cartera de clientes</h2><p id="customersCountText">0 clientes</p></div></div>
+          <div id="customersList" class="customers-list" aria-live="polite"></div>
+        </section>
+        <aside id="customerDetailPanel" class="portal-card customer-detail-panel">
+          <div id="customerDetailEmpty" class="customer-detail-empty">
+            <div class="customer-detail-empty-icon">🏢</div>
+            <h2>Selecciona un cliente</h2>
+            <p>Consulta sus datos, presupuestos y actividad desde esta ficha.</p>
+          </div>
+          <div id="customerDetailContent" class="hidden"></div>
+        </aside>
+      </div>
+      <div id="customersMessage" class="portal-message" aria-live="polite"></div>
     </section>
 
     <section id="statisticsView" class="portal-page hidden">
@@ -620,10 +669,33 @@
       </section>
     </main>
 
+
+  <div id="customerEditorModal" class="customer-editor-modal hidden" role="dialog" aria-modal="true" aria-labelledby="customerEditorTitle">
+    <div class="customer-editor-card">
+      <button id="closeCustomerEditorButton" type="button" class="client-modal-close" aria-label="Cerrar">×</button>
+      <div class="customer-editor-heading"><p class="eyebrow">Customer Hub</p><h2 id="customerEditorTitle">Nuevo cliente</h2><p id="customerEditorSubtitle">Añade los datos principales del cliente.</p></div>
+      <form id="customerEditorForm" class="customer-editor-form">
+        <input id="customerEditorId" type="hidden">
+        <label class="customer-editor-full"><span>Nombre o razón social *</span><input id="customerEditorName" type="text" maxlength="180" required></label>
+        <label><span>CIF / NIF</span><input id="customerEditorTaxId" type="text" maxlength="30"></label>
+        <label id="customerEditorCommercialWrap"><span>Comercial</span><input id="customerEditorCommercial" type="text" maxlength="120"></label>
+        <label><span>Teléfono</span><input id="customerEditorPhone" type="tel" maxlength="40"></label>
+        <label><span>Email</span><input id="customerEditorEmail" type="email" maxlength="180"></label>
+        <label class="customer-editor-full"><span>Dirección</span><input id="customerEditorAddress" type="text" maxlength="220"></label>
+        <label><span>Ciudad</span><input id="customerEditorCity" type="text" maxlength="120"></label>
+        <label><span>Provincia</span><input id="customerEditorProvince" type="text" maxlength="120"></label>
+        <label><span>Estado</span><select id="customerEditorStatus"><option value="Activo">Activo</option><option value="Inactivo">Inactivo</option></select></label>
+        <div class="customer-editor-actions customer-editor-full"><button id="cancelCustomerEditorButton" type="button" class="portal-secondary-button">Cancelar</button><button id="saveCustomerButton" type="submit" class="portal-primary-button">Guardar cliente</button></div>
+      </form>
+      <div id="customerEditorMessage" class="portal-message" aria-live="polite"></div>
+    </div>
+  </div>
+
     <div id="clientModal" class="client-modal hidden">
       <div class="client-modal-card">
           <button type="button" id="closeClientModal" class="client-modal-close" >X</button>
           <h2>Datos del cliente</h2>
+          <div id="linkedCustomerNotice" class="linked-customer-notice hidden"><span>Cliente vinculado: <strong id="linkedCustomerName">—</strong></span><button id="unlinkCustomerButton" type="button">Desvincular</button></div>
           <form id="clientForm">
             <label>
                 <span>Nombre o razón social</span>
@@ -917,12 +989,14 @@
   <script src="https://unpkg.com/pizzip@3.2.0/dist/pizzip-utils.js"></script>
   <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="js/01-session-auth.js"></script>
-  <script src="js/02-api-history.js"></script>
-  <script src="js/03-calculator-shared.js"></script>
-  <script src="js/04-calculator-microdata.js"></script>
-  <script src="js/05-calculator-erp.js"></script>
-  <script src="js/06-budget-documents.js"></script>
-  <script src="js/07-bootstrap.js"></script>
-  <script src="js/08-portal.js"></script>
+  <script src="js/02-api-client.js"></script>
+  <script src="js/03-api-history.js"></script>
+  <script src="js/04-calculator-shared.js"></script>
+  <script src="js/05-calculator-microdata.js"></script>
+  <script src="js/06-calculator-erp.js"></script>
+  <script src="js/07-budget-documents.js"></script>
+  <script src="js/08-bootstrap.js"></script>
+  <script src="js/09-portal.js"></script>
+  <script src="js/10-customers.js"></script>
 </body>
 </html>
