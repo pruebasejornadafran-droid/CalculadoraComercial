@@ -177,19 +177,97 @@
       <div class="app-brand">
         <img src="./shinelogo.png" alt="Shine" class="header-logo">
       </div>
-      <nav class="main-navigation">
-        <button id="showCalculatorButton" class="navigation-button active">Nueva simulación</button>
-        <button id="showHistoryButton" class="navigation-button">Historial</button>
+      <nav class="main-navigation" aria-label="Navegación principal">
+        <button id="showDashboardButton" class="navigation-button active" data-view="dashboard">Dashboard</button>
+        <button id="showCalculatorButton" class="navigation-button" data-view="calculator">Nueva simulación</button>
+        <button id="showHistoryButton" class="navigation-button" data-view="history">Historial</button>
+        <button id="showStatisticsButton" class="navigation-button" data-view="statistics">Estadísticas</button>
+        <button id="showAdminButton" class="navigation-button hidden" data-view="admin">Administración</button>
       </nav>
       <div id="userInfo" class="user-info hidden">
         <span class="user-avatar">👤</span>
         <div class="user-info-text">
           <span class="user-info-label">Usuario</span>
           <strong id="loggedUserName">—</strong>
+          <span id="loggedUserRole" class="user-role-badge">—</span>
         </div>
         <button id="logoutButton" class="logout-button">↪</button>
       </div>
     </header>
+    <section id="dashboardView" class="portal-page">
+      <div class="portal-page-header">
+        <div>
+          <p class="eyebrow">Portal comercial</p>
+          <h1>Dashboard</h1>
+          <p id="dashboardWelcome" class="portal-subtitle">Resumen de actividad comercial.</p>
+        </div>
+        <div class="portal-header-actions">
+          <button id="dashboardNewBudgetButton" class="portal-primary-button" type="button">＋ Nuevo presupuesto</button>
+          <button id="refreshDashboardButton" class="portal-secondary-button" type="button">Actualizar</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid" aria-live="polite">
+        <article class="kpi-card"><span>Presupuestos este mes</span><strong id="kpiMonthlyBudgets">0</strong><small id="kpiMonthlyVariation">Sin datos comparativos</small></article>
+        <article class="kpi-card"><span>Importe mensual presupuestado</span><strong id="kpiMonthlyAmount">0,00 €</strong><small>Cuotas mensuales acumuladas</small></article>
+        <article class="kpi-card"><span>Aceptados</span><strong id="kpiAccepted">0</strong><small id="kpiConversion">Conversión 0 %</small></article>
+        <article class="kpi-card"><span>Clientes únicos</span><strong id="kpiClients">0</strong><small>En el periodo visible</small></article>
+      </div>
+
+      <div class="dashboard-grid">
+        <section class="portal-card dashboard-chart-card">
+          <div class="portal-card-header"><div><h2>Evolución mensual</h2><p>Presupuestos creados durante los últimos seis meses.</p></div></div>
+          <div id="dashboardMonthlyChart" class="bar-chart" role="img" aria-label="Evolución mensual de presupuestos"></div>
+        </section>
+        <section class="portal-card">
+          <div class="portal-card-header"><div><h2>Estado comercial</h2><p>Distribución de los presupuestos.</p></div></div>
+          <div id="dashboardStatusList" class="status-summary-list"></div>
+        </section>
+        <section class="portal-card dashboard-recent-card">
+          <div class="portal-card-header"><div><h2>Actividad reciente</h2><p>Últimos presupuestos registrados.</p></div><button id="dashboardOpenHistoryButton" class="text-action-button" type="button">Ver historial →</button></div>
+          <div id="dashboardRecentBudgets" class="recent-budget-list"></div>
+        </section>
+        <section class="portal-card">
+          <div class="portal-card-header"><div><h2>Productos destacados</h2><p>Soluciones más presupuestadas.</p></div></div>
+          <div id="dashboardTopProducts" class="ranking-list"></div>
+        </section>
+      </div>
+      <div id="dashboardMessage" class="portal-message" aria-live="polite"></div>
+    </section>
+
+    <section id="statisticsView" class="portal-page hidden">
+      <div class="portal-page-header">
+        <div><p class="eyebrow">Análisis comercial</p><h1>Estadísticas</h1><p class="portal-subtitle">Analiza importes, productos, comerciales y estados.</p></div>
+        <div class="portal-header-actions"><select id="statisticsPeriodFilter" class="portal-filter"><option value="3">Últimos 3 meses</option><option value="6" selected>Últimos 6 meses</option><option value="12">Últimos 12 meses</option><option value="all">Todo el historial</option></select><button id="refreshStatisticsButton" class="portal-secondary-button" type="button">Actualizar</button></div>
+      </div>
+      <div class="kpi-grid statistics-kpis">
+        <article class="kpi-card"><span>Presupuestos analizados</span><strong id="statsTotalBudgets">0</strong></article>
+        <article class="kpi-card"><span>Importe mensual</span><strong id="statsMonthlyAmount">0,00 €</strong></article>
+        <article class="kpi-card"><span>Importe anual</span><strong id="statsAnnualAmount">0,00 €</strong></article>
+        <article class="kpi-card"><span>Ticket medio mensual</span><strong id="statsAverageTicket">0,00 €</strong></article>
+      </div>
+      <div class="statistics-grid">
+        <section class="portal-card"><div class="portal-card-header"><div><h2>Importe por mes</h2><p>Total mensual presupuestado.</p></div></div><div id="statisticsAmountChart" class="bar-chart bar-chart-large"></div></section>
+        <section class="portal-card"><div class="portal-card-header"><div><h2>Conversión por estado</h2><p>Situación actual de los presupuestos.</p></div></div><div id="statisticsStatusChart" class="horizontal-chart"></div></section>
+        <section id="statisticsCommercialCard" class="portal-card"><div class="portal-card-header"><div><h2>Rendimiento por comercial</h2><p>Visible para Manager y Admin.</p></div></div><div id="statisticsCommercialTable" class="portal-table-wrapper"></div></section>
+        <section class="portal-card"><div class="portal-card-header"><div><h2>Productos</h2><p>Volumen e importe por solución.</p></div></div><div id="statisticsProductTable" class="portal-table-wrapper"></div></section>
+      </div>
+      <div id="statisticsMessage" class="portal-message" aria-live="polite"></div>
+    </section>
+
+    <section id="adminView" class="portal-page hidden">
+      <div class="portal-page-header">
+        <div><p class="eyebrow">Configuración</p><h1>Administración</h1><p class="portal-subtitle">Gestión de usuarios y diagnóstico de catálogos.</p></div>
+        <div class="portal-header-actions"><button id="refreshAdminButton" class="portal-secondary-button" type="button">Actualizar</button></div>
+      </div>
+      <div class="admin-grid">
+        <section class="portal-card admin-users-card"><div class="portal-card-header"><div><h2>Usuarios</h2><p>Modifica el rol o activa y desactiva accesos.</p></div></div><div id="adminUsersTable" class="portal-table-wrapper"></div></section>
+        <section class="portal-card"><div class="portal-card-header"><div><h2>Catálogo</h2><p>Resumen de los datos cargados desde Google Sheets.</p></div></div><div id="adminCatalogSummary" class="catalog-summary"></div><button id="clearCatalogCacheButton" class="portal-secondary-button admin-cache-button" type="button">Vaciar caché del catálogo</button></section>
+        <section class="portal-card"><div class="portal-card-header"><div><h2>Estado del sistema</h2><p>Información útil para soporte y despliegue.</p></div></div><dl id="adminSystemStatus" class="system-status-list"></dl></section>
+      </div>
+      <div id="adminMessage" class="portal-message" aria-live="polite"></div>
+    </section>
+
     <section id="calculatorSection">
         <section class="hero">
           <div class="hero-content">
