@@ -63,7 +63,11 @@ function getActivityLabel(type) {
     "cliente.estadoComercial": "Cambio de fase comercial",
     "presupuesto.creado": "Presupuesto creado",
     "presupuesto.eliminado": "Presupuesto eliminado",
-    "presupuesto.estado": "Estado de presupuesto"
+    "presupuesto.estado": "Estado de presupuesto",
+    "oportunidad.creada": "Oportunidad creada",
+    "oportunidad.actualizada": "Oportunidad actualizada",
+    "oportunidad.estado": "Cambio de fase de oportunidad",
+    "oportunidad.eliminada": "Oportunidad eliminada"
   };
   return labels[type] || type || "Actividad";
 }

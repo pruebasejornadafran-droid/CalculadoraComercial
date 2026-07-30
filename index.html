@@ -6,6 +6,8 @@
   <title>Calculadora Comercial</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="css/06-customers.css?v=2.0" />
+  <link rel="stylesheet" href="css/07-side-panel.css?v=1.0" />
+  <link rel="stylesheet" href="css/08-dashboard-v2.css?v=1.0" />
 </head>
 <body>
   <section id="loginScreen" class="access-screen">
@@ -196,47 +198,50 @@
         <button id="logoutButton" class="logout-button">↪</button>
       </div>
     </header>
-    <section id="dashboardView" class="portal-page">
-      <div class="portal-page-header">
+    <section id="dashboardView" class="portal-page dashboard-v2">
+      <div class="dashboard-v2-hero">
         <div>
-          <p class="eyebrow">Portal comercial</p>
-          <h1>Dashboard</h1>
-          <p id="dashboardWelcome" class="portal-subtitle">Resumen de actividad comercial.</p>
+          <p class="eyebrow">Shine Sales Workspace</p>
+          <h1 id="dashboardV2Welcome">Buenos días</h1>
+          <p id="dashboardV2Date" class="portal-subtitle">Tu espacio de trabajo comercial.</p>
         </div>
-        <div class="portal-header-actions">
-          <button id="dashboardNewBudgetButton" class="portal-primary-button" type="button">＋ Nuevo presupuesto</button>
+        <div class="dashboard-v2-actions">
+          <button id="dashboardNewActionButton" class="portal-primary-button" type="button">＋ Nueva acción</button>
+          <button id="dashboardNewBudgetButton" class="portal-secondary-button" type="button">＋ Nuevo presupuesto</button>
           <button id="refreshDashboardButton" class="portal-secondary-button" type="button">Actualizar</button>
         </div>
       </div>
 
-      <div class="kpi-grid" aria-live="polite">
-        <article class="kpi-card"><span>Presupuestos este mes</span><strong id="kpiMonthlyBudgets">0</strong><small id="kpiMonthlyVariation">Sin datos comparativos</small></article>
-        <article class="kpi-card"><span>Importe mensual presupuestado</span><strong id="kpiMonthlyAmount">0,00 €</strong><small>Cuotas mensuales acumuladas</small></article>
-        <article class="kpi-card"><span>Aceptados</span><strong id="kpiAccepted">0</strong><small id="kpiConversion">Conversión 0 %</small></article>
-        <article class="kpi-card"><span>Clientes únicos</span><strong id="kpiClients">0</strong><small>En el periodo visible</small></article>
+      <div class="dashboard-kpi-strip" aria-live="polite">
+        <article class="dashboard-kpi-v2"><span>Pipeline mensual</span><strong id="dashboardPipelineValue">0 €</strong><small>Oportunidades abiertas</small></article>
+        <article class="dashboard-kpi-v2"><span>Previsión ponderada</span><strong id="dashboardForecastValue">0 €</strong><small>Según probabilidad</small></article>
+        <article class="dashboard-kpi-v2"><span>Oportunidades ganadas</span><strong id="dashboardWonValue">0</strong><small>Acumulado visible</small></article>
+        <article class="dashboard-kpi-v2"><span>Acciones pendientes</span><strong id="dashboardPendingValue">0</strong><small>Hoy y vencidas</small></article>
       </div>
 
-      <div class="dashboard-grid">
-        <section class="portal-card dashboard-chart-card">
-          <div class="portal-card-header"><div><h2>Evolución mensual</h2><p>Presupuestos creados durante los últimos seis meses.</p></div></div>
-          <div id="dashboardMonthlyChart" class="bar-chart" role="img" aria-label="Evolución mensual de presupuestos"></div>
+      <div id="dashboardWidgetGrid" class="dashboard-widget-grid">
+        <section class="dashboard-widget" data-widget-id="agenda">
+          <header class="dashboard-widget-header"><div><h2>Agenda de hoy</h2><p>Las próximas acciones que requieren tu atención.</p></div><span class="dashboard-widget-badge">Hoy</span></header>
+          <div id="dashboardTodayActions" class="dashboard-widget-body"></div>
         </section>
-        <section class="portal-card">
-          <div class="portal-card-header"><div><h2>Estado comercial</h2><p>Distribución de los presupuestos.</p></div></div>
-          <div id="dashboardStatusList" class="status-summary-list"></div>
+
+        <section class="dashboard-widget" data-widget-id="prioridades">
+          <header class="dashboard-widget-header"><div><h2>Oportunidades prioritarias</h2><p>Mayor valor ponderado del pipeline abierto.</p></div><span class="dashboard-widget-badge">Pipeline</span></header>
+          <div id="dashboardPriorityOpportunities" class="dashboard-widget-body"></div>
         </section>
-        <section class="portal-card dashboard-recent-card">
-          <div class="portal-card-header"><div><h2>Actividad reciente</h2><p>Últimos presupuestos registrados.</p></div><button id="dashboardOpenHistoryButton" class="text-action-button" type="button">Ver historial →</button></div>
-          <div id="dashboardRecentBudgets" class="recent-budget-list"></div>
+
+        <section class="dashboard-widget" data-widget-id="actividad">
+          <header class="dashboard-widget-header"><div><h2>Actividad reciente</h2><p>Últimos movimientos comerciales visibles.</p></div><span class="dashboard-widget-badge">Reciente</span></header>
+          <div id="dashboardRecentActivityV2" class="dashboard-widget-body"></div>
         </section>
-        <section class="portal-card">
-          <div class="portal-card-header"><div><h2>Productos destacados</h2><p>Soluciones más presupuestadas.</p></div></div>
-          <div id="dashboardTopProducts" class="ranking-list"></div>
+
+        <section class="dashboard-widget" data-widget-id="atencion">
+          <header class="dashboard-widget-header"><div><h2>Requiere atención</h2><p>Acciones vencidas que siguen pendientes.</p></div><span class="dashboard-widget-badge">Alertas</span></header>
+          <div id="dashboardAttentionList" class="dashboard-widget-body"></div>
         </section>
       </div>
       <div id="dashboardMessage" class="portal-message" aria-live="polite"></div>
     </section>
-
 
     <section id="customersView" class="portal-page hidden">
       <div class="portal-page-header">
@@ -1031,7 +1036,11 @@
   <script src="js/06-calculator-erp.js"></script>
   <script src="js/07-budget-documents.js"></script>
   <script src="js/08-bootstrap.js"></script>
-  <script src="js/09-portal.js"></script>
+  <script src="js/09-navigation.js?v=1.0"></script>
   <script src="js/10-customers.js?v=2.0"></script>
+  <script src="js/13-sidepanel.js?v=1.0"></script>
+  <script src="js/11-opportunities.js?v=1.1"></script>
+  <script src="js/20-dashboard.js?v=1.0"></script>
+  <script src="js/30-ui.js?v=1.0"></script>
 </body>
 </html>
