@@ -78,6 +78,10 @@ generateBudgetBtn.addEventListener("click", async event => {
     return;
   }
 
+  if (typeof prepareCustomerPickerForBudget === "function") {
+    await prepareCustomerPickerForBudget();
+  }
+
   clientModal.classList.remove("hidden");
 });
 
@@ -902,7 +906,15 @@ async function saveBudgetRecord(budgetData) {
         throw new Error(response?.message || "No se ha podido guardar el presupuesto.");
     }
 
-    console.log("Presupuesto guardado en Apps Script.");
+    if (response.idCliente) {
+        window.selectedCustomerId = response.idCliente;
+        budgetData.idCliente = response.idCliente;
+        if (typeof updateLinkedCustomerNotice === "function") {
+            updateLinkedCustomerNotice(budgetData.clienteNombre || response.idCliente);
+        }
+    }
+
+    console.log("Presupuesto guardado en Apps Script.", response);
 }
 
 function createBudgetNumber() {

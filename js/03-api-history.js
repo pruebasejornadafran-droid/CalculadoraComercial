@@ -305,6 +305,11 @@ function restoreClientFormData(customerData = {}) {
             element.value = customerData[propertyName] || "";
         }
     });
+
+    window.selectedCustomerId = customerData.idCliente || "";
+    if (typeof updateLinkedCustomerNotice === "function") {
+        updateLinkedCustomerNotice(customerData.clienteNombre || window.selectedCustomerId);
+    }
 }
 
 function restoreMicrodataSnapshot(snapshot) {

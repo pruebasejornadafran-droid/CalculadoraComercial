@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calculadora Comercial</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/06-customers.css?v=2.0" />
 </head>
 <body>
   <section id="loginScreen" class="access-screen">
@@ -250,6 +251,13 @@
         </div>
       </div>
 
+      <div class="kpi-grid customer-pipeline-kpis">
+        <article class="kpi-card"><span>Clientes visibles</span><strong id="pipelineTotalCustomers">0</strong></article>
+        <article class="kpi-card"><span>En proceso</span><strong id="pipelineOpenCustomers">0</strong></article>
+        <article class="kpi-card"><span>Ganados</span><strong id="pipelineWonCustomers">0</strong></article>
+        <article class="kpi-card"><span>Conversión</span><strong id="pipelineConversionRate">0%</strong></article>
+      </div>
+
       <section class="portal-card customers-toolbar-card">
         <div class="customers-toolbar">
           <label class="customers-search-field">
@@ -261,13 +269,26 @@
             <select id="customerCommercialFilter"><option value="">Todos los comerciales</option></select>
           </label>
           <label class="customers-filter-field">
-            <span>Estado</span>
+            <span>Estado de ficha</span>
             <select id="customerStatusFilter"><option value="">Todos</option><option value="Activo">Activos</option><option value="Inactivo">Inactivos</option></select>
           </label>
+          <label class="customers-filter-field">
+            <span>Fase comercial</span>
+            <select id="customerPipelineFilter"><option value="">Todas las fases</option></select>
+          </label>
+          <div class="customers-view-switch" role="group" aria-label="Vista de clientes">
+            <button id="customersListViewButton" type="button" class="active">Lista</button>
+            <button id="customersKanbanViewButton" type="button">Kanban</button>
+          </div>
         </div>
       </section>
 
-      <div class="customers-layout">
+      <div id="customersKanbanShell" class="customer-kanban-shell hidden">
+        <div id="customersKanban" class="customer-kanban" aria-live="polite"></div>
+      </div>
+      <button id="customerDrawerBackdrop" class="customer-drawer-backdrop hidden" type="button" aria-label="Cerrar ficha del cliente"></button>
+
+      <div id="customersListLayout" class="customers-layout">
         <section class="portal-card customers-list-card">
           <div class="portal-card-header"><div><h2>Cartera de clientes</h2><p id="customersCountText">0 clientes</p></div></div>
           <div id="customersList" class="customers-list" aria-live="polite"></div>
@@ -695,6 +716,20 @@
       <div class="client-modal-card">
           <button type="button" id="closeClientModal" class="client-modal-close" >X</button>
           <h2>Datos del cliente</h2>
+          <section class="budget-customer-picker" aria-labelledby="budgetCustomerPickerTitle">
+            <div class="budget-customer-picker-heading">
+              <div>
+                <strong id="budgetCustomerPickerTitle">Seleccionar cliente existente</strong>
+                <span>Busca por nombre, CIF, email o teléfono. También puedes rellenar el formulario sin seleccionar ninguno.</span>
+              </div>
+            </div>
+            <label class="budget-customer-search">
+              <span>Buscar cliente</span>
+              <input id="budgetCustomerSearchInput" type="search" autocomplete="off" placeholder="Escribe nombre, CIF, email o teléfono...">
+            </label>
+            <div id="budgetCustomerSearchMessage" class="budget-customer-search-message" aria-live="polite"></div>
+            <div id="budgetCustomerSearchResults" class="budget-customer-search-results hidden" role="listbox" aria-label="Resultados de clientes"></div>
+          </section>
           <div id="linkedCustomerNotice" class="linked-customer-notice hidden"><span>Cliente vinculado: <strong id="linkedCustomerName">—</strong></span><button id="unlinkCustomerButton" type="button">Desvincular</button></div>
           <form id="clientForm">
             <label>
@@ -997,6 +1032,6 @@
   <script src="js/07-budget-documents.js"></script>
   <script src="js/08-bootstrap.js"></script>
   <script src="js/09-portal.js"></script>
-  <script src="js/10-customers.js"></script>
+  <script src="js/10-customers.js?v=2.0"></script>
 </body>
 </html>
