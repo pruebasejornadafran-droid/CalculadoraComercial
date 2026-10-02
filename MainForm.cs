@@ -102,9 +102,6 @@ public sealed class MainForm : Form
             webView.CoreWebView2.NewWindowRequested +=
                 WebView_NewWindowRequested;
 
-            webView.CoreWebView2.NavigationStarting +=
-                WebView_NavigationStarting;
-
             webView.Source = new Uri(config.Url);
         }
         catch (WebView2RuntimeNotFoundException)
@@ -153,54 +150,6 @@ public sealed class MainForm : Form
         catch
         {
             e.Handled = false;
-        }
-    }
-
-    private void WebView_NavigationStarting(
-        object? sender,
-        CoreWebView2NavigationStartingEventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(e.Uri))
-            return;
-
-        Uri target;
-
-        try
-        {
-            target = new Uri(e.Uri);
-        }
-        catch
-        {
-            return;
-        }
-
-        Uri appUri = new(config.Url);
-
-        bool allowed =
-            target.Host.EndsWith("script.google.com", StringComparison.OrdinalIgnoreCase) ||
-            target.Host.EndsWith("googleusercontent.com", StringComparison.OrdinalIgnoreCase) ||
-            target.Host.EndsWith("accounts.google.com", StringComparison.OrdinalIgnoreCase);
-
-        if (allowed)
-            return;
-
-        if (target.Host.Equals(appUri.Host, StringComparison.OrdinalIgnoreCase))
-            return;
-
-        try
-        {
-            Process.Start(
-                new ProcessStartInfo
-                {
-                    FileName = e.Uri,
-                    UseShellExecute = true
-                }
-            );
-
-            e.Cancel = true;
-        }
-        catch
-        {
         }
     }
 }
